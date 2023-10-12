@@ -3,4 +3,9 @@ project(ALDA_Practicum1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(ALDA_Practicum1 main.cpp)
+add_executable(ALDA_Practicum1 main.cpp
+        Contact.cpp
+        Contact.h
+        AddressBook.cpp
+        AddressBook.h
+)
