@@ -1,28 +1,59 @@
 #include <iostream>
-#include "AddressBook.h"
+#include "AddressBookV1.h"
+#include "consolemenu.h"
 
-int main() {
-    // Creating an AddressBook
-    AddressBook addressBook;
+void handleGetByName(ConsoleMenu &menu, AddressBookV1 &addressBook);
+void handleDeleteByName(ConsoleMenu &menu, AddressBookV1 &addressBook);
 
-    // Adding contacts to the address book
-    Contact contact1("123 Main St", "555-1234");
-    Contact contact2("456 Oak St", "555-5678");
+int main()
+{
+    // load contacts from file
+    AddressBookV1 addressBook = AddressBookV1();
+    addressBook.addContactsFromFile("../ContactsData.txt");
 
-    addressBook.addContact("John Doe", contact1);
-    addressBook.addContact("Jane Smith", contact2);
+    ConsoleMenu menu = ConsoleMenu();
 
-    // Querying information about a contact
-    std::string queryName = "John Doe";
-    Contact queriedContact = addressBook.findContact(queryName);
-    std::cout << "Information about " << queryName << ":\n";
-    std::cout << "Address: " << queriedContact.m_address << "\n";
-    std::cout << "Phone Number: " << queriedContact.m_phoneNumber << "\n\n";
+    bool exit = false;
+    while (exit == false) {
+        menu.drawMenu();
+        ConsoleMenu::MenuOption option = menu.getOption();
 
-    // Deleting a contact
-    std::string deleteName = "Jane Smith";
-    addressBook.deleteContact(deleteName);
-    std::cout << deleteName << " has been deleted from the address book.\n\n";
+        switch (option) {
+        case ConsoleMenu::MenuOption::GET_FULL_NAME:
+            handleGetByName(menu, addressBook);
+            break;
+        case ConsoleMenu::MenuOption::DELETE_FULL_NAME:
+            handleDeleteByName(menu, addressBook);
+            break;
+        case ConsoleMenu::MenuOption::EXIT:
+            exit = true;
+            break;
+        default:
+            break;
+        }
+    }
 
     return 0;
 }
+
+void handleGetByName(ConsoleMenu &menu, AddressBookV1 &addressBook)
+{
+    std::string name = menu.getString();
+    const Contact *contact = addressBook.getContactByName(name);
+
+    if (contact == nullptr) {
+        std::cout << "Error: Contact not found!\n\n";
+        return;
+    }
+
+    menu.printContact(*contact);
+}
+
+void handleDeleteByName(ConsoleMenu &menu, AddressBookV1 &addressBook)
+{
+    std::string name = menu.getString();
+    addressBook.deleteContactByName(name);
+
+    std::cout << name << " has been deleted\n\n";
+}
+
