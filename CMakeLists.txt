@@ -8,4 +8,6 @@ add_executable(ALDA_Practicum1 main.cpp
         addressBookV1.cpp addressBookV1.h
         repository.h repository.cpp
         consolemenu.h consolemenu.cpp
+        AddressBookV2.cpp
+        AddressBookV2.h
 )
