@@ -7,11 +7,16 @@
 class Variant1
 {
 public:
+    Variant1();
+
     void start();
 
 private:
-    void handleGetByName(ConsoleMenu &menu, AddressBookV1 &addressBook);
-    void handleDeleteByName(ConsoleMenu &menu, AddressBookV1 &addressBook);
+    ConsoleMenu m_menu;
+    AddressBookV1 m_addressBook;
+
+    void handleGetByName();
+    void handleDeleteByName();
 };
 
 #endif // VARIANT1_H
