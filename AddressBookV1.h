@@ -18,4 +18,5 @@ public:
 private:
     std::unordered_map<std::string, Contact> contacts;
 };
+
 #endif //ADDRESSBOOKV1_H
