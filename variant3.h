@@ -17,6 +17,8 @@ private:
 
     void handleGetByFullName();
     void handleDeleteByFullName();
+    void handleGetByLastName();
+    void handlePrintAll();
 };
 
 #endif // VARIANT3_H
