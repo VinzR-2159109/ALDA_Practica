@@ -17,10 +17,10 @@ public:
 
     const Contact *getContactByLastName(const std::string &name) const;
 
-    std::vector<Contact*> getContactsSorted();
+    std::vector<const Contact*> getContactsSorted() const;
 private:
     std::unordered_map<std::string, Contact> m_contacts;
-    std::vector<Contact*> radixSort();
+    std::vector<const Contact*> radixSort() const;
 };
 
 #endif // ADDRESSBOOKV3_H

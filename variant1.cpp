@@ -3,7 +3,7 @@
 #include <iostream>
 
 Variant1::Variant1()
-    : m_menu( {"get contact information by full name", "delete contact by full name", "Exit program"})
+    : m_menu({"get contact information by full name", "delete contact by full name", "Exit program"})
     , m_addressBook(AddressBookV1())
 { }
 

@@ -68,8 +68,8 @@ void Variant3::handleGetByLastName()
 
 void Variant3::handlePrintAll()
 {
-    std::vector<Contact *> sortedContacts = m_addressBook.getContactsSorted();
-    for (Contact *contact : sortedContacts) {
+    std::vector<const Contact *> sortedContacts = m_addressBook.getContactsSorted();
+    for (const Contact *contact : sortedContacts) {
         m_menu.printContact(*contact);
     }
 }

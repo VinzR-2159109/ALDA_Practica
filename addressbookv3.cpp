@@ -45,13 +45,13 @@ const Contact *AddressBookV3::getContactByLastName(const std::string &name) cons
     return nullptr;
 }
 
-std::vector<Contact *> AddressBookV3::getContactsSorted()
+std::vector<const Contact *> AddressBookV3::getContactsSorted() const
 {
-    std::vector<Contact *> sortedContacts = radixSort();
+    std::vector<const Contact *> sortedContacts = radixSort();
     return sortedContacts;
 }
 
-std::vector<Contact *> AddressBookV3::radixSort()
+std::vector<const Contact *> AddressBookV3::radixSort() const
 {
     /**
      * Radix sort heeft een tijd complexiteit van O(n * k) (578724 µs)
@@ -63,7 +63,7 @@ std::vector<Contact *> AddressBookV3::radixSort()
      * De std::sort functie heeft een complexiteit van O(n log(n)) (815061 µs)
      */
 
-    std::vector<Contact *> contacts(m_contacts.size());
+    std::vector<const Contact *> contacts(m_contacts.size());
 
     // get max string length and copy contacts to vector
     int maxStringLength = 0;
@@ -80,7 +80,7 @@ std::vector<Contact *> AddressBookV3::radixSort()
 
     int size = contacts.size();
     for (int place = maxStringLength - 1; place >= 0; place--) {
-        std::vector<Contact *> sortedContacts(size);
+        std::vector<const Contact *> sortedContacts(size);
         int count[26] = {0};
 
         // Count the occurrences of each character at the given place
