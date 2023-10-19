@@ -15,7 +15,7 @@ void AddressBookV1::addContacts(const std::vector<Contact> constacts)
 
 void AddressBookV1::addContactsFromFile(const std::string& fileName)
 {
-    std::vector<Contact> contacts = dataRepository().loadContacts(fileName);
+    std::vector<Contact> contacts = Repository().loadContacts(fileName);
     addContacts(contacts);
 }
 

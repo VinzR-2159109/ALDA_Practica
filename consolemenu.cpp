@@ -1,35 +1,39 @@
 #include "consolemenu.h"
 #include <iostream>
 
+ConsoleMenu::ConsoleMenu(std::vector<std::string> options)
+    : m_options(options)
+{}
+
 void ConsoleMenu::drawMenu() const
 {
-    std::cout << "Adress Menu - What action would you like to do?\n";
-    std::cout << " - (1) get contact information by full name.\n";
-    std::cout << " - (2) delete contact by full name.\n";
-    std::cout << " - (3) Exit program.\n";
+    std::cout << "Addressbook menu - What action would you like to do?\n";
+
+    for (int i = 0; i < m_options.size(); ++i) {
+        std::cout << " - (" << i + 1 << ") " << m_options[i] << "\n";
+    }
 }
 
-ConsoleMenu::MenuOption ConsoleMenu::getOption() const
+char ConsoleMenu::getOption() const
 {
     std::cout << "Type the number of the coresponding option: ";
 
     char answer = std::getchar();
-    while ((getchar()) != '\n')
-        ;
+    while (getchar() != '\n');
 
-    MenuOption menuOption = static_cast<MenuOption>(answer);
-
-    if (answer < '1' || answer > '3') {
+    if (answer < '1' || answer > '0' + m_options.size()) {
         std::cout << "Error: option " << answer << " is invalid\n\n";
         return getOption();
     }
 
-    return menuOption;
+    std::cout << "\n";
+
+    return answer;
 }
 
-std::string ConsoleMenu::getString() const
+std::string ConsoleMenu::getString(const std::string &type) const
 {
-    std::cout << "Type a name: ";
+    std::cout << "Type a " << type << ": ";
 
     std::string line;
     std::getline(std::cin, line);

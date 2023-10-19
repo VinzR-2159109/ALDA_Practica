@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-std::vector<Contact> dataRepository::loadContacts(std::string fileName)
+std::vector<Contact> Repository::loadContacts(std::string fileName)
 {
     std::ifstream file;
     std::string constactString;
@@ -15,7 +15,6 @@ std::vector<Contact> dataRepository::loadContacts(std::string fileName)
 
     std::vector<Contact> contacts;
 
-    int counter = 0;
     while (true) {
         if (file.eof())
             break;
@@ -28,10 +27,6 @@ std::vector<Contact> dataRepository::loadContacts(std::string fileName)
         std::getline(file, phoneNumber, '\n');
 
         contacts.emplace_back(firstName, lastName, address, phoneNumber);
-
-        counter++;
-        if (counter == 5)
-            break;
     }
 
     file.close();
