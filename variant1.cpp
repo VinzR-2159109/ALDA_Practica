@@ -10,7 +10,7 @@ Variant1::Variant1()
 void Variant1::start()
 {
     // load contacts from file
-    m_addressBook.addContactsFromFile("../ContactsData.txt");
+    m_addressBook.addContactsFromFile("ContactsData.txt");
 
     // loop until exit
     while (true) {

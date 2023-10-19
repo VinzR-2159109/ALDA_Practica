@@ -1,9 +1,13 @@
 #include <iostream>
 #include "variant2.h"
 
+variant2::variant2() : m_menu({"get contact information by query",
+                               "delete contact by full name",
+                               "Exit program"}), m_addressBook(AddressBookV2()){}
+
 void variant2::start()
 {
-    m_addressBook.addContactsFromFile("../ContactsData.txt");
+    m_addressBook.addContactsFromFile("ContactsData.txt");
 
     while (true) {
         m_menu.drawMenu();
@@ -16,6 +20,8 @@ void variant2::start()
             case '2':
                 handleDeleteByName();
                 break;
+            case '3':
+                return;
         }
     }
 }
@@ -43,4 +49,3 @@ void variant2::handleDeleteByName()
     std::cout << name << " has been deleted\n\n";
 }
 
-variant2::variant2() : m_menu({"get contact information by query", "delete contact by full name"}), m_addressBook(AddressBookV2()){}

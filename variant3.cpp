@@ -14,7 +14,7 @@ Variant3::Variant3()
 void Variant3::start()
 {
     // load contacts from file
-    m_addressBook.addContactsFromFile("../ContactsData.txt");
+    m_addressBook.addContactsFromFile("ContactsData.txt");
 
     // loop until exit
     while (true) {
