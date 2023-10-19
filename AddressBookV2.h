@@ -15,6 +15,7 @@ public:
     void addContact(const Contact &contact);
     void addContacts(const std::vector<Contact> contacts);
     void addContactsFromFile(const std::string &fileName);
+
     void deleteContactByName(const std::string &name);
     std::vector<Contact> queryContacts(const std::string &query) const;
 

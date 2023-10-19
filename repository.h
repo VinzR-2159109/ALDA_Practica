@@ -4,7 +4,7 @@
 #include <vector>
 #include "Contact.h"
 
-class dataRepository
+class Repository
 {
 public:
     std::vector<Contact> loadContacts(std::string fileName);

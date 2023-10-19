@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-std::vector<Contact> dataRepository::loadContacts(std::string fileName)
+std::vector<Contact> Repository::loadContacts(std::string fileName)
 {
     std::ifstream file;
     std::string constactString;
