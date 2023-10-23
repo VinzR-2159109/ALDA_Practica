@@ -21,15 +21,21 @@ void AddressBookV2::addContactsFromFile(const std::string& fileName)
     addContacts(contacts);
 }
 
+/*
+ * Contacts is een unordered_map, hierdoor is verwijderen ook O(1).
+ */
 void AddressBookV2::deleteContactByName(const std::string& name)
 {
     contacts.erase(name);
 }
-
+/*
+ * Looping over alle contacten in contacts is O(n) in tijdscomplexiteit.
+ * Een alternatief is aparte hashmaps voor elke datamember.
+ * Dit heeft echter slechtere ruimtecomplexiteit en onderhoudbaarheid door gegevensduplicatie en de noodzaak om bij elke wijziging extra hashmaps aan te maken.
+ * Bovendien, wanneer contacten worden verwijderd/toegevoegd, moeten alle hashmaps bewerkt worden.
+ */
 std::vector<Contact> AddressBookV2::queryContacts(const std::string& query) const
 {
-    //auto start_time = std::chrono::high_resolution_clock::now();
-
     std::vector<Contact> result;
     for (const auto& pair : contacts) {
         const Contact& contact = pair.second;
@@ -43,11 +49,5 @@ std::vector<Contact> AddressBookV2::queryContacts(const std::string& query) cons
             result.push_back(contact);
         }
     }
-    /*
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-    std::cout << "Query duurde " << duration << " milliseconden." << std::endl;
-     */
-
     return result;
 }

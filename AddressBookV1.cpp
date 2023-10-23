@@ -19,6 +19,10 @@ void AddressBookV1::addContactsFromFile(const std::string& fileName)
     addContacts(contacts);
 }
 
+/*
+ * Contacts is een unordered_map.
+ * Key = "Full Name" en Value = contact, hierdoor is zoeken in deze map O(1).
+ */
 const Contact* AddressBookV1::getContactByName(const std::string& name) const
 {
     auto it = contacts.find(name);
@@ -28,7 +32,9 @@ const Contact* AddressBookV1::getContactByName(const std::string& name) const
 
     return nullptr;
 }
-
+/*
+ * Contacts is een unordered_map, hierdoor is verwijderen ook O(1).
+ */
 void AddressBookV1::deleteContactByName(const std::string& name)
 {
     contacts.erase(name);
