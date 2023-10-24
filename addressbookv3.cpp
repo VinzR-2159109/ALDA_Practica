@@ -1,13 +1,14 @@
 #include "addressbookv3.h"
 #include "repository.h"
 
-#include <chrono>
-#include <algorithm>
-#include <iostream>
-
 void AddressBookV3::addContact(const Contact &contact)
 {
-    m_contacts[contact.getFullName()] = contact;
+    /**
+     * Contacten inladen is minder snel dan bij de vorige variaties.
+     * De contacten worden meteen gesorteerd en dit in O(log(n)) tijd.
+     */
+
+    m_contacts.insert(std::make_pair(contact.getLastName(), contact));
 }
 
 void AddressBookV3::addContacts(const std::vector<Contact> constacts)
@@ -25,9 +26,30 @@ void AddressBookV3::addContactsFromFile(const std::string &fileName)
 
 const Contact *AddressBookV3::getContactByFullName(const std::string &name) const
 {
-    auto it = m_contacts.find(name);
-    if (it != m_contacts.end()) {
-        return &it->second;
+    /**
+     * De contacten worden bijgehouden in een multimap waarvan de keys de achternamen zijn.
+     * In een multimap kunnen we zoeken op een key in O(log(n)) tijd. Hierna moeten we over
+     * alle waardes die bij de key horen itereren, dit is O(k).
+     * De totale tijdscomplexiteit is dus O(log(n) + k).
+     *
+     * Het zoeken in een unordered multimap heeft een tijdscomplexiteit van O(1).
+     * Hierdoor wordt de tijdscomplexiteit O(1 + k)
+     * Dit zou een verbetering zijn voor deze functie, maar een (gesorteerde) multimap
+     * geeft veel voordelen bij de functie getContactsSorted().
+     *
+     * Een andere mogelijkheid is om een apparte unordered_map bij te houden met de volledige naam als key.
+     * Dit zou er voor zorgen dat de tijdscomplexiteit O(1) wordt, maar hierdoor heb je een extra datastructuur nodig
+     * waardoor je op 2 plaatsten moet toevoegen en verwijderen.
+     */
+
+    int startLastNameIndex = name.find(' ') + 1;
+    std::string lastName = name.substr(startLastNameIndex);
+
+    auto range = m_contacts.equal_range(lastName);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second.getFullName() == name) {
+            return &it->second;
+        }
     }
 
     return nullptr;
@@ -35,93 +57,95 @@ const Contact *AddressBookV3::getContactByFullName(const std::string &name) cons
 
 void AddressBookV3::deleteContactByFullName(const std::string &name)
 {
-    m_contacts.erase(name);
-}
-
-const Contact *AddressBookV3::getContactByLastName(const std::string &name) const
-{
-    // code ...
-
-    return nullptr;
-}
-
-std::vector<const Contact *> AddressBookV3::getContactsSorted() const
-{
-    std::vector<const Contact *> sortedContacts = radixSort();
-    return sortedContacts;
-}
-
-std::vector<const Contact *> AddressBookV3::radixSort() const
-{
     /**
-     * Radix sort heeft een tijd complexiteit van O(n * k) (578724 µs)
-     * met n het aantal strings in de array en k het aantal karakters van de langste string in deze array.
-     * Aangezien n >>> k kan k verwaarloosd worden waadoor het algoritme O(n) wordt.
+     * De contacten worden bijgehouden in een multimap waarvan de keys de achternamen zijn.
+     * In een multimap kunnen we zoeken op een key in O(log(n)) tijd. Hierna moeten we over
+     * alle waardes die bij de key horen itereren, dit is O(k).
+     * De totale tijdscomplexiteit is dus O(log(n) + k).
      *
-     * Het nadeel van deze implementatie is dat enkel karakters van a - z gebruikt kunnen worden.
+     * Het zoeken in een unordered multimap heeft een tijdscomplexiteit van O(1).
+     * Hierdoor wordt de tijdscomplexiteit O(1 + k)
+     * Dit zou een verbetering zijn voor deze functie, maar een (gesorteerde) multimap
+     * geeft veel voordelen bij de functie getContactsSorted().
      *
-     * De std::sort functie heeft een complexiteit van O(n log(n)) (815061 µs)
+     * Een andere mogelijkheid is om een apparte unordered_map bij te houden met de volledige naam als key.
+     * Dit zou er voor zorgen dat de tijdscomplexiteit O(1) wordt, maar hierdoor heb je een extra datastructuur nodig
+     * waardoor je op 2 plaatsten moet toevoegen en verwijderen.
      */
 
-    std::vector<const Contact *> contacts(m_contacts.size());
+    int startLastNameIndex = name.find(' ') + 1;
+    std::string lastName = name.substr(startLastNameIndex);
 
-    // get max string length and copy contacts to vector
-    int maxStringLength = 0;
+    auto range = m_contacts.equal_range(lastName);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second.getFullName() == name) {
+            m_contacts.erase(it);
+            return;
+        }
+    }
+}
+
+std::vector<const Contact*> AddressBookV3::getContactsByLastName(const std::string &name) const
+{
+    /**
+     * De contacten worden bijgehouden in een multimap waarvan de keys de achternamen zijn.
+     * In een multimap kunnen we zoeken op een key in O(log(n)) tijd. Hierna moeten we over
+     * alle waardes die bij de key horen itereren, dit is O(k).
+     * De totale tijdscomplexiteit is dus O(log(n) + k).
+     *
+     * Het zoeken in een unordered multimap heeft een tijdscomplexiteit van O(1).
+     * Dit zou een verbetering zijn voor deze functie, maar een (gesorteerde) multimap
+     * geeft veel voordelen bij de functie getContactsSorted().
+     */
+
+    int count = m_contacts.count(name);
+
+    if (count == 0)
+        return std::vector<const Contact*>();
+
+    std::vector<const Contact*> foundContacts(count);
+
+    auto it = m_contacts.find(name);
+    for (int i = 0; i < count; ++i) {
+        foundContacts[i] = &it->second;
+        it++;
+    }
+
+    return foundContacts;
+}
+
+std::vector<const Contact*> AddressBookV3::getContactsSorted() const
+{
+    /**
+     * De volgende opties zijn bekeken:
+     *  - std::sort functie
+     *  - Radix sort algoritme
+     *  - een (gesorteerde) multimap
+     *
+     * De std::sort functie heeft een complexiteit van O(n log(n))
+     * en runt in 815061 µs op de geteste pc
+     *
+     * Het radix sort algoritme heeft een tijd complexiteit van O(n * k)
+     * en runt in 578724 µs op de geteste pc
+     *  - n = het aantal strings in de array
+     *  - k = het aantal karakters van de langste string in deze array
+     * Aangezien n >>> k kan k verwaarloosd worden waadoor het algoritme O(n) wordt.
+     * Het nadeel van deze implementatie is dat enkel karakters van a - z gebruikt kunnen worden
+     * en dat er een 2de lijst nodig is waaroor er dubbel zo veel geheugen verbruikt wordt.
+     *
+     * Een multimap kan voor elke key meerdere values bijhouden. Dit is nodig omdat meerdere contacten
+     * dezelfde achternaam kunnen hebben. Aangezien een multimap de data op een gesorteerde manier bijhoudt
+     * kunnen de contacten in een vector omgezet worden door over de multimap te itereren.
+     * Dit is O(n), maar runt in 199685 µs. Dit is ongeveer 3x sneller dan het radix sort algoritme.
+     */
+
+    std::vector<const Contact *> sortedContacts(m_contacts.size());
+
     int counter = 0;
-    auto it = m_contacts.begin();
-    for (auto &it : m_contacts) {
-        int length = it.second.getLastName().length();
-        if (length > maxStringLength)
-            maxStringLength = length;
-
-        contacts[counter] = &it.second;
+    for (auto it = m_contacts.begin(); it != m_contacts.end(); it++) {
+        sortedContacts[counter] = &it->second;
         counter++;
     }
 
-    int size = contacts.size();
-    for (int place = maxStringLength - 1; place >= 0; place--) {
-        std::vector<const Contact *> sortedContacts(size);
-        int count[26] = {0};
-
-        // Count the occurrences of each character at the given place
-        for (int i = 0; i < size; i++) {
-            std::string name = contacts[i]->getLastName();
-
-            int index;
-            if (place >= name.length()) {
-                index = 0;
-            } else {
-                index = std::tolower(name[place]) - 'a';
-            }
-
-            count[index]++;
-        }
-
-        // Calculate the cumulative count
-        for (int i = 1; i < 26; i++) {
-            count[i] = count[i] + count[i - 1];
-        }
-
-        // Build the sorted array -> from end to front to make it a stable algorithm
-        for (int i = size - 1; i >= 0; i--) {
-            std::string name = contacts[i]->getLastName();
-
-            int index;
-            if (place >= name.length()) {
-                index = 0;
-            }
-            else {
-                index = std::tolower(name[place]) - 'a';
-            }
-
-            sortedContacts[count[index]-- - 1] = contacts[i];
-        }
-
-        // Copy the sorted array back into the original array
-        for (int i = 0; i < size; i++) {
-            contacts[i] = sortedContacts[i];
-        }
-    }
-
-    return contacts;
+    return sortedContacts;
 }

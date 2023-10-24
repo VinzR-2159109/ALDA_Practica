@@ -11,9 +11,9 @@ public:
     void addContact(const Contact &contact);
     void addContacts(const std::vector<Contact> constacts);
     void addContactsFromFile(const std::string &fileName);
-
-    const Contact* getContactByName(const std::string &name) const;
-    void deleteContactByName(const std::string &name);
+    
+    const Contact* getContactByFullName(const std::string &name) const;
+    void deleteContactByFullName(const std::string &name);
 
 private:
     std::unordered_map<std::string, Contact> contacts;
