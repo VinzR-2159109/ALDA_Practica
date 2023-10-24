@@ -33,7 +33,7 @@ void Variant1::start()
 void Variant1::handleGetByName()
 {
     std::string name = m_menu.getString("name");
-    const Contact *contact = m_addressBook.getContactByName(name);
+    const Contact *contact = m_addressBook.getContactByFullName(name);
 
     if (contact == nullptr) {
         std::cout << "Error: Contact not found!\n\n";
@@ -46,7 +46,7 @@ void Variant1::handleGetByName()
 void Variant1::handleDeleteByName()
 {
     std::string name = m_menu.getString("name");
-    m_addressBook.deleteContactByName(name);
+    m_addressBook.deleteContactByFullName(name);
 
     std::cout << name << " has been deleted\n\n";
 }

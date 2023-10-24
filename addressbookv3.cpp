@@ -3,6 +3,11 @@
 
 void AddressBookV3::addContact(const Contact &contact)
 {
+    /**
+     * Contacten inladen is minder snel dan bij de vorige variaties.
+     * De contacten worden meteen gesorteerd en dit in O(log(n)) tijd.
+     */
+
     m_contacts.insert(std::make_pair(contact.getLastName(), contact));
 }
 
