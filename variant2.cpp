@@ -7,7 +7,7 @@ variant2::variant2() : m_menu({"get contact information by query",
 
 void variant2::start()
 {
-    m_addressBook.addContactsFromFile("ContactsData.txt");
+    m_addressBook.addContactsFromFile("../ContactsData.txt");
 
     while (true) {
         m_menu.drawMenu();
