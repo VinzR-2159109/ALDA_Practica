@@ -1,7 +1,10 @@
 #include <iostream>
+
 #include "consolemenu.h"
 #include "variant1.h"
+#include "variant2.h"
 #include "variant3.h"
+
 
 int main()
 {
@@ -19,7 +22,7 @@ int main()
         Variant1().start();
         break;
     case '2':
-        //Variant2().start();
+        variant2().start();
         break;
     case '3':
         Variant3().start();
@@ -28,5 +31,4 @@ int main()
 
     return 0;
 }
-
 
