@@ -2,6 +2,7 @@
 #define ADDRESSBOOKV3_H
 
 #include <unordered_map>
+#include <map>
 #include <vector>
 #include <string>
 #include "Contact.h"
@@ -12,15 +13,14 @@ public:
     void addContacts(const std::vector<Contact> constacts);
     void addContactsFromFile(const std::string &fileName);
 
-    const Contact *getContactByFullName(const std::string &name) const;
+    const Contact * getContactByFullName(const std::string &name) const;
     void deleteContactByFullName(const std::string &name);
 
-    const Contact *getContactByLastName(const std::string &name) const;
+    std::vector<const Contact*> getContactsByLastName(const std::string &name) const;
 
     std::vector<const Contact*> getContactsSorted() const;
 private:
-    std::unordered_map<std::string, Contact> m_contacts;
-    std::vector<const Contact*> radixSort() const;
+    std::multimap<std::string, Contact> m_contacts;
 };
 
 #endif // ADDRESSBOOKV3_H

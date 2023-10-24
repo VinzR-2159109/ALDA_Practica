@@ -63,13 +63,18 @@ void Variant3::handleDeleteByFullName()
 
 void Variant3::handleGetByLastName()
 {
-    // code ...
+    std::string name = m_menu.getString("last name");
+    std::vector<const Contact *> contacts = m_addressBook.getContactsByLastName(name);
+
+    if (contacts.empty()) {
+        std::cout << "Error: Contact not found!\n\n";
+        return;
+    }
+
+    m_menu.printContacts(contacts);
 }
 
 void Variant3::handlePrintAll()
 {
-    std::vector<const Contact *> sortedContacts = m_addressBook.getContactsSorted();
-    for (const Contact *contact : sortedContacts) {
-        m_menu.printContact(*contact);
-    }
+    m_menu.printContacts(m_addressBook.getContactsSorted());
 }

@@ -50,3 +50,10 @@ void ConsoleMenu::printContact(const Contact &constact) const
               << "Phone: " << constact.getPhoneNumber() << "\n"
               << "------------------------------------" << "\n\n";
 }
+
+void ConsoleMenu::printContacts(std::vector<const Contact *> contacts)
+{
+    for (auto contact : contacts) {
+        printContact(*contact);
+    }
+}

@@ -15,6 +15,7 @@ public:
     std::string getString(const std::string &type) const;
 
     void printContact(const Contact &constact) const;
+    void printContacts(std::vector<const Contact*> contacts);
 
 private:
     std::vector<std::string> m_options;
