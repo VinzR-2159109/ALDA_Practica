@@ -1,10 +1,10 @@
-#include "addressbook.h"
+#include "productbook.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    AddressBook addressBook;
+    ProductBook addressBook;
     addressBook.show();
     return a.exec();
 }
