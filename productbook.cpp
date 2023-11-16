@@ -1,4 +1,5 @@
 #include "productbook.h"
+#include "repository.h"
 
 #include <QFile>
 #include <QGridLayout>
@@ -9,15 +10,20 @@
 ProductBook::ProductBook(QWidget *parent)
     : QWidget(parent)
 {
-    QLabel *nameLabel = new QLabel(tr("Name:"));
-    m_nameLine = new QLineEdit;
+    // create search label
+    QLabel *searchLabel = new QLabel(tr("Name:"));
+    m_searchLine = new QLineEdit;
+
+    // create result list
+    QLabel *resultLabel = new QLabel(tr("results:"));
+    m_resultsList = new QListWidget();
 
     // create buttons
-    m_addButton = new QPushButton(tr("&test"));
+    m_addButton = new QPushButton(tr("&search"));
     m_addButton->show();
 
     // connect clicked events to correct method
-    connect(m_addButton, &QPushButton::clicked, this, &ProductBook::addProduct);
+    connect(m_addButton, &QPushButton::clicked, this, &ProductBook::findProduct);
 
     // create edit buttons layout
     QVBoxLayout *buttonLayout1 = new QVBoxLayout;
@@ -26,8 +32,10 @@ ProductBook::ProductBook(QWidget *parent)
 
     // create main layout
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(nameLabel, 0, 0);
-    mainLayout->addWidget(m_nameLine, 0, 1);
+    mainLayout->addWidget(searchLabel, 0, 0);
+    mainLayout->addWidget(m_searchLine, 0, 1);
+    mainLayout->addWidget(resultLabel, 1, 0);
+    mainLayout->addWidget(m_resultsList, 1, 1);
     mainLayout->addLayout(buttonLayout1, 1, 2);
 
     setLayout(mainLayout);
@@ -35,35 +43,24 @@ ProductBook::ProductBook(QWidget *parent)
 
     updateInterface(NavigationMode);
 
-    addProduct();
+    QVector<Product> products = Repository().loadProducts("../amazon_products.csv");
+    m_productTrie.insertProducts(products);
 }
 
 void ProductBook::addProduct()
 {
-    {
-        Product *p = new Product("a", "", "", "", 0, 0, 0, 0, 0, false);
-        m_productTrie.insert(p);
-    }
 
-    {
-        Product *p = new Product("b", "", "", "", 0, 0, 0, 0, 0, false);
-        m_productTrie.insert(p);
-    }
-
-    {
-        Product *p = new Product("aa", "", "", "", 0, 0, 0, 0, 0, false);
-        m_productTrie.insert(p);
-    }
-
-    {
-        Product *p = new Product("aba", "", "", "", 0, 0, 0, 0, 0, false);
-        m_productTrie.insert(p);
-    }
 }
 
 void ProductBook::findProduct()
 {
-
+    QString searchString = m_searchLine->text();
+    qDebug() << searchString;
+    QVector<Product*> products = m_productTrie.autoComplete(searchString);
+    for (Product *product : products) {
+        qDebug() << product->getAsin();
+        m_resultsList->addItem(product->getAsin());
+    }
 }
 
 void ProductBook::updateInterface(Mode mode)

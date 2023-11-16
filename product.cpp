@@ -1,6 +1,21 @@
 #include "product.h"
 
-Product::Product(const QString &asin, const QString &titel, const QString &imageUrl, const QString &productUrl, float stars, int numberOfReviews, float price, float listPrice, int category, bool isBestSeller) : m_asin(asin),
+Product::Product()
+    : m_asin(""),
+    m_titel(""),
+    m_imageUrl(""),
+    m_productUrl(""),
+    m_stars(0),
+    m_numberOfReviews(0),
+    m_price(0),
+    m_listPrice(0),
+    m_category(0),
+    m_isBestSeller(0),
+    m_amountBoughtLastMonth(0)
+{ }
+
+Product::Product(const QString &asin, const QString &titel, const QString &imageUrl, const QString &productUrl, float stars, int numberOfReviews, float price, float listPrice, int category, bool isBestSeller, int amountBoughtLastMonth)
+    : m_asin(asin),
     m_titel(titel),
     m_imageUrl(imageUrl),
     m_productUrl(productUrl),
@@ -9,7 +24,8 @@ Product::Product(const QString &asin, const QString &titel, const QString &image
     m_price(price),
     m_listPrice(listPrice),
     m_category(category),
-    isBestSeller(isBestSeller)
+    m_isBestSeller(isBestSeller),
+    m_amountBoughtLastMonth(amountBoughtLastMonth)
 {}
 
 QString Product::getAsin() const
@@ -59,5 +75,10 @@ int Product::getCategory() const
 
 bool Product::getIsBestSeller() const
 {
-    return isBestSeller;
+    return m_isBestSeller;
+}
+
+int Product::getAmountBoughtLastMonth() const
+{
+    return m_amountBoughtLastMonth;
 }

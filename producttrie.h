@@ -10,18 +10,20 @@ public:
 
     struct Node {
         std::unordered_map<QChar, Node*> children;
-        std::vector<Product*> products;
+        QVector<Product*> products;
     };
 
     ProductTrie();
 
-    void insert(Product *product);
-    void autoComplete(QString string);
+    void insertProduct(Product product);
+    void insertProducts(QVector<Product> products);
+    QVector<Product*> autoComplete(QString searchString);
 
 private:
     Node* m_head;
 
     void insert(QString insertString, Product *product);
+    QStringList getAllSubstrings(QString string);
 };
 
 #endif // PRODUCTTRIE_H

@@ -29,7 +29,7 @@ private:
 
     QPushButton *m_addButton;
 
-    QLineEdit *m_nameLine;
+    QLineEdit *m_searchLine;
     QListWidget *m_resultsList;
 
     Mode m_currentMode;

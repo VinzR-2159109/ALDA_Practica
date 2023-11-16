@@ -6,7 +6,7 @@
 class Repository
 {
 public:
-    QVector<Product> loadProducts(std::string fileName);
+    QVector<Product> loadProducts(QString fileName);
 };
 
 #endif // REPOSITORY_H

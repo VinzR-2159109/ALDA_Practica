@@ -1,38 +1,59 @@
 #include "repository.h"
-#include <iostream>
-#include <fstream>
 
-QVector<Product> Repository::loadProducts(std::string fileName)
+#include <QFile>
+
+QVector<Product> Repository::loadProducts(QString fileName)
 {
-    std::ifstream file;
-    std::string constactString;
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    file.readLine();
 
-    file.open(fileName);
-    if (!file.is_open()) {
+    if (!file.isOpen()) {
         file.close();
-        std::cout << "-- Failed to open file " << fileName << " --\n";
+        qDebug() << "File not found";
+        return QVector<Product>();
     }
 
     QVector<Product> products;
 
-    while (true) {
-        if (file.eof())
-            break;
+    while (!file.atEnd()) {
 
-        std::string asin, title, imgUrl, productURL, stars, reviews, price, listPrice, category_id, isBestSeller, boughtInLastMonth ;
+        QString line = file.readLine();
+        QStringList list(11);
 
-        std::getline(file, asin, ',');
-        std::getline(file, title, ',');
-        std::getline(file, imgUrl, ',');
-        std::getline(file, stars, ',');
-        std::getline(file, reviews, ',');
-        std::getline(file, price, ',');
-        std::getline(file, listPrice, ',');
-        std::getline(file, category_id, ',');
-        std::getline(file, isBestSeller, ',');
-        std::getline(file, boughtInLastMonth, '\n');
+        bool flag = false;
+        int counter = 0;
+        for (int i = 0; i < line.length(); ++i) {
+            if (line[i] == ',' && flag == false) {
+                counter++;
+                continue;
+            }
+            else if (line[i] == '\"') {
+                flag = !flag;
+                continue;
+            }
+            else if (line[i] == '\n') {
+                continue;
+            }
 
-        products.emplace_back(asin, title, imgUrl, productURL, stars, reviews, price, listPrice, category_id, isBestSeller, boughtInLastMonth);
+            list[counter].append(line[i]);
+        }
+
+        products.emplace_back(
+            list[0],
+            list[1],
+            list[2],
+            list[3],
+            list[4].toFloat(),
+            list[5].toInt(),
+            list[6].toFloat(),
+            list[7].toFloat(),
+            list[8].toInt(),
+            list[9][0] == 'T',
+            list[10].toInt()
+        );
+
+        counter++;
     }
 
     file.close();
