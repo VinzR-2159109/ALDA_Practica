@@ -4,8 +4,9 @@
 #include "product.h"
 #include <unordered_map>
 
-class ProductTrie
+class ProductTrie : public QObject
 {
+    Q_OBJECT
 public:
 
     struct Node {
@@ -15,12 +16,16 @@ public:
 
     ProductTrie();
 
-    void insertProduct(Product product);
-    void insertProducts(QVector<Product> products);
+    void insertProduct(Product *product);
+    void insertProducts(QVector<Product*> products);
     QVector<Product*> autoComplete(QString searchString);
+
+signals:
+    void setProductInsertInView(QString text);
 
 private:
     Node* m_head;
+    unsigned int m_count;
 
     void insert(QString insertString, Product *product);
     QStringList getAllSubstrings(QString string);

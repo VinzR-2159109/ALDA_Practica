@@ -13,7 +13,7 @@ public:
     enum class RelationshipStatus { Single, Maried };
 
     QString getAsin() const;
-    QString getTitel() const;
+    QString getTitle() const;
     QString getImageUrl() const;
     QString getProductUrl() const;
     float getStars() const;
@@ -26,7 +26,7 @@ public:
 
 private:
     QString m_asin;
-    QString m_titel;
+    QString m_title;
     QString m_imageUrl;
     QString m_productUrl;
     float m_stars;

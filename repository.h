@@ -2,11 +2,18 @@
 #define REPOSITORY_H
 
 #include "product.h"
+#include "producttrie.h"
 
 class Repository
 {
 public:
-    QVector<Product> loadProducts(QString fileName);
+    Repository(QObject *parent = nullptr);
+
+    static void loadProducts(QString &fileName, ProductTrie &trie);
+
+private:
+    void handleLine(const QString &line, ProductTrie &trie);
+
 };
 
 #endif // REPOSITORY_H

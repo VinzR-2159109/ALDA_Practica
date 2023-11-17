@@ -2,7 +2,7 @@
 
 Product::Product()
     : m_asin(""),
-    m_titel(""),
+    m_title(""),
     m_imageUrl(""),
     m_productUrl(""),
     m_stars(0),
@@ -16,7 +16,7 @@ Product::Product()
 
 Product::Product(const QString &asin, const QString &titel, const QString &imageUrl, const QString &productUrl, float stars, int numberOfReviews, float price, float listPrice, int category, bool isBestSeller, int amountBoughtLastMonth)
     : m_asin(asin),
-    m_titel(titel),
+    m_title(titel),
     m_imageUrl(imageUrl),
     m_productUrl(productUrl),
     m_stars(stars),
@@ -33,9 +33,9 @@ QString Product::getAsin() const
     return m_asin;
 }
 
-QString Product::getTitel() const
+QString Product::getTitle() const
 {
-    return m_titel;
+    return m_title;
 }
 
 QString Product::getImageUrl() const
