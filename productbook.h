@@ -19,17 +19,13 @@ class ProductBook : public QWidget
 public:
     ProductBook(QWidget *parent = nullptr);
 
-public slots:
-    void addProduct();
-    void findProduct();
-
 private:
-    enum Mode { NavigationMode, AddingMode, EditingMode };
+    enum Mode { LoadingMode, UsingMode };
 
     ProductTrie m_productTrie;
     Repository m_repository;
 
-    QPushButton *m_addButton;
+    QPushButton *m_searchButton;
     QPushButton *m_loadDataButton;
 
     QLabel *m_statusText;
@@ -42,6 +38,10 @@ private:
     void updateInterface(Mode mode);
 
 private slots:
+    void addProduct();
+    void findProduct();
+    void onLoadProduct();
+    void onFinischLoading();
     void setStatusMessage(const QString &text);
 };
 

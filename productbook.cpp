@@ -13,7 +13,9 @@ ProductBook::ProductBook(QWidget *parent)
     : QWidget(parent)
     , m_repository(Repository())
 {
-    connect(&m_productTrie, &ProductTrie::setProductInsertInView, this, &ProductBook::setStatusMessage);
+    connect(&m_repository, &Repository::setMessageInView, this, &ProductBook::setStatusMessage);
+    connect(&m_repository, &Repository::setProductLoadedInView, this, &ProductBook::onLoadProduct);
+    connect(&m_repository, &Repository::setFinishedLoadingInView, this, &ProductBook::onFinischLoading);
 
     // create status label
     m_statusText = new QLabel("");
@@ -28,19 +30,19 @@ ProductBook::ProductBook(QWidget *parent)
     m_resultsList = new QListWidget();
 
     // create buttons
-    m_addButton = new QPushButton("Search");
-    m_addButton->show();
+    m_searchButton = new QPushButton("Search");
+    m_searchButton->show();
     m_loadDataButton = new QPushButton("Load");
     m_loadDataButton->show();
 
     // connect clicked events to correct method
-    connect(m_addButton, &QPushButton::clicked, this, &ProductBook::findProduct);
+    connect(m_searchButton, &QPushButton::clicked, this, &ProductBook::findProduct);
     connect(m_loadDataButton, &QPushButton::clicked, this, &ProductBook::loadData);
     connect(m_searchLine, &QLineEdit::textChanged, this, &ProductBook::findProduct);
 
     // create edit buttons layout
     QVBoxLayout *buttonLayout1 = new QVBoxLayout;
-    buttonLayout1->addWidget(m_addButton, Qt::AlignTop);
+    buttonLayout1->addWidget(m_searchButton, Qt::AlignTop);
     buttonLayout1->addWidget(m_loadDataButton, Qt::AlignTop);
     buttonLayout1->addStretch();
 
@@ -55,6 +57,8 @@ ProductBook::ProductBook(QWidget *parent)
 
     setLayout(mainLayout);
     setWindowTitle(tr("Simple Address Book"));
+
+    updateInterface(Mode::UsingMode);
 }
 
 void ProductBook::addProduct()
@@ -77,14 +81,39 @@ void ProductBook::findProduct()
     }
 }
 
+void ProductBook::onLoadProduct()
+{
+    setStatusMessage(QString("Loaded %1 products").arg(m_productTrie.getCount()));
+}
+
+void ProductBook::onFinischLoading()
+{
+    setStatusMessage(QString("Finished loading"));
+    updateInterface(Mode::UsingMode);
+}
+
 void ProductBook::loadData()
 {
-    Repository().loadProducts("../amazon_products.csv", m_productTrie);
+    updateInterface(Mode::LoadingMode);
+    m_repository.loadProductsThreaded("../amazon_products.csv", m_productTrie);
 }
 
 void ProductBook::updateInterface(Mode mode)
 {
-
+    switch (mode) {
+    case Mode::LoadingMode:
+        m_searchButton->setEnabled(false);
+        m_loadDataButton->setEnabled(false);
+        m_searchLine->setEnabled(false);
+        break;
+    case Mode::UsingMode:
+        m_searchButton->setEnabled(true);
+        m_loadDataButton->setEnabled(true);
+        m_searchLine->setEnabled(true);
+        break;
+    default:
+        break;
+    }
 }
 
 void ProductBook::setStatusMessage(const QString &text)

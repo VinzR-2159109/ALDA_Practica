@@ -3,29 +3,46 @@
 #include <QFile>
 #include <thread>
 
-Repository::Repository(QObject *parent)
+Repository::Repository(QObject *parent) : m_loadedAmount{0}
 {}
 
-void Repository::loadProducts(const QString *fileName, ProductTrie &trie)
+void Repository::loadProductsThreaded(const QString &fileName, ProductTrie &trie)
+{
+    m_fileName = fileName;
+
+    std::thread([&] {
+        loadProductsInternal(m_fileName, trie);
+    }).detach();
+}
+
+void Repository::loadProductsInternal(const QString &fileName, ProductTrie &trie)
 {
     QFile file(fileName);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
-    file.readLine();
 
-    if (!file.isOpen()) {
+    if (file.isOpen()) {
+        file.readLine();
+        emit setMessageInView(QString("Loading file %1").arg(fileName));
+
+        while (!file.atEnd()) {
+            QString line = file.readLine();
+            handleLine(line, trie);
+
+            m_loadedAmount++;
+            emit setProductLoadedInView();
+        }
+
         file.close();
-        return;
+        emit setFinishedLoadingInView();
     }
-
-    while (!file.atEnd()) {
-        QString line = file.readLine();
-        handleLine(line, trie);
+    else {
+        file.close();
+        emit setFinishedLoadingInView();
+        emit setMessageInView(QString("File %1 can not be loaded").arg(fileName));
     }
-
-    file.close();
 }
 
-void Repository::handleLine(const QString &line, ProductTrie &trie)
+void Repository::handleLine(QString &line, ProductTrie &trie)
 {
     bool flag = false;
     int counter = 0;

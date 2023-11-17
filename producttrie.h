@@ -4,13 +4,11 @@
 #include "product.h"
 #include <unordered_map>
 
-class ProductTrie : public QObject
+class ProductTrie
 {
-    Q_OBJECT
 public:
-
     struct Node {
-        std::unordered_map<QChar, Node*> children;
+        QHash<QChar, Node*> children;
         QVector<Product*> products;
     };
 
@@ -18,17 +16,15 @@ public:
 
     void insertProduct(Product *product);
     void insertProducts(QVector<Product*> products);
+    int getCount();
     QVector<Product*> autoComplete(QString searchString);
-
-signals:
-    void setProductInsertInView(QString text);
 
 private:
     Node* m_head;
     unsigned int m_count;
 
     void insert(QString insertString, Product *product);
-    QStringList getAllSubstrings(QString string);
+    QSet<QString> getAllSubstrings(QString string);
 };
 
 #endif // PRODUCTTRIE_H

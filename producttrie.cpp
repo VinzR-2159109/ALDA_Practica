@@ -1,18 +1,14 @@
 #include "producttrie.h"
 
 ProductTrie::ProductTrie()
-    : QObject(nullptr)
-    , m_head{new Node}
+    : m_head{new Node}
     , m_count{0}
 { }
 
 void ProductTrie::insertProduct(Product *product)
 {
     m_count++;
-    QString text = QString("Inserting products: %1").arg(m_count);
-    emit setProductInsertInView(text);
-
-    QStringList substrings = getAllSubstrings(product->getAsin());
+    QSet<QString> substrings = getAllSubstrings(product->getAsin());
     for (const QString &string : substrings) {
         insert(string, product);
     }
@@ -28,6 +24,11 @@ void ProductTrie::insertProducts(QVector<Product*> products)
     for (int i = 0; i < products.count(); ++i) {
         insertProduct(products[i]);
     }
+}
+
+int ProductTrie::getCount()
+{
+    return m_count;
 }
 
 QVector<Product*> ProductTrie::autoComplete(QString searchString)
@@ -60,12 +61,12 @@ void ProductTrie::insert(QString insertString, Product *product)
     currentNode->products.push_back(product);
 }
 
-QStringList ProductTrie::getAllSubstrings(QString string)
+QSet<QString> ProductTrie::getAllSubstrings(QString string)
 {
-    QStringList substrings = QStringList();
+    QSet<QString> substrings = QSet<QString>();
     for (int i = 0; i < string.length(); ++i) {
         for (int j = 1; j <= string.length() - i; ++j) {
-            substrings.push_back(string.mid(i, j));
+            substrings.insert(string.mid(i, j));
         }
     }
 
