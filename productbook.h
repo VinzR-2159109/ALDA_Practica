@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QDateEdit>
 #include <QLabel>
-
+#include <QTableWidget>
 #include <QListWidget>
 
 class ProductBook : public QWidget
@@ -29,17 +29,22 @@ private:
     ProductTrie m_productTrie;
     Repository m_repository;
 
-    QPushButton *m_addButton;
     QPushButton *m_loadDataButton;
 
     QLabel *m_statusText;
     QLineEdit *m_searchLine;
     QListWidget *m_resultsList;
+    QTableWidget *m_productTable;
+
+    QVector<Product*> m_products;
 
     Mode m_currentMode;
 
     void loadData();
     void updateInterface(Mode mode);
+
+    void showProductInTable(Product &product);
+    void displaySelectedProduct(QListWidgetItem *item);
 
 private slots:
     void setStatusMessage(const QString &text);

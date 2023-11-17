@@ -9,7 +9,7 @@ class Repository
 public:
     Repository(QObject *parent = nullptr);
 
-    static void loadProducts(QString &fileName, ProductTrie &trie);
+    void loadProducts(const QString &fileName, ProductTrie &trie);
 
 private:
     void handleLine(const QString &line, ProductTrie &trie);

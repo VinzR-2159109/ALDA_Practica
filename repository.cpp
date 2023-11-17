@@ -6,7 +6,7 @@
 Repository::Repository(QObject *parent)
 {}
 
-void Repository::loadProducts(const QString *fileName, ProductTrie &trie)
+void Repository::loadProducts(const QString &fileName, ProductTrie &trie)
 {
     QFile file(fileName);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
