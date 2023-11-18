@@ -1,17 +1,17 @@
 #include "product.h"
 
 Product::Product()
-    : m_asin(""),
-    m_title(""),
-    m_imageUrl(""),
-    m_productUrl(""),
-    m_stars(0),
-    m_numberOfReviews(0),
-    m_price(0),
-    m_listPrice(0),
-    m_category(0),
-    m_isBestSeller(0),
-    m_amountBoughtLastMonth(0)
+    : m_asin("")
+    , m_title("")
+    , m_imageUrl("")
+    , m_productUrl("")
+    , m_stars(0)
+    , m_numberOfReviews(0)
+    , m_price(0)
+    , m_listPrice(0)
+    , m_category(0)
+    , m_isBestSeller(0)
+    , m_amountBoughtLastMonth(0)
 { }
 
 Product::Product(const QString &asin, const QString &titel, const QString &imageUrl, const QString &productUrl, float stars, int numberOfReviews, float price, float listPrice, int category, bool isBestSeller, int amountBoughtLastMonth)
@@ -66,6 +66,11 @@ float Product::getPrice() const
 float Product::getListPrice() const
 {
     return m_listPrice;
+}
+
+float Product::getDiscount() const
+{
+    return m_listPrice - m_price;
 }
 
 int Product::getCategory() const

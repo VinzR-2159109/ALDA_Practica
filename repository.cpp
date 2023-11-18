@@ -22,23 +22,23 @@ void Repository::loadProductsInternal(const QString &fileName, ProductTrie &trie
 
     if (file.isOpen()) {
         file.readLine();
-        emit setMessageInView(QString("Loading file %1").arg(fileName));
 
         while (!file.atEnd()) {
+
             QString line = file.readLine();
             handleLine(line, trie);
 
             m_loadedAmount++;
-            emit setProductLoadedInView();
         }
 
         file.close();
-        emit setFinishedLoadingInView();
+
+        emit finishedLoading();
     }
     else {
         file.close();
-        emit setFinishedLoadingInView();
-        emit setMessageInView(QString("File %1 can not be loaded").arg(fileName));
+        emit finishedLoading();
+        emit error(QString("File %1 can not be opened").arg(fileName));
     }
 }
 

@@ -11,12 +11,24 @@ class Repository : public QObject
 public:
     Repository(QObject *parent = nullptr);
 
+    /**
+     * @brief Loads the file from fileName the background on multiple threads
+     * @param fileName - the file to load
+     * @param trie - the ProductTrie in which to insert the Products
+     */
     void loadProductsThreaded(const QString &fileName, ProductTrie &trie);
 
 signals:
-    void setProductLoadedInView();
-    void setFinishedLoadingInView();
-    void setMessageInView(QString text);
+    /**
+     * @brief Gets called when the file has stopped loading
+     */
+    void finishedLoading();
+
+    /**
+     * @brief Gets called when the file can't open
+     * @param errorText - the text of the error
+     */
+    void error(QString errorText);
 
 private:
     QString m_fileName;

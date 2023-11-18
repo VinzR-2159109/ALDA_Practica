@@ -20,11 +20,14 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(ProductBook
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        productbook.cpp productbook.h
+        productbookwidget.cpp productbookwidget.h
         product.cpp product.h
         producttrie.h producttrie.cpp
         repository.h repository.cpp
-
+        searchbarlayout.h searchbarlayout.cpp
+        infoview.h infoview.cpp
+        productview.h productview.cpp
+        productlistitem.h productlistitem.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ProductBook APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

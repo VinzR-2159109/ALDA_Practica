@@ -10,8 +10,6 @@ public:
     Product();
     Product(const QString &asin, const QString &titel, const QString &imageUrl, const QString &productUrl, float stars, int numberOfReviews, float price, float listPrice, int category, bool isBestSeller, int amountBoughtLastMonth);
 
-    enum class RelationshipStatus { Single, Maried };
-
     QString getAsin() const;
     QString getTitle() const;
     QString getImageUrl() const;
@@ -20,6 +18,7 @@ public:
     int getNumberOfReviews() const;
     float getPrice() const;
     float getListPrice() const;
+    float getDiscount() const;
     int getCategory() const;
     bool getIsBestSeller() const;
     int getAmountBoughtLastMonth() const;
@@ -33,6 +32,7 @@ private:
     int m_numberOfReviews;
     float m_price;
     float m_listPrice;
+    float discount;
     int m_category;
     bool m_isBestSeller;
     int m_amountBoughtLastMonth;
