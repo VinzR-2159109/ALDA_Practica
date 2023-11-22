@@ -60,9 +60,13 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::SearchType searchType)
 {
     searchString = searchString.toLower();
-    QSet<Product*> products = m_productTrie.search(searchString);
+    QList<Product*> products = m_productTrie.search(searchString);
 
     m_resultsList->clear();
+
+    std::sort(products.begin(), products.end(), [](Product* a, Product* b) {
+        return a->getDiscount() > b->getDiscount();
+    });
 
     int counter = 0;
     for (Product *product : products) {

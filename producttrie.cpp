@@ -52,7 +52,7 @@ void ProductTrie::insertProduct(Product *product)
  *
  *  Gemiddeld wordt deze functie uitgevoerd tussen de 3-25 µs op de geteste pc, maar dit hangt zeer sterk af van de lengte van de searchString.
  */
-QSet<Product*> ProductTrie::search(QString searchString)
+QList<Product*> ProductTrie::search(QString searchString)
 {
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -60,7 +60,7 @@ QSet<Product*> ProductTrie::search(QString searchString)
 
     for (QChar value : searchString.toLower()) {
         if (currentNode->children.find(value) == currentNode->children.end()) {
-            return QSet<Product*>();
+            return QList<Product*>();
         }
 
         currentNode = currentNode->children[value];
@@ -93,7 +93,7 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
 
     for (QChar value : insertString) {
         if (!currentNode->products.contains(product)) {
-            currentNode->products.insert(product);
+            currentNode->products.append(product);
         }
 
         if (currentNode->children.find(value) == currentNode->children.end()) {
