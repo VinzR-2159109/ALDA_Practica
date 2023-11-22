@@ -70,7 +70,7 @@ float Product::getListPrice() const
 
 float Product::getDiscount() const
 {
-    return m_listPrice - m_price;
+    return (m_price - m_listPrice) * 100 / m_price;
 }
 
 int Product::getCategory() const

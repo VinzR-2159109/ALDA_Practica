@@ -49,8 +49,7 @@ private:
     QLabel *m_lastSearchTime;
     QLabel *m_averageSearchTime;
     QLabel *m_lastLoadTime;
-    QLabel *m_averageLoadTimePerThread;
-    QLabel *m_averageLoadTimeTotal;
+    QLabel *m_averageLoadTime;
     QLabel *m_loadingTime;
 
     unsigned long long m_searchTimeSum;

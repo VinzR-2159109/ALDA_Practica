@@ -8,8 +8,7 @@ InfoView::InfoView()
 {
     m_loadedProducts = new QLabel("Products inserted: 0");
     m_lastLoadTime = new QLabel("Last insert time: ? ms");
-    m_averageLoadTimePerThread = new QLabel("Average insert time (per thread): ? ms");
-    m_averageLoadTimeTotal = new QLabel("Average insert tile (total): ?");
+    m_averageLoadTime = new QLabel("Average insert tile (total): ?");
 
     m_lastSearchTime = new QLabel("Last search time: ? ms");
     m_averageSearchTime = new QLabel("average search time: ? ms");
@@ -18,8 +17,7 @@ InfoView::InfoView()
 
     addWidget(m_loadedProducts);
     addWidget(m_lastLoadTime);
-    addWidget(m_averageLoadTimePerThread);
-    addWidget(m_averageLoadTimeTotal);
+    addWidget(m_averageLoadTime);
 
     addWidget(m_lastSearchTime);
     addWidget(m_averageSearchTime);
@@ -37,8 +35,7 @@ void InfoView::setInsertedProduct(long long loadTime)
 
     m_loadedProducts->setText(QString("Products inserted: %1").arg(m_loadAmount));
     m_lastLoadTime->setText(QString("Last insert time: %1 ms").arg(loadTime));
-    m_averageLoadTimePerThread->setText(QString("Average insert time (per thread): %1 ms").arg(m_loadTimeSum / m_loadAmount));
-    m_averageLoadTimeTotal->setText(QString("Average insert time (total): %1 ms").arg( m_startTime.msecsTo(QTime::currentTime()) / m_loadAmount));
+    m_averageLoadTime->setText(QString("Average insert time: %1 ms").arg(m_loadTimeSum / m_loadAmount));
 
     setLoadingTime();
 }
@@ -73,8 +70,7 @@ void InfoView::setError(QString errorMessage)
 {
     m_loadedProducts->setText(errorMessage);
     m_lastLoadTime->setText(errorMessage);
-    m_averageLoadTimePerThread->setText(errorMessage);
-    m_averageLoadTimeTotal->setText(errorMessage);
+    m_averageLoadTime->setText(errorMessage);
     m_lastSearchTime->setText(errorMessage);
     m_averageSearchTime->setText(errorMessage);
     m_loadingTime->setText(errorMessage);

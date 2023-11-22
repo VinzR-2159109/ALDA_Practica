@@ -25,6 +25,9 @@ void Repository::loadProductsInternal(const QString &fileName, ProductTrie &trie
 
         while (!file.atEnd()) {
 
+            if (m_loadedAmount >= LIMIT)
+                break;
+
             QString line = file.readLine();
             handleLine(line, trie);
 
@@ -32,7 +35,6 @@ void Repository::loadProductsInternal(const QString &fileName, ProductTrie &trie
         }
 
         file.close();
-
         emit finishedLoading();
     }
     else {

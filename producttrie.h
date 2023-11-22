@@ -11,7 +11,7 @@ class ProductTrie : public QObject
 public:
     struct Node {
         QHash<QChar, Node*> children;
-        QMultiMap<float, Product*> products;
+        QSet<Product*> products;
     };
 
     ProductTrie();
@@ -27,7 +27,7 @@ public:
      * @param searchString - the string to search
      * @return Returns all product pointers that have searchString as a substring
      */
-    QMultiMap<float, Product*> autoComplete(QString searchString);
+    QSet<Product*> search(QString searchString);
 
 signals:
     /**
@@ -48,11 +48,11 @@ private:
     void insertProductInternal(QString insertString, Product *product);
 
     /**
-     * @brief Creates and returns all unique substrings of all string given to it
-     * @param strings - a list of all strings for which to create substrings
-     * @return Returns a QSet of all unique substrings
+     * @brief Creates and returns all prefixes of the given string
+     * @param string - a strings for which to create all prefixes
+     * @return Returns a QStringList of all prefixes
      */
-    QSet<QString> createAllUniqueSearchStrings(QStringList strings);
+    QStringList createAllPrefixes(QString string);
 };
 
 #endif // PRODUCTTRIE_H

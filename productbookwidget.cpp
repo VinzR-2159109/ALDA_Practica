@@ -60,7 +60,7 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::SearchType searchType)
 {
     searchString = searchString.toLower();
-    QMultiMap<float, Product*> products = m_productTrie.autoComplete(searchString);
+    QSet<Product*> products = m_productTrie.search(searchString);
 
     m_resultsList->clear();
 
