@@ -1,5 +1,7 @@
 #include "producttrie.h"
 
+#include <algorithm>
+
 ProductTrie::ProductTrie()
     : m_head{new Node}
 { }
@@ -24,14 +26,14 @@ void ProductTrie::insertProduct(Product *product)
     auto startTime = std::chrono::high_resolution_clock::now();
 
     {
-        QStringList prefixes = createAllPrefixes(product->getAsin());
+        QStringList prefixes = createAllSuffixes(product->getAsin());
         for (const QString &string : prefixes) {
             insertProductInternal(string, product);
         }
     }
 
     {
-        QStringList prefixes = createAllPrefixes(product->getTitle());
+        QStringList prefixes = createAllSuffixes(product->getTitle());
         for (const QString &string : prefixes) {
             insertProductInternal(string, product);
         }
@@ -52,7 +54,7 @@ void ProductTrie::insertProduct(Product *product)
  *
  *  Gemiddeld wordt deze functie uitgevoerd tussen de 3-25 µs op de geteste pc, maar dit hangt zeer sterk af van de lengte van de searchString.
  */
-QSet<Product*> ProductTrie::search(QString searchString)
+QVector<Product*> ProductTrie::search(QString searchString)
 {
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -60,16 +62,24 @@ QSet<Product*> ProductTrie::search(QString searchString)
 
     for (QChar value : searchString.toLower()) {
         if (currentNode->children.find(value) == currentNode->children.end()) {
-            return QSet<Product*>();
+            return QVector<Product*>();
         }
 
         currentNode = currentNode->children[value];
     }
 
+    std::sort(currentNode->products.begin(), currentNode->products.end(),
+        [](Product* productA, Product* productB) {
+            // Compare based on price
+            return productA->getDiscount() > productB->getDiscount();
+        }
+    );
+
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
 
     emit searchComplete(duration.count());
+
     return currentNode->products;
 }
 
@@ -86,6 +96,11 @@ QSet<Product*> ProductTrie::search(QString searchString)
  *      - Inserten van product in QSet = O(1)
  *
  * De totale tijdscomplexiteit van deze functie is dus O(k) waar k staat voor het aantal karakters in de searchString.
+ *
+ * Na testen van verschillende collecties voor het opslaan van de producten in de nodes:
+ *      - QSet: ~11ms -> overschrijven van waarden
+ *      - QVector: ~4ms???? -> contains gebruiken
+ *
  */
 void ProductTrie::insertProductInternal(QString insertString, Product *product)
 {
@@ -93,7 +108,7 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
 
     for (QChar value : insertString) {
         if (!currentNode->products.contains(product)) {
-            currentNode->products.insert(product);
+            currentNode->products.push_back(product);
         }
 
         if (currentNode->children.find(value) == currentNode->children.end()) {
@@ -105,16 +120,16 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
 }
 
 /**
- * Deze functie maakt alle prefixes van de gegeven string.
+ * Deze functie maakt alle suffixes van de gegeven string.
  * Het maken van alle prefixes van een string wordt gedaan in O(n) tijd.
  */
-QStringList ProductTrie::createAllPrefixes(QString string)
+QStringList ProductTrie::createAllSuffixes(QString string)
 {
-    QStringList prefixes;
+    QStringList suffixes;
     string = string.toLower();
     for (int i = 0; i < string.length(); ++i) {
-        prefixes.push_back(string.mid(i));
+        suffixes.push_back(string.mid(i));
     }
-    return prefixes;
+    return suffixes;
 }
 

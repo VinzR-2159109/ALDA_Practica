@@ -11,7 +11,7 @@ class ProductTrie : public QObject
 public:
     struct Node {
         QHash<QChar, Node*> children;
-        QSet<Product*> products;
+        QVector<Product*> products;
     };
 
     ProductTrie();
@@ -27,8 +27,7 @@ public:
      * @param searchString - the string to search
      * @return Returns all product pointers that have searchString as a substring
      */
-    QSet<Product*> search(QString searchString);
-
+    QVector<Product*> search(QString searchString);
 signals:
     /**
      * @brief Gets calles when a search is completed
@@ -52,7 +51,7 @@ private:
      * @param string - a strings for which to create all prefixes
      * @return Returns a QStringList of all prefixes
      */
-    QStringList createAllPrefixes(QString string);
+    QStringList createAllSuffixes(QString string);
 };
 
 #endif // PRODUCTTRIE_H

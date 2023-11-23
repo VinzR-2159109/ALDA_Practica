@@ -23,6 +23,8 @@ public:
     bool getIsBestSeller() const;
     int getAmountBoughtLastMonth() const;
 
+    bool operator<(const Product &other) const;
+
 private:
     QString m_asin;
     QString m_title;

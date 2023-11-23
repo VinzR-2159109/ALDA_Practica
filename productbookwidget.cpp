@@ -60,7 +60,7 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::SearchType searchType)
 {
     searchString = searchString.toLower();
-    QSet<Product*> products = m_productTrie.search(searchString);
+    QVector<Product*> products = m_productTrie.search(searchString);
 
     m_resultsList->clear();
 
