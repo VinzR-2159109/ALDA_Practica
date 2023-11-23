@@ -27,6 +27,8 @@ private:
 
     ProductTrie m_productTrie;
     Repository m_repository;
+    QLabel *m_pageLabel;
+    int m_pageNumber;
 
     /**
      * @brief Loads the data from the file
@@ -38,7 +40,9 @@ private:
      * @param item - the item to display
      */
     void displaySelectedProduct(QListWidgetItem *item);
-
+    void nextPage();
+    void prevPage();
+    void calculatePageCounters(int &begin, int &end);
 private slots:
 
     /**
