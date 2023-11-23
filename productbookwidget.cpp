@@ -28,7 +28,7 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 
     QVBoxLayout *right = new QVBoxLayout(rightWidget);
     right->addWidget(m_productView);
-    right->addLayout(m_infoView);
+    right->addWidget(m_infoView);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(leftWidget);

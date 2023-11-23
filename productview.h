@@ -18,9 +18,14 @@ public:
      */
     void setProduct(Product *product);
 private:
-    QTableWidget *m_table;
-    QLabel *m_imageLabel;
     QNetworkAccessManager *m_networkManager;
+
+    QLabel *m_titleLabel;
+    QLabel *m_subTitleLabel;
+    QLabel *m_ratingLabel;
+    QLabel *m_priceLabel;
+    QLabel *m_discountLabel;
+    QLabel *m_imageLabel;
 
 private slots:
     void onImageDownloaded(QNetworkReply *reply);

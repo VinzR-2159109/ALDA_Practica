@@ -1,6 +1,6 @@
 #include "productview.h"
 
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QImage>
 #include <QPixmap>
 
@@ -8,29 +8,64 @@
 
 ProductView::ProductView()
 {
-    QHBoxLayout *layout = new QHBoxLayout();
+    QPalette pal = QPalette();
+    pal.setColor(QPalette::Window, Qt::white);
 
-    QStringList headers;
-    headers << "ASIN" << "Title" << "Stars" << "Price" << "List price" << "Discount";
+    setAutoFillBackground(true);
+    setPalette(pal);
 
-    m_table = new QTableWidget();
-    m_table->setColumnCount(6);
-    m_table->setHorizontalHeaderLabels(headers);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QVBoxLayout *textLayout = new QVBoxLayout(this);
 
+    m_titleLabel = new QLabel("Title");
+    m_subTitleLabel = new QLabel("Subtitle");
+    m_ratingLabel = new QLabel("Stars");
+    m_priceLabel = new QLabel("Price");
+    m_discountLabel = new QLabel("Discount");
     m_imageLabel = new QLabel();
 
-    layout->addWidget(m_table);
-    layout->addWidget(m_imageLabel);
+    QFont titleFont;
+    titleFont.setPointSize(15);
+    titleFont.setBold(true);
 
-    setLayout(layout);
+    m_titleLabel->setFont(titleFont);
+    m_titleLabel->setWordWrap(true);
+
+    QFont discountFont;
+    discountFont.setPointSize(13);
+    discountFont.setBold(true);
+    m_discountLabel->setStyleSheet("color: red;");
+
+    m_discountLabel->setFont(discountFont);
+
+    QFont font;
+    titleFont.setPointSize(10);
+
+    m_subTitleLabel->setFont(font);
+    m_ratingLabel->setFont(font);
+    m_priceLabel->setFont(font);
+    m_imageLabel->setFont(font);
+
+    m_titleLabel->setAlignment(Qt::AlignCenter);
+    m_subTitleLabel->setAlignment(Qt::AlignCenter);
+    m_imageLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+
+    textLayout->addWidget(m_titleLabel);
+    textLayout->addWidget(m_subTitleLabel);
+    textLayout->addWidget(m_discountLabel);
+    textLayout->addWidget(m_priceLabel);
+    textLayout->addWidget(m_ratingLabel);
+    textLayout->setAlignment(Qt::AlignTop);
+
+    mainLayout->addLayout(textLayout);
+    mainLayout->addWidget(m_imageLabel);
+
+    setLayout(mainLayout);
 }
 
 void ProductView::setProduct(Product *product)
 {
-    // create image label
-    m_imageLabel->setText("Test text");
-
-    // Create a network manager to handle the download
+    // download image
     m_networkManager = new QNetworkAccessManager(this);
     connect(m_networkManager, &QNetworkAccessManager::finished, this, &ProductView::onImageDownloaded);
 
@@ -38,16 +73,12 @@ void ProductView::setProduct(Product *product)
     QNetworkReply *reply = m_networkManager->get(request);
     connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
 
-    // set table
-    m_table->removeRow(0);
-    m_table->insertRow(0);
-
-    m_table->setItem(0, 0, new QTableWidgetItem(product->getAsin()));
-    m_table->setItem(0, 1, new QTableWidgetItem(product->getTitle()));
-    m_table->setItem(0, 2, new QTableWidgetItem(QString::number(product->getStars())));
-    m_table->setItem(0, 3, new QTableWidgetItem(QString::number(product->getPrice())));
-    m_table->setItem(0, 4, new QTableWidgetItem(QString::number(product->getListPrice())));
-    m_table->setItem(0, 5, new QTableWidgetItem(QString::number(product->getDiscount()) + "%"));
+    // set product data
+    m_titleLabel->setText(product->getTitle());
+    m_subTitleLabel->setText(product->getAsin());
+    m_discountLabel->setText(QString("Now with with a %1% discount!").arg(product->getDiscount()));
+    m_priceLabel->setText(QString("€ %1 -> € %2").arg(product->getListPrice()).arg(product->getPrice()));
+    m_ratingLabel->setText(QString("%1/5 stars with %2 reviews").arg(product->getStars()).arg(product->getNumberOfReviews()));
 }
 
 void ProductView::onImageDownloaded(QNetworkReply *reply)
@@ -59,7 +90,7 @@ void ProductView::onImageDownloaded(QNetworkReply *reply)
         QByteArray imageData = reply->readAll();
         QPixmap pixmap;
         pixmap.loadFromData(imageData);
-        m_imageLabel->setPixmap(pixmap);
+        m_imageLabel->setPixmap(pixmap.scaled(m_imageLabel->width(), m_imageLabel->height(), Qt::KeepAspectRatio));
     }
     else
     {
