@@ -16,6 +16,7 @@ public:
 
     SearchType getSearchType();
     void setSearchType(SearchType searchType);
+    QString getSearchString();
 
 signals:
     /**
