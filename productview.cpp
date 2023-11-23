@@ -19,5 +19,5 @@ void ProductView::setProduct(Product *product)
     setItem(0, 2, new QTableWidgetItem(QString::number(product->getStars())));
     setItem(0, 3, new QTableWidgetItem(QString::number(product->getPrice())));
     setItem(0, 4, new QTableWidgetItem(QString::number(product->getListPrice())));
-    setItem(0, 5, new QTableWidgetItem(QString::number(product->getDiscount())));
+    setItem(0, 5, new QTableWidgetItem(QString::number(product->getDiscount()) + "%"));
 }
