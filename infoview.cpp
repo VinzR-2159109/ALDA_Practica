@@ -9,22 +9,21 @@ InfoView::InfoView()
     m_loadedProducts = new QLabel("Products inserted: 0");
     m_lastLoadTime = new QLabel("Last insert time: ? ms");
     m_averageLoadTime = new QLabel("Average insert tile (total): ?");
-
     m_lastSearchTime = new QLabel("Last search time: ? ms");
     m_averageSearchTime = new QLabel("average search time: ? ms");
-
     m_loadingTime = new QLabel("Loading time: 0 ms");
 
-    addWidget(m_loadedProducts);
-    addWidget(m_lastLoadTime);
-    addWidget(m_averageLoadTime);
+    QVBoxLayout *layout = new QVBoxLayout(this);
 
-    addWidget(m_lastSearchTime);
-    addWidget(m_averageSearchTime);
+    layout->addWidget(m_loadedProducts);
+    layout->addWidget(m_lastLoadTime);
+    layout->addWidget(m_averageLoadTime);
+    layout->addWidget(m_lastSearchTime);
+    layout->addWidget(m_averageSearchTime);
+    layout->addWidget(m_loadingTime);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
 
-    addWidget(m_loadingTime);
-
-    setAlignment(Qt::AlignBottom);
+    setLayout(layout);
 
 }
 
@@ -63,7 +62,7 @@ void InfoView::stoppedLoading()
 void InfoView::setLoadingTime()
 {
     int timeDifference = m_startTime.msecsTo(QTime::currentTime());
-    m_loadingTime->setText(QString("Loading time: %1").arg(QTime::fromMSecsSinceStartOfDay(timeDifference).toString("hh::mm:ss")));
+    m_loadingTime->setText(QString("Loading time: %1").arg(QTime::fromMSecsSinceStartOfDay(timeDifference).toString("hh:mm:ss")));
 }
 
 void InfoView::setError(QString errorMessage)

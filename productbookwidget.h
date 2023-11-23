@@ -42,7 +42,6 @@ private:
     void displaySelectedProduct(QListWidgetItem *item);
     void nextPage();
     void prevPage();
-    void calculatePageCounters(int &begin, int &end);
 private slots:
 
     /**

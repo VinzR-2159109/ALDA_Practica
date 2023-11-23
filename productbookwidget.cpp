@@ -18,7 +18,7 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
     m_resultsList = new QListWidget();
     m_productView = new ProductView();
     m_infoView = new InfoView();
-    m_pageNumber = -1;
+    m_pageNumber = 0;
 
     // Page Widgets
     QPushButton *btnNextPage = new QPushButton("next page>");
@@ -41,7 +41,7 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 
     QVBoxLayout *right = new QVBoxLayout(rightWidget);
     right->addWidget(m_productView);
-    right->addLayout(m_infoView);
+    right->addWidget(m_infoView);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(leftWidget);
@@ -81,17 +81,19 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
     m_resultsList->clear();
 
     int counter = 0;
-    int pageCounterBegin, pageCounterEnd;
-
-    calculatePageCounters(pageCounterBegin, pageCounterEnd);
+    int pageCounterBegin = 20 * m_pageNumber;
+    int pageCounterEnd = 20 * (m_pageNumber + 1);
 
     for (Product *product : products) {
-        if (counter < pageCounterBegin) {
+        /*if (counter < pageCounterBegin) {
             counter++;
             continue;
         }
 
         if (counter >= pageCounterEnd) break;
+        */
+        if (counter >= 20) break;
+
 
         if (product->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
             m_resultsList->addItem(new ProductListItem(product->getAsin(), product));
@@ -105,20 +107,6 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
     }
 }
 
-void ProductBookWidget::calculatePageCounters(int &begin, int &end)
-{
-    if (m_pageNumber == -1) {
-        begin = 0;
-        end = 10;
-    } else {
-        begin = 20 * m_pageNumber;
-        end = 20 * (m_pageNumber + 1);
-    }
-}
-
-// Rest van de code blijft ongewijzigd...
-
-
 void ProductBookWidget::loadData()
 {
     m_repository.loadProductsThreaded("../amazon_products.csv", m_productTrie);
@@ -131,11 +119,7 @@ void ProductBookWidget::displaySelectedProduct(QListWidgetItem *item)
 }
 
 void ProductBookWidget::nextPage(){
-    if (m_pageNumber == -1){
-        m_pageNumber = 1;
-    } else {
-        m_pageNumber++;
-    }
+    m_pageNumber++;
     findProduct(m_searchbarLayout->getSearchString(), m_searchbarLayout->getSearchType());
     m_pageLabel->setText("Pagenumber: "+ QString::number(m_pageNumber + 1));
 }
