@@ -5,7 +5,7 @@
 #include <QTime>
 #include <QVBoxLayout>
 
-class InfoView : public QVBoxLayout
+class InfoView : public QWidget
 {
 public:
     InfoView();
