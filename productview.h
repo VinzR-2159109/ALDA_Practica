@@ -3,11 +3,9 @@
 
 #include "product.h"
 
-#include <QLabel>
-#include <QNetworkReply>
 #include <QTableWidget>
 
-class ProductView : public QWidget
+class ProductView : public QTableWidget
 {
 public:
     ProductView();
@@ -17,13 +15,6 @@ public:
      * @param product - the product to set
      */
     void setProduct(Product *product);
-private:
-    QTableWidget *m_table;
-    QLabel *m_imageLabel;
-    QNetworkAccessManager *m_networkManager;
-
-private slots:
-    void onImageDownloaded(QNetworkReply *reply);
 };
 
 #endif // PRODUCTVIEW_H
