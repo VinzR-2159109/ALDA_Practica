@@ -76,14 +76,9 @@ void SearchBarLayout::onTitleButtonClicked()
     setSearchType(SearchType::Title);
 }
 
-QString SearchBarLayout::getSearchString(){
-    return m_searchLine->text();
-}
-
 void SearchBarLayout::onSearchLineChanged()
 {
-    emit searchLineChanged(getSearchString());
-    emit searchParamsChanged(getSearchString(), m_currentSearchType);
+    QString searchString = m_searchLine->text();
+    emit searchLineChanged(searchString);
+    emit searchParamsChanged(searchString, m_currentSearchType);
 }
-
-

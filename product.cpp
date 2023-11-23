@@ -91,3 +91,12 @@ int Product::getAmountBoughtLastMonth() const
 {
     return m_amountBoughtLastMonth;
 }
+
+bool Product::operator<(const Product &other) const
+{
+    // if (!other) {
+    //     return false;
+    // }
+
+    return getDiscount() > other.getDiscount();
+}
