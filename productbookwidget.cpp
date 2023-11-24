@@ -21,8 +21,8 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
     m_pageNumber = 0;
 
     // Page Widgets
-    QPushButton *btnNextPage = new QPushButton("next page>");
-    QPushButton *btnPrevPage = new QPushButton("<previous page");
+    m_btnNextPage = new QPushButton("next page>");
+    m_btnPrevPage = new QPushButton("<previous page");
     m_pageLabel = new QLabel("Pagenumber: "+ QString::number(m_pageNumber + 1));
 
     // Define Layout ---------------------
@@ -31,8 +31,8 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 
     QHBoxLayout *pageBtnLayout = new QHBoxLayout();
     pageBtnLayout->addWidget(m_pageLabel);
-    pageBtnLayout->addWidget(btnPrevPage);
-    pageBtnLayout->addWidget(btnNextPage);
+    pageBtnLayout->addWidget(m_btnPrevPage);
+    pageBtnLayout->addWidget(m_btnNextPage);
 
     QVBoxLayout *leftLayout = new QVBoxLayout(leftWidget);
     leftLayout->addLayout(m_searchbarLayout);
@@ -67,8 +67,8 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 
     connect(m_resultsList, &QListWidget::itemClicked, this, &ProductBookWidget::displaySelectedProduct);
 
-    connect(btnNextPage, &QPushButton::clicked, this, &ProductBookWidget::nextPage);
-    connect(btnPrevPage, &QPushButton::clicked, this, &ProductBookWidget::prevPage);
+    connect(m_btnNextPage, &QPushButton::clicked, this, &ProductBookWidget::nextPage);
+    connect(m_btnPrevPage, &QPushButton::clicked, this, &ProductBookWidget::prevPage);
 
     m_infoView->startedLoading();
     loadData();
@@ -89,8 +89,15 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
         pageCounterBegin = it.value();
     }
 
+    m_btnPrevPage->setEnabled(false);
+    m_btnNextPage->setEnabled(false);
+
+    bool isEnd = true;
     for (int i = pageCounterBegin; i < products.length(); i++) {
-        if (counter >= 20) break;
+        if (counter >= 20) {
+            isEnd = false;
+            break;
+        }
 
         if (products.at(i)->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
             m_resultsList->addItem(new ProductListItem(products.at(i)->getAsin(), products.at(i)));
@@ -101,6 +108,14 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
             m_resultsList->addItem(new ProductListItem(products.at(i)->getTitle(), products.at(i)));
             counter++;
         }
+    }
+
+    if (!isEnd) {
+        m_btnNextPage->setEnabled(true);
+    }
+
+    if (m_pageNumber > 0) {
+        m_btnPrevPage->setEnabled(true);
     }
 
     m_pageIndex.insert(m_pageNumber + 1, pageCounterBegin + counter);
@@ -134,7 +149,7 @@ void ProductBookWidget::nextPage(){
 }
 
 void ProductBookWidget::prevPage(){
-    m_pageNumber = std::max(m_pageNumber - 1, 0);
+    m_pageNumber--;
     findProduct(m_searchbarLayout->getSearchString(), m_searchbarLayout->getSearchType());
     m_pageLabel->setText("Pagenumber: "+ QString::number(m_pageNumber + 1));
 }

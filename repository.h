@@ -31,7 +31,7 @@ signals:
     void error(QString errorText);
 
 private:
-    const static int LIMIT = 1000;
+    const static int LIMIT = 20000;
     QString m_fileName;
     int m_loadedAmount;
 

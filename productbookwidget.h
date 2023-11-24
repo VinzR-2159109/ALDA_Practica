@@ -31,6 +31,9 @@ private:
     int m_pageNumber;
     QHash<int, int> m_pageIndex;
 
+    QPushButton *m_btnNextPage;
+    QPushButton *m_btnPrevPage;
+
     /**
      * @brief Loads the data from the file
      */
