@@ -51,6 +51,8 @@ private slots:
      * @param searchType - only display these products in m_resultsList
      */
     void findProduct(QString searchString, SearchBarLayout::SearchType searchType);
+
+    void onSearchParamsChanged(QString searchString, SearchBarLayout::SearchType searchType);
 };
 
 #endif // PRODUCTBOOKWIDGET_H

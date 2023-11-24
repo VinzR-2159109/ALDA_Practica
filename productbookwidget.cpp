@@ -63,13 +63,8 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
     connect(&m_productTrie, &ProductTrie::productInserted, m_infoView, &InfoView::setInsertedProduct);
     connect(&m_productTrie, &ProductTrie::searchComplete, m_infoView, &InfoView::setLastSearchTime);
 
-    connect(m_searchbarLayout, &SearchBarLayout::searchParamsChanged, this, &ProductBookWidget::findProduct);
-    connect(m_searchbarLayout, &SearchBarLayout::searchParamsChanged, this, [this]{
-        m_pageIndex.clear();
-        m_pageIndex.insert(0, 0);
-        m_pageNumber = 0;
-        m_pageLabel->setText(QString("PageNumber: %1").arg(QString::number(m_pageNumber + 1)));
-    });
+    connect(m_searchbarLayout, &SearchBarLayout::searchParamsChanged, this, &ProductBookWidget::onSearchParamsChanged);
+
     connect(m_resultsList, &QListWidget::itemClicked, this, &ProductBookWidget::displaySelectedProduct);
 
     connect(btnNextPage, &QPushButton::clicked, this, &ProductBookWidget::nextPage);
@@ -109,6 +104,16 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
     }
 
     m_pageIndex.insert(m_pageNumber + 1, pageCounterBegin + counter);
+}
+
+void ProductBookWidget::onSearchParamsChanged(QString searchString, SearchBarLayout::SearchType searchType)
+{
+    m_pageIndex.clear();
+    m_pageIndex.insert(0, 0);
+    m_pageNumber = 0;
+    m_pageLabel->setText(QString("PageNumber: %1").arg(QString::number(m_pageNumber + 1)));
+
+    findProduct(searchString, searchType);
 }
 
 void ProductBookWidget::loadData()
