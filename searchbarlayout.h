@@ -15,6 +15,7 @@ public:
     enum class SearchType { Mixed, Asin, Title };
 
     SearchType getSearchType();
+    QString getSearchString();
     void setSearchType(SearchType searchType);
 
 signals:

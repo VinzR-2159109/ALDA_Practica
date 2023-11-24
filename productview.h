@@ -2,12 +2,11 @@
 #define PRODUCTVIEW_H
 
 #include "product.h"
-
 #include <QLabel>
 #include <QNetworkReply>
 #include <QTableWidget>
 
-class ProductView : public QWidget
+class ProductView : public QTableWidget
 {
 public:
     ProductView();

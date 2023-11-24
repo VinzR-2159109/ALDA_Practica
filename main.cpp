@@ -8,6 +8,6 @@ int main(int argc, char *argv[])
     ProductBookWidget productBook;
     productBook.resize(720, 480);
 
-    productBook.show();
+    productBook.showMaximized();
     return a.exec();
 }

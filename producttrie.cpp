@@ -53,12 +53,6 @@ void ProductTrie::insertProduct(Product *product)
  *  Een woord opzoeken in een trie kan in O(k) tijd gedaan worden, waarbij k staat voor het aantal karakters in de searchString.
  *
  *  Gemiddeld wordt deze functie uitgevoerd tussen de 3-25 µs op de geteste pc, maar dit hangt zeer sterk af van de lengte van de searchString.
- *
- *  Zonder sorteren (al gesorteerd bij inserten): 3-25 µs
- *  Met sorteren: 3000-3500 µs
- *
- *  Het voordeel van hier sorteren is dat de prijs 'dynamish' kan veranderen,
- *  dit kan niet als de producten worden gesorteerd bij het inserten van de producten.
  */
 QVector<Product*> ProductTrie::search(QString searchString)
 {
@@ -106,8 +100,6 @@ QVector<Product*> ProductTrie::search(QString searchString)
  * Na testen van verschillende collecties voor het opslaan van de producten in de nodes:
  *      - QSet: ~11ms -> overschrijven van waarden
  *      - QVector: ~4ms???? -> contains gebruiken
- *
- * Bij sorteren bij inserten
  *
  */
 void ProductTrie::insertProductInternal(QString insertString, Product *product)
