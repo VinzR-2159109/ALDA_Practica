@@ -29,6 +29,7 @@ private:
     Repository m_repository;
     QLabel *m_pageLabel;
     int m_pageNumber;
+    QHash<int, int> m_pageIndex;
 
     /**
      * @brief Loads the data from the file

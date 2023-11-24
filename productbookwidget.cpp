@@ -64,6 +64,12 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
     connect(&m_productTrie, &ProductTrie::searchComplete, m_infoView, &InfoView::setLastSearchTime);
 
     connect(m_searchbarLayout, &SearchBarLayout::searchParamsChanged, this, &ProductBookWidget::findProduct);
+    connect(m_searchbarLayout, &SearchBarLayout::searchParamsChanged, this, [this]{
+        m_pageIndex.clear();
+        m_pageIndex.insert(0, 0);
+        m_pageNumber = 0;
+        m_pageLabel->setText(QString("PageNumber: %1").arg(QString::number(m_pageNumber + 1)));
+    });
     connect(m_resultsList, &QListWidget::itemClicked, this, &ProductBookWidget::displaySelectedProduct);
 
     connect(btnNextPage, &QPushButton::clicked, this, &ProductBookWidget::nextPage);
@@ -81,30 +87,28 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
     m_resultsList->clear();
 
     int counter = 0;
-    int pageCounterBegin = 20 * m_pageNumber;
-    int pageCounterEnd = 20 * (m_pageNumber + 1);
+    int pageCounterBegin = 0;
 
-    for (Product *product : products) {
-        /*if (counter < pageCounterBegin) {
-            counter++;
-            continue;
-        }
+    auto it = m_pageIndex.find(m_pageNumber);
+    if (it != m_pageIndex.end()){
+        pageCounterBegin = it.value();
+    }
 
-        if (counter >= pageCounterEnd) break;
-        */
+    for (int i = pageCounterBegin; i < products.length(); i++) {
         if (counter >= 20) break;
 
-
-        if (product->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
-            m_resultsList->addItem(new ProductListItem(product->getAsin(), product));
+        if (products.at(i)->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
+            m_resultsList->addItem(new ProductListItem(products.at(i)->getAsin(), products.at(i)));
+            counter++;
         }
 
-        if (product->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
-            m_resultsList->addItem(new ProductListItem(product->getTitle(), product));
+        if (products.at(i)->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
+            m_resultsList->addItem(new ProductListItem(products.at(i)->getTitle(), products.at(i)));
+            counter++;
         }
-
-        counter++;
     }
+
+    m_pageIndex.insert(m_pageNumber + 1, pageCounterBegin + counter);
 }
 
 void ProductBookWidget::loadData()
