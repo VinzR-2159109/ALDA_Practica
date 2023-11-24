@@ -70,14 +70,18 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
 
         if (product->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
             m_resultsList->addItem(new ProductListItem(product->getAsin(), product));
+            counter++;
         }
 
         if (product->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
             m_resultsList->addItem(new ProductListItem(product->getTitle(), product));
+            counter++;
         }
 
-        counter++;
+
     }
+
+    qDebug() << products.size();
 }
 
 void ProductBookWidget::loadData()
