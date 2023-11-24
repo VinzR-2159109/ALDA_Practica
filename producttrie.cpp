@@ -68,7 +68,7 @@ QVector<Product*> ProductTrie::search(QString searchString)
         currentNode = currentNode->children[value];
     }
 
-    std::sort(currentNode->products.begin(), currentNode->products.end(),
+    std::stable_sort(currentNode->products.begin(), currentNode->products.end(),
         [](Product* productA, Product* productB) {
             // Compare based on price
             return productA->getDiscount() > productB->getDiscount();
