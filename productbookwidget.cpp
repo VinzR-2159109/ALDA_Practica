@@ -10,21 +10,17 @@
 #include <QSplitter>
 
 ProductBookWidget::ProductBookWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_repository(Repository())
+    : QWidget(parent),
+    m_repository(Repository()),
+    m_searchbarLayout(new SearchBarLayout()),
+    m_resultsList(new QListWidget()),
+    m_productView(new ProductView()),
+    m_infoView(new InfoView()),
+    m_pageNumber{0},
+    m_btnNextPage(new QPushButton("next page>")),
+    m_btnPrevPage(new QPushButton("<previous page")),
+    m_pageLabel(new QLabel("Pagenumber: " + QString::number(m_pageNumber + 1)))
 {
-    // create all views
-    m_searchbarLayout = new SearchBarLayout();
-    m_resultsList = new QListWidget();
-    m_productView = new ProductView();
-    m_infoView = new InfoView();
-    m_pageNumber = 0;
-
-    // Page Widgets
-    m_btnNextPage = new QPushButton("next page>");
-    m_btnPrevPage = new QPushButton("<previous page");
-    m_pageLabel = new QLabel("Pagenumber: "+ QString::number(m_pageNumber + 1));
-
     // Define Layout ---------------------
     QWidget *leftWidget = new QWidget();
     QWidget *rightWidget = new QWidget();
@@ -64,12 +60,12 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
     connect(&m_productTrie, &ProductTrie::searchComplete, m_infoView, &InfoView::setLastSearchTime);
 
     connect(m_searchbarLayout, &SearchBarLayout::searchParamsChanged, this, &ProductBookWidget::onSearchParamsChanged);
-
     connect(m_resultsList, &QListWidget::itemClicked, this, &ProductBookWidget::displaySelectedProduct);
-
     connect(m_btnNextPage, &QPushButton::clicked, this, &ProductBookWidget::nextPage);
     connect(m_btnPrevPage, &QPushButton::clicked, this, &ProductBookWidget::prevPage);
+
     m_infoView->startedLoading();
+
     loadData();
 }
 
@@ -96,9 +92,8 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
                 m_resultsList->addItem(new ProductListItem(sortedProducts.at(i)->getTitle(), sortedProducts.at(i)));
             }
         }
-    }
 
-    else {
+    } else {
         int counter = 0;
         int pageCounterBegin = 0;
 
