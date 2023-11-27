@@ -11,7 +11,7 @@ class ProductTrie : public QObject
 public:
     struct Node {
         QHash<QChar, Node*> children;
-        QVector<Product*> products;
+        QSet<Product*> products;
         QVector<Product*> sortedProducts;
     };
 
@@ -28,7 +28,7 @@ public:
      * @param searchString - the string to search
      * @return Returns all product pointers that have searchString as a substring
      */
-    QVector<Product*> search(QString searchString);
+    QSet<Product*> search(QString searchString);
     QVector<Product*> searchSorted(QString searchString);
 signals:
     /**

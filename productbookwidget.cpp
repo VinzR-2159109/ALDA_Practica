@@ -69,7 +69,6 @@ ProductBookWidget::ProductBookWidget(QWidget *parent)
 
     connect(m_btnNextPage, &QPushButton::clicked, this, &ProductBookWidget::nextPage);
     connect(m_btnPrevPage, &QPushButton::clicked, this, &ProductBookWidget::prevPage);
-
     m_infoView->startedLoading();
     loadData();
 }
@@ -78,11 +77,17 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
 {
     searchString = searchString.toLower();
     m_resultsList->clear();
+    QSet<Product*> products = m_productTrie.search(searchString);
+    QVector<Product*> sortedProducts(products.begin(),products.end());
+    //QVector<Product*> sortedProductsInserted = m_productTrie.searchSorted(searchString);
+
+    int numElements = std::min(static_cast<int>(sortedProducts.size()), 20);
+    std::partial_sort(sortedProducts.begin(), sortedProducts.begin() + numElements, sortedProducts.end(), [](const Product *a, const Product *b) {
+        return a->getDiscount() > b->getDiscount();
+    });
 
     if (showSorted){
-        QVector<Product*> sortedProducts = m_productTrie.searchSorted(searchString);
-
-        for (int i = 0; i < sortedProducts.length(); i++) {
+        for (int i = 0; i < std::min(20, static_cast<int>(sortedProducts.length())); i++) {
             if (sortedProducts.at(i)->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
                 m_resultsList->addItem(new ProductListItem(sortedProducts.at(i)->getAsin(), sortedProducts.at(i)));
             }
@@ -92,8 +97,8 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
             }
         }
     }
+
     else {
-        QVector<Product*> products = m_productTrie.search(searchString);
         int counter = 0;
         int pageCounterBegin = 0;
 
@@ -102,23 +107,23 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
             pageCounterBegin = it.value();
         }
 
-        //m_btnPrevPage->setEnabled(false);
-        //m_btnNextPage->setEnabled(false);
+        m_btnPrevPage->setEnabled(false);
+        m_btnNextPage->setEnabled(false);
 
         bool isEnd = true;
-        for (int i = pageCounterBegin; i < products.length(); i++) {
+        for (Product* product : products) {
             if (counter >= 20) {
                 isEnd = false;
                 break;
             }
 
-            if (products.at(i)->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
-                m_resultsList->addItem(new ProductListItem(products.at(i)->getAsin(), products.at(i)));
+            if (product->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
+                m_resultsList->addItem(new ProductListItem(product->getAsin(), product));
                 counter++;
             }
 
-            if (products.at(i)->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
-                m_resultsList->addItem(new ProductListItem(products.at(i)->getTitle(), products.at(i)));
+            if (product->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
+                m_resultsList->addItem(new ProductListItem(product->getTitle(), product));
                 counter++;
             }
         }

@@ -54,7 +54,7 @@ void ProductTrie::insertProduct(Product *product)
  *
  *  Gemiddeld wordt deze functie uitgevoerd tussen de 3-25 µs op de geteste pc, maar dit hangt zeer sterk af van de lengte van de searchString.
  */
-QVector<Product*> ProductTrie::search(QString searchString)
+QSet<Product*> ProductTrie::search(QString searchString)
 {
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -62,7 +62,7 @@ QVector<Product*> ProductTrie::search(QString searchString)
 
     for (QChar value : searchString.toLower()) {
         if (currentNode->children.find(value) == currentNode->children.end()) {
-            return QVector<Product*>();
+            return QSet<Product*>();
         }
 
         currentNode = currentNode->children[value];
@@ -131,9 +131,17 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
     Node *currentNode = m_head;
 
     for (QChar value : insertString) {
-        if (!currentNode->products.contains(product)) {
-            currentNode->products.push_back(product);
-            currentNode->sortedProducts.push_back(product);
+        // voor QSet:
+        currentNode->products.insert(product);
+
+        /* voor QVector:
+         * if (!currentNode->products.contains(product)) {
+            currentNode->products.insert(product);
+        }
+        */
+
+        /* voor sorten bij insertion:
+         * currentNode->sortedProducts.push_back(product);
 
             std::sort(currentNode->sortedProducts.begin(), currentNode->sortedProducts.end(),
                 [](const Product *a, const Product *b) {
@@ -143,7 +151,7 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
             if (currentNode->sortedProducts.size() > 10) {
                 currentNode->sortedProducts.erase(currentNode->sortedProducts.begin() + 10, currentNode->sortedProducts.end());
             }
-        }
+        */
 
         if (currentNode->children.find(value) == currentNode->children.end()) {
             currentNode->children[value] = new Node;
