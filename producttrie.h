@@ -12,6 +12,7 @@ public:
     struct Node {
         QHash<QChar, Node*> children;
         QVector<Product*> products;
+        QVector<Product*> sortedProducts;
     };
 
     ProductTrie();
@@ -28,6 +29,7 @@ public:
      * @return Returns all product pointers that have searchString as a substring
      */
     QVector<Product*> search(QString searchString);
+    QVector<Product*> searchSorted(QString searchString);
 signals:
     /**
      * @brief Gets calles when a search is completed

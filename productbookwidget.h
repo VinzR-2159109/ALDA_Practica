@@ -53,7 +53,7 @@ private slots:
      * @param searchString - find all products that have searchstring as a substring
      * @param searchType - only display these products in m_resultsList
      */
-    void findProduct(QString searchString, SearchBarLayout::SearchType searchType);
+    void findProduct(QString searchString, SearchBarLayout::SearchType searchType, bool showInPages);
 
     void onSearchParamsChanged(QString searchString, SearchBarLayout::SearchType searchType);
 };

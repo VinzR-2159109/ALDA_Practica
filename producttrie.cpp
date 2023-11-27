@@ -68,12 +68,14 @@ QVector<Product*> ProductTrie::search(QString searchString)
         currentNode = currentNode->children[value];
     }
 
+    /*
     std::stable_sort(currentNode->products.begin(), currentNode->products.end(),
         [](Product* productA, Product* productB) {
             // Compare based on price
             return productA->getDiscount() > productB->getDiscount();
         }
     );
+    */
 
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
@@ -83,6 +85,27 @@ QVector<Product*> ProductTrie::search(QString searchString)
     return currentNode->products;
 }
 
+QVector<Product*> ProductTrie::searchSorted(QString searchString)
+{
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    Node *currentNode = m_head;
+
+    for (QChar value : searchString.toLower()) {
+        if (currentNode->children.find(value) == currentNode->children.end()) {
+            return QVector<Product*>();
+        }
+
+        currentNode = currentNode->children[value];
+    }
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+
+    emit searchComplete(duration.count());
+
+    return currentNode->sortedProducts;
+}
 /**
  * Deze functie insert een product met de gegeven insertString.
  * Dit wordt gedaan door de insertString aan te maken in de trie. Elke node heeft een QSet van producten. Hier wordt de pointer naar het
@@ -116,6 +139,17 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
         }
 
         currentNode = currentNode->children[value];
+    }
+
+    currentNode->sortedProducts.push_back(product);
+
+    std::sort(currentNode->sortedProducts.begin(), currentNode->sortedProducts.end(),
+      [](const Product *a, const Product *b) {
+          return a->getDiscount() > b->getDiscount();
+      });
+
+    if (currentNode->sortedProducts.size() > 10) {
+        currentNode->sortedProducts.erase(currentNode->sortedProducts.begin() + 10, currentNode->sortedProducts.end());
     }
 }
 
