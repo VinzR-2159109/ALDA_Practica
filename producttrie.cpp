@@ -116,9 +116,10 @@ QVector<Product*> ProductTrie::searchSorted(QString searchString)
  *
  * Tijdcomplexiteit:
  *      - Inserten van woord in trie: O(k) -> k = #chars in string
- *      - Inserten van product in QSet = O(1)
+ *      - Inserten van product in (meestal) QVector = O(1)
+ *      - Sorteren van sortedProducts = O(n log(n)) en n = 11;
  *
- * De totale tijdscomplexiteit van deze functie is dus O(k) waar k staat voor het aantal karakters in de searchString.
+ * De totale tijdscomplexiteit van deze functie is dus O(n log(n) + k).
  *
  * Na testen van verschillende collecties voor het opslaan van de producten in de nodes:
  *      - QSet: ~11ms -> overschrijven van waarden
@@ -132,6 +133,16 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
     for (QChar value : insertString) {
         if (!currentNode->products.contains(product)) {
             currentNode->products.push_back(product);
+            currentNode->sortedProducts.push_back(product);
+
+            std::sort(currentNode->sortedProducts.begin(), currentNode->sortedProducts.end(),
+                [](const Product *a, const Product *b) {
+                    return a->getDiscount() > b->getDiscount();
+                });
+
+            if (currentNode->sortedProducts.size() > 10) {
+                currentNode->sortedProducts.erase(currentNode->sortedProducts.begin() + 10, currentNode->sortedProducts.end());
+            }
         }
 
         if (currentNode->children.find(value) == currentNode->children.end()) {
@@ -139,17 +150,6 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
         }
 
         currentNode = currentNode->children[value];
-    }
-
-    currentNode->sortedProducts.push_back(product);
-
-    std::sort(currentNode->sortedProducts.begin(), currentNode->sortedProducts.end(),
-      [](const Product *a, const Product *b) {
-          return a->getDiscount() > b->getDiscount();
-      });
-
-    if (currentNode->sortedProducts.size() > 10) {
-        currentNode->sortedProducts.erase(currentNode->sortedProducts.begin() + 10, currentNode->sortedProducts.end());
     }
 }
 

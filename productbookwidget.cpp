@@ -78,6 +78,7 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
 {
     searchString = searchString.toLower();
     m_resultsList->clear();
+
     if (showSorted){
         QVector<Product*> sortedProducts = m_productTrie.searchSorted(searchString);
 
@@ -101,11 +102,11 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
             pageCounterBegin = it.value();
         }
 
-        m_btnPrevPage->setEnabled(false);
-        m_btnNextPage->setEnabled(false);
+        //m_btnPrevPage->setEnabled(false);
+        //m_btnNextPage->setEnabled(false);
 
         bool isEnd = true;
-         for (int i = pageCounterBegin; i < products.length(); i++) {
+        for (int i = pageCounterBegin; i < products.length(); i++) {
             if (counter >= 20) {
                 isEnd = false;
                 break;
