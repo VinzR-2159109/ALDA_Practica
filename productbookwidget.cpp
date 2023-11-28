@@ -125,6 +125,8 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
     }
 
     m_pageIndex.insert(m_pageNumber + 1, pageCounterBegin + counter);
+
+    m_pageLabel->setText(QString("Pagenumber: %1  (%2 results)").arg(m_pageNumber).arg(m_numberOfResults));
 }
 
 void ProductBookWidget::onSearchParamsChanged(QString searchString, SearchBarLayout::SearchType searchType)
@@ -152,11 +154,9 @@ void ProductBookWidget::displaySelectedProduct(QListWidgetItem *item)
 void ProductBookWidget::nextPage(){
     m_pageNumber++;
     findProduct(m_searchbarLayout->getSearchString(), m_searchbarLayout->getSearchType(), false);
-    m_pageLabel->setText(QString("Pagenumber: %1  (%2 results)").arg(m_pageNumber).arg(m_numberOfResults));
 }
 
 void ProductBookWidget::prevPage(){
     m_pageNumber--;
     findProduct(m_searchbarLayout->getSearchString(), m_searchbarLayout->getSearchType(), false);
-    m_pageLabel->setText(QString("Pagenumber: %1  (%2 results)").arg(m_pageNumber).arg(m_numberOfResults));
 }

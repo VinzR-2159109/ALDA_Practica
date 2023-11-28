@@ -10,12 +10,34 @@ ProductTrie::ProductTrie()
 { }
 
 /**
- * Deze (hulp) functie doet het volgende:
- *      - Maak alle mogelijke unieke suffix strings aan van de asin en de titel van het product
+ * Deze functie doet het volgende:
+ *      - Maak alle mogelijke suffix strings aan van de asin en de titel van het product
  *      - Insert al deze strings in de trie
  *      - Time hoe lang het duurd om een product in de trie te zetten
  *
  * De werking van insertProductInternal en createAllSuffixes wordt verder uitgelegd bij de functie zelf.
+ *
+ * // Sorteren bij inserten of bij zoeken:
+ *      - Sorteren bij inserten:
+ *          + sneller zoeken (~15 µs)
+ *          - langere laadtijd bij het inladen
+ *          - moet opnieuw gebeuren als de prijs van een product veranderd / als een product toegevoegd/verwijderd wordt
+ *      - Sorteren bij het zoeken
+ *          - minder snel zoeken (~15 ms)
+ *          + minder lang laadtijd bij het insterten
+ *          + producten kunnen veranderen zonder extra impact te hebben
+ *
+ *  We hebben volgende manieren bekeken:
+ *      - Alle producten bewaren in een multimap met als key de korting en als value het product
+ *          -> Inserten is O(log n) voor elk karakter in de insertString -> O(k log(n))
+ *          -> Inserten duurde te veel te lang
+ *      - De 10 producten met de hoogste korting bewaren in een aparte gesorteerde vector
+ *          -> Inserten met insertsort is O(n) met n een vaste waarde (10 in dit geval) -> O(10 * k)
+ *      - Alle producten sorteren met std::sort
+ *          -> Zoeken duurd iets langer maar onmerkbaar bij het gebruiken
+ *          -> Inserten is zo snel mogelijk
+ *      - De producten gedeeltelijk sorteren met std::partial_sort
+ *          -> zoeken is iets sneller met dezelfde functionaliteit
  */
 void ProductTrie::insertProduct(Product *product)
 {
@@ -38,8 +60,6 @@ void ProductTrie::insertProduct(Product *product)
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
 
-    addToCSV(duration.count(), "../QVector.csv");
-
     emit productInserted(duration.count());
 }
 
@@ -50,7 +70,13 @@ void ProductTrie::insertProduct(Product *product)
  *
  *  Een woord opzoeken in een trie kan in O(k) tijd gedaan worden, waarbij k staat voor het aantal karakters in de searchString.
  *
- *  Gemiddeld wordt deze functie uitgevoerd tussen de 3-25 µs op de geteste pc, maar dit hangt zeer sterk af van de lengte van de searchString.
+ *  // Bij het opzoeken van 'b' met 5000 producten
+ *      - Gevonden producten: 5000
+ *      - tijd: ~9 µs
+ *
+ *  // Bij het opzoeken van 'b07b7v' met 5000 producten
+ *      - Gevonden producten: 1
+ *      - tijd: ~15 µs
  */
 QVector<Product*> ProductTrie::search(QString searchString)
 {
@@ -74,6 +100,24 @@ QVector<Product*> ProductTrie::search(QString searchString)
     return QVector<Product*>(currentNode->products.begin(), currentNode->products.end());;
 }
 
+/**
+ *  Deze functie zoekt alle producten die searchString als substring hebben, en sorteerd deze op basis van de korting
+ *  Dit wordt gedaan door de searchString op te zoeken in de trie. Elke node heeft een lijst (QSet) van producten,
+ *  hierdoor is het mogelijk om, zodra de laatste node van de searchString gevonden is, alle producten gesorteerd terug te geven.
+ *
+ *  Een woord opzoeken in een trie kan in O(k) tijd gedaan worden, waarbij k staat voor het aantal karakters in de searchString.
+ *  Het sorteren wordt gedaan met std::partial_sort, we gebruiken deze functie om een bepaald aantal producten met de grootste korting vanvoor te zetten en te sorteren
+ *  De rest van de array moet niet gesorteerd worden. partial_sort heeft een tijdscomplexiteit van O(n log(n)).
+ *  Dit is hetzelfde als std::sort, maar hier moeten minder swaps gedaan worden omdat we het grootste deel ongesorteerd laten.
+ *
+ *  // Bij het opzoeken van 'b' met 5000 producten
+ *      - Gevonden producten: 5000
+ *      - tijd: ~15 ms
+ *
+ *  // Bij het opzoeken van 'b07b7v' met 5000 producten
+ *      - Gevonden producten: 1
+ *      - tijd: ~116 µs
+ */
 QVector<Product*> ProductTrie::searchSorted(QString searchString, int numberOfSortedElements)
 {
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -98,29 +142,35 @@ QVector<Product*> ProductTrie::searchSorted(QString searchString, int numberOfSo
 /**
  * Deze functie insert een product met de gegeven insertString.
  * Dit wordt gedaan door de insertString aan te maken in de trie. Elke node heeft een QSet van producten. Hier wordt de pointer naar het
- * product opgeslagen (als deze nog niet in de QSet te vinden is).
+ * product opgeslagen.
  *
- * Het product wordt in elke node waar de string langskomt opgeslagen, op deze manier kan je het product vinden als het einde van de tring mist.
- * Als je ook alle prefixes van de string in de trie zet, kan je ook een product vinden met eender welke substring.
+ * Het product wordt in elke node waar de string langskomt opgeslagen, op deze manier kan je het product vinden als het einde van de string mist.
+ * Als je ook alle suffixen van de string in de trie zet, kan je dus een product vinden met eender welke substring.
  *
- * Tijdcomplexiteit:
+ * // Tijdcomplexiteit:
  *      - Inserten van woord in trie: O(k) -> k = #chars in string
- *      - Inserten van product in (meestal) QVector = O(1)
- *      - Sorteren van sortedProducts = O(n log(n)) en n = 11;
+ *      - Inserten van product in QSet = O(1)
  *
- * De totale tijdscomplexiteit van deze functie is dus O(n log(n) + k).
+ * De totale tijdscomplexiteit van deze functie is dus O(k).
  *
- * Na testen van verschillende collecties voor het opslaan van de producten in de nodes:
- *      - QSet: ~11ms -> overschrijven van waarden
- *      - QVector: ~4ms???? -> contains gebruiken
+ * // We hebben verschillende collecties getest voor het opslaan van de producten in de nodes:
+ *      - QSet: ~12 ms
+ *      - QSet met contains: ~14 ms
+ *      - QVector: ~10 ms
  *
- * Er is een verschil tussen de gemiddelde waardes bij het inserten van de eerste producten en de producten die later worden geinsert.
- *      - Begin: rond de 150 ms
- *      - Later: rond de 70 ms
+ * Hieruit blijkt dat de QVector iets sneller is dan de QSet, Het inserten is beide O(1), maar aangezien de QSet nog een hash moet generen kan het zijn
+ * dat deze iets meer tijd nodig heeft. Om te zorgen dat alle producten maximaal één maal in een node zitten wordt er gebruik gemaakt van de contains() functie.
+ * bij de QVector. Bij de QSet is dit niet nodig aangezien alle keys uniek moeten zijn.
+ *
+ * // Er is een verschil tussen de gemiddelde waardes bij het inserten van de eerste producten en de producten die later worden geinsert.
+ *      - 0 tot 1000: ~12 ms
+ *      - 1000 tot 4000: ~8 ms
+ *      - >4000: begint weer te stijgen
  *
  * Een mogelijke verklaring hiervoor is dat er in het begin meer nodes moeten aangemaakt worden, bij de latere producten zijn deze al aangemaakt
  * waardoor het inserten minder tijd in beslag neemt.
- *
+ * Zodra er meer dan 4000 producten in de trie staan begint de insert tijd weer te stijgen, dit is ook het moment dat de RAM vol is. Het kan dus zijn dat
+ * er tijd wordt verloren doordat het besturingssysteem de harde schrijf moet gebruiken in plaats van de RAM
  */
 void ProductTrie::insertProductInternal(QString insertString, Product *product)
 {
@@ -134,12 +184,12 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
         currentNode = currentNode->children[value];
 
         // Voor QSet:
-        // currentNode->products.insert(product);
+        currentNode->products.insert(product);
 
         // Voor QVector:
-        if (!currentNode->products.contains(product)) {
-            currentNode->products.push_back(product);
-        }
+        // if (!currentNode->products.contains(product)) {
+        //     currentNode->products.push_back(product);
+        // }
     }
 }
 
