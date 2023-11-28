@@ -162,6 +162,11 @@ QVector<Product*> ProductTrie::searchSorted(QString searchString, int numberOfSo
  * dat deze iets meer tijd nodig heeft. Om te zorgen dat alle producten maximaal één maal in een node zitten wordt er gebruik gemaakt van de contains() functie.
  * bij de QVector. Bij de QSet is dit niet nodig aangezien alle keys uniek moeten zijn.
  *
+ * Na het plotten van de insert tijd voor de QVector en de QSet kunnen we het volgende besluiten:
+ *  QVector is sneller bij minder producten (< 2000). Met meer producten blijft de insert tijd van QVector stijgen, terwijl
+ *  de tijd van de Qset veel constanter blijft (met een lichte stijging). De hogere stijging van QVector zal waarschijnlijk komen
+ *  doordat we gebruik maken van de contains() functie. Deze moet alle elementen in de vector afgaan.
+ *
  * // Er is een verschil tussen de gemiddelde waardes bij het inserten van de eerste producten en de producten die later worden geinsert.
  *      - 0 tot 1000: ~12 ms
  *      - 1000 tot 4000: ~8 ms
