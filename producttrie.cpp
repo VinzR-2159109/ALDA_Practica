@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #include "producttrie.h"
 
 #include <algorithm>

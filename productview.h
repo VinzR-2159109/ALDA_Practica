@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef PRODUCTVIEW_H
 #define PRODUCTVIEW_H
 

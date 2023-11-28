@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef PRODUCTTRIE_H
 #define PRODUCTTRIE_H
 

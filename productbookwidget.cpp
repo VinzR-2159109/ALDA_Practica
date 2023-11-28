@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #include "productbookwidget.h"
 
 #include "infoview.h"

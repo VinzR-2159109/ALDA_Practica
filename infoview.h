@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef INFOVIEW_H
 #define INFOVIEW_H
 
