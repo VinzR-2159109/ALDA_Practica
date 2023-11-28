@@ -29,8 +29,10 @@ private:
 
     ProductTrie m_productTrie;
     Repository m_repository;
+
     QLabel *m_pageLabel;
     int m_pageNumber;
+    int m_numberOfResults;
     QHash<int, int> m_pageIndex;
     QPushButton *m_btnNextPage;
     QPushButton *m_btnPrevPage;

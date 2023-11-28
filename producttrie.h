@@ -12,8 +12,7 @@ class ProductTrie : public QObject
 public:
     struct Node {
         QHash<QChar, Node*> children;
-        QSet<Product*> products;
-        QVector<Product*> sortedProducts;
+        QVector<Product*> products;
     };
 
     ProductTrie();
@@ -29,8 +28,9 @@ public:
      * @param searchString - the string to search
      * @return Returns all product pointers that have searchString as a substring
      */
-    QSet<Product*> search(QString searchString);
-    QVector<Product*> searchSorted(QString searchString);
+    QVector<Product*> search(QString searchString);
+    QVector<Product*> searchSorted(QString searchString, int numberOfSortedElements);
+
 signals:
     /**
      * @brief Gets calles when a search is completed
@@ -55,6 +55,8 @@ private:
      * @return Returns a QStringList of all prefixes
      */
     QStringList createAllSuffixes(QString string);
+
+    void addToCSV(int value, const std::string& filename);
 };
 
 #endif // PRODUCTTRIE_H
