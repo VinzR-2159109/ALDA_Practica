@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef PRODUCTLISTITEM_H
 #define PRODUCTLISTITEM_H
 

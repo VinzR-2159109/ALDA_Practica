@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef PRODUCTBOOKWIDGET_H
 #define PRODUCTBOOKWIDGET_H
 
@@ -20,6 +21,7 @@ public:
     ProductBookWidget(QWidget *parent = nullptr);
 
 private:
+
     SearchBarLayout *m_searchbarLayout;
     QListWidget *m_resultsList;
     ProductView *m_productView;
@@ -30,22 +32,14 @@ private:
     QLabel *m_pageLabel;
     int m_pageNumber;
     QHash<int, int> m_pageIndex;
-
     QPushButton *m_btnNextPage;
     QPushButton *m_btnPrevPage;
 
-    /**
-     * @brief Loads the data from the file
-     */
     void loadData();
-
-    /**
-     * @brief displays the selected item from m_resultsList
-     * @param item - the item to display
-     */
     void displaySelectedProduct(QListWidgetItem *item);
     void nextPage();
     void prevPage();
+
 private slots:
 
     /**
@@ -53,7 +47,7 @@ private slots:
      * @param searchString - find all products that have searchstring as a substring
      * @param searchType - only display these products in m_resultsList
      */
-    void findProduct(QString searchString, SearchBarLayout::SearchType searchType);
+    void findProduct(QString searchString, SearchBarLayout::SearchType searchType, bool showInPages);
 
     void onSearchParamsChanged(QString searchString, SearchBarLayout::SearchType searchType);
 };

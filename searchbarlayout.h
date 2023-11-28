@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef SEARCHBARLAYOUT_H
 #define SEARCHBARLAYOUT_H
 

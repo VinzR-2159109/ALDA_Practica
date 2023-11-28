@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef PRODUCTTRIE_H
 #define PRODUCTTRIE_H
 
@@ -11,7 +12,8 @@ class ProductTrie : public QObject
 public:
     struct Node {
         QHash<QChar, Node*> children;
-        QVector<Product*> products;
+        QSet<Product*> products;
+        QVector<Product*> sortedProducts;
     };
 
     ProductTrie();
@@ -27,7 +29,8 @@ public:
      * @param searchString - the string to search
      * @return Returns all product pointers that have searchString as a substring
      */
-    QVector<Product*> search(QString searchString);
+    QSet<Product*> search(QString searchString);
+    QVector<Product*> searchSorted(QString searchString);
 signals:
     /**
      * @brief Gets calles when a search is completed

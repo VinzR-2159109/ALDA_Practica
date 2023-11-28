@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #include "producttrie.h"
 
 #include <algorithm>
@@ -54,7 +55,38 @@ void ProductTrie::insertProduct(Product *product)
  *
  *  Gemiddeld wordt deze functie uitgevoerd tussen de 3-25 µs op de geteste pc, maar dit hangt zeer sterk af van de lengte van de searchString.
  */
-QVector<Product*> ProductTrie::search(QString searchString)
+QSet<Product*> ProductTrie::search(QString searchString)
+{
+    auto startTime = std::chrono::high_resolution_clock::now();
+
+    Node *currentNode = m_head;
+
+    for (QChar value : searchString.toLower()) {
+        if (currentNode->children.find(value) == currentNode->children.end()) {
+            return QSet<Product*>();
+        }
+
+        currentNode = currentNode->children[value];
+    }
+
+    /*
+    std::stable_sort(currentNode->products.begin(), currentNode->products.end(),
+        [](Product* productA, Product* productB) {
+            // Compare based on price
+            return productA->getDiscount() > productB->getDiscount();
+        }
+    );
+    */
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+
+    emit searchComplete(duration.count());
+
+    return currentNode->products;
+}
+
+QVector<Product*> ProductTrie::searchSorted(QString searchString)
 {
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -68,21 +100,13 @@ QVector<Product*> ProductTrie::search(QString searchString)
         currentNode = currentNode->children[value];
     }
 
-    std::stable_sort(currentNode->products.begin(), currentNode->products.end(),
-        [](Product* productA, Product* productB) {
-            // Compare based on price
-            return productA->getDiscount() > productB->getDiscount();
-        }
-    );
-
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
 
     emit searchComplete(duration.count());
 
-    return currentNode->products;
+    return currentNode->sortedProducts;
 }
-
 /**
  * Deze functie insert een product met de gegeven insertString.
  * Dit wordt gedaan door de insertString aan te maken in de trie. Elke node heeft een QSet van producten. Hier wordt de pointer naar het
@@ -93,9 +117,10 @@ QVector<Product*> ProductTrie::search(QString searchString)
  *
  * Tijdcomplexiteit:
  *      - Inserten van woord in trie: O(k) -> k = #chars in string
- *      - Inserten van product in QSet = O(1)
+ *      - Inserten van product in (meestal) QVector = O(1)
+ *      - Sorteren van sortedProducts = O(n log(n)) en n = 11;
  *
- * De totale tijdscomplexiteit van deze functie is dus O(k) waar k staat voor het aantal karakters in de searchString.
+ * De totale tijdscomplexiteit van deze functie is dus O(n log(n) + k).
  *
  * Na testen van verschillende collecties voor het opslaan van de producten in de nodes:
  *      - QSet: ~11ms -> overschrijven van waarden
@@ -107,9 +132,27 @@ void ProductTrie::insertProductInternal(QString insertString, Product *product)
     Node *currentNode = m_head;
 
     for (QChar value : insertString) {
-        if (!currentNode->products.contains(product)) {
-            currentNode->products.push_back(product);
+        // voor QSet:
+        currentNode->products.insert(product);
+
+        /* voor QVector:
+         * if (!currentNode->products.contains(product)) {
+            currentNode->products.insert(product);
         }
+        */
+
+        /* voor sorten bij insertion:
+         * currentNode->sortedProducts.push_back(product);
+
+            std::sort(currentNode->sortedProducts.begin(), currentNode->sortedProducts.end(),
+                [](const Product *a, const Product *b) {
+                    return a->getDiscount() > b->getDiscount();
+                });
+
+            if (currentNode->sortedProducts.size() > 10) {
+                currentNode->sortedProducts.erase(currentNode->sortedProducts.begin() + 10, currentNode->sortedProducts.end());
+            }
+        */
 
         if (currentNode->children.find(value) == currentNode->children.end()) {
             currentNode->children[value] = new Node;

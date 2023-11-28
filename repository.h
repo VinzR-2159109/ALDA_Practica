@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
@@ -31,7 +32,7 @@ signals:
     void error(QString errorText);
 
 private:
-    const static int LIMIT = 1000;
+    const static int LIMIT = 10000;
     QString m_fileName;
     int m_loadedAmount;
 

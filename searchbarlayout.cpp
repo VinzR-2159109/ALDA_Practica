@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #include "searchbarlayout.h"
 
 #include <QLabel>

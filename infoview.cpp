@@ -1,3 +1,4 @@
+//Vinz Roosen & Lars Gielen
 #include "infoview.h"
 
 InfoView::InfoView()
