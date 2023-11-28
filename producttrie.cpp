@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #include "producttrie.h"
 
 #include <algorithm>
@@ -212,20 +213,20 @@ QStringList ProductTrie::createAllSuffixes(QString string)
     return suffixes;
 }
 
-void ProductTrie::addToCSV(int value, const std::string& filename) {
-    // Open the CSV file in append mode
-    std::ofstream csvFile;
-    csvFile.open(filename, std::ios::app);
-
-    // Check if the file is successfully opened
-    if (!csvFile.is_open()) {
-        std::cout << "Error opening file: " << filename << std::endl;
-        return;
-    }
-
-    // Append the integer value to the CSV file
-    csvFile << value << ",";
-
-    // Close the file
-    csvFile.close();
-}
+// void ProductTrie::addToCSV(int value, const std::string& filename) {
+//     // Open the CSV file in append mode
+//     std::ofstream csvFile;
+//     csvFile.open(filename, std::ios::app);
+//
+//     // Check if the file is successfully opened
+//     if (!csvFile.is_open()) {
+//         std::cout << "Error opening file: " << filename << std::endl;
+//         return;
+//     }
+//
+//     // Append the integer value to the CSV file
+//     csvFile << value << ",";
+//
+//     // Close the file
+//     csvFile.close();
+// }

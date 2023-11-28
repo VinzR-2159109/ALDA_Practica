@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #include "productbookwidget.h"
 
 #include "infoview.h"
@@ -142,6 +143,7 @@ void ProductBookWidget::onSearchParamsChanged(QString searchString, SearchBarLay
 
 void ProductBookWidget::loadData()
 {
+    // laad de data in een aparte thread, op deze manier blijft de UI bruikbaar
     m_repository.loadProductsThreaded("../amazon_products.csv", m_productTrie);
 }
 

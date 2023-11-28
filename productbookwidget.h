@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #ifndef PRODUCTBOOKWIDGET_H
 #define PRODUCTBOOKWIDGET_H
 

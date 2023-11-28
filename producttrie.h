@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #ifndef PRODUCTTRIE_H
 #define PRODUCTTRIE_H
 
@@ -63,7 +64,7 @@ private:
      */
     QStringList createAllSuffixes(QString string);
 
-    void addToCSV(int value, const std::string& filename);
+    // void addToCSV(int value, const std::string& filename);
 };
 
 #endif // PRODUCTTRIE_H

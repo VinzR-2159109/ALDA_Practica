@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
@@ -13,8 +14,8 @@ public:
     Repository(QObject *parent = nullptr);
 
     /**
-     * @brief Loads the file from fileName the background on multiple threads
-     * @param fileName - the file to load
+     * @brief Loads the file from fileName on a different threads
+     * @param fileName - the file to be loaded
      * @param trie - the ProductTrie in which to insert the Products
      */
     void loadProductsThreaded(const QString &fileName, ProductTrie &trie);
