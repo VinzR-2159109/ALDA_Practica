@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #ifndef PRODUCTVIEW_H
 #define PRODUCTVIEW_H
 
@@ -17,6 +18,7 @@ public:
      * @param product - the product to set
      */
     void setProduct(Product *product);
+
 private:
     QNetworkAccessManager *m_networkManager;
 

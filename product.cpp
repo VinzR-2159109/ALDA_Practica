@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #include "product.h"
 
 Product::Product()

@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #include "productview.h"
 
 #include <QGridLayout>

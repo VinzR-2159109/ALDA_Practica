@@ -1,4 +1,5 @@
 //Vinz Roosen & Lars Gielen
+
 #include "productbookwidget.h"
 
 #include "infoview.h"
@@ -12,15 +13,16 @@
 
 ProductBookWidget::ProductBookWidget(QWidget *parent)
     : QWidget(parent),
-    m_repository(Repository()),
     m_searchbarLayout(new SearchBarLayout()),
     m_resultsList(new QListWidget()),
     m_productView(new ProductView()),
     m_infoView(new InfoView()),
+    m_repository(Repository()),
+    m_pageLabel(new QLabel("Pagenumber: 0  (0 results)")),
     m_pageNumber{0},
+    m_numberOfResults{0},
     m_btnNextPage(new QPushButton("next page>")),
-    m_btnPrevPage(new QPushButton("<previous page")),
-    m_pageLabel(new QLabel("Pagenumber: " + QString::number(m_pageNumber + 1)))
+    m_btnPrevPage(new QPushButton("<previous page"))
 {
     // Define Layout ---------------------
     QWidget *leftWidget = new QWidget();
@@ -74,66 +76,58 @@ void ProductBookWidget::findProduct(QString searchString, SearchBarLayout::Searc
 {
     searchString = searchString.toLower();
     m_resultsList->clear();
-    QSet<Product*> products = m_productTrie.search(searchString);
-    QVector<Product*> sortedProducts(products.begin(),products.end());
-    //QVector<Product*> sortedProductsInserted = m_productTrie.searchSorted(searchString);
 
-    int numElements = std::min(static_cast<int>(sortedProducts.size()), 20);
-    std::partial_sort(sortedProducts.begin(), sortedProducts.begin() + numElements, sortedProducts.end(), [](const Product *a, const Product *b) {
-        return a->getDiscount() > b->getDiscount();
-    });
+    bool isEnd = true;
+    int counter = 0;
+    int pageCounterBegin = 0;
+
+    auto it = m_pageIndex.find(m_pageNumber);
+    if (it != m_pageIndex.end()){
+        pageCounterBegin = it.value();
+    }
+
+    m_btnPrevPage->setEnabled(false);
+    m_btnNextPage->setEnabled(false);
+
+    QVector<Product*> products;
 
     if (showSorted){
-        for (int i = 0; i < std::min(20, static_cast<int>(sortedProducts.length())); i++) {
-            if (sortedProducts.at(i)->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
-                m_resultsList->addItem(new ProductListItem(sortedProducts.at(i)->getAsin(), sortedProducts.at(i)));
-            }
-
-            if (sortedProducts.at(i)->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
-                m_resultsList->addItem(new ProductListItem(sortedProducts.at(i)->getTitle(), sortedProducts.at(i)));
-            }
-        }
-
-    } else {
-        int counter = 0;
-        int pageCounterBegin = 0;
-
-        auto it = m_pageIndex.find(m_pageNumber);
-        if (it != m_pageIndex.end()){
-            pageCounterBegin = it.value();
-        }
-
-        m_btnPrevPage->setEnabled(false);
-        m_btnNextPage->setEnabled(false);
-
-        bool isEnd = true;
-        for (Product* product : products) {
-            if (counter >= 20) {
-                isEnd = false;
-                break;
-            }
-
-            if (product->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
-                m_resultsList->addItem(new ProductListItem(product->getAsin(), product));
-                counter++;
-            }
-
-            if (product->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
-                m_resultsList->addItem(new ProductListItem(product->getTitle(), product));
-                counter++;
-            }
-        }
-
-        if (!isEnd) {
-            m_btnNextPage->setEnabled(true);
-        }
-
-        if (m_pageNumber > 0) {
-            m_btnPrevPage->setEnabled(true);
-        }
-
-        m_pageIndex.insert(m_pageNumber + 1, pageCounterBegin + counter);
+        products = m_productTrie.searchSorted(searchString, 20);
     }
+    else {
+        products = m_productTrie.search(searchString);
+    }
+
+    for (int i = pageCounterBegin; i < products.length(); i++) {
+        if (counter >= 20) {
+            isEnd = false;
+            break;
+        }
+
+        if (products.at(i)->getAsin().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Title) {
+            m_resultsList->addItem(new ProductListItem(products.at(i)->getAsin(), products.at(i)));
+            counter++;
+        }
+
+        if (products.at(i)->getTitle().toLower().contains(searchString) && searchType != SearchBarLayout::SearchType::Asin){
+            m_resultsList->addItem(new ProductListItem(products.at(i)->getTitle(), products.at(i)));
+            counter++;
+        }
+    }
+
+    m_numberOfResults = products.size();
+
+    if (!isEnd) {
+        m_btnNextPage->setEnabled(true);
+    }
+
+    if (m_pageNumber > 0) {
+        m_btnPrevPage->setEnabled(true);
+    }
+
+    m_pageIndex.insert(m_pageNumber + 1, pageCounterBegin + counter);
+
+    m_pageLabel->setText(QString("Pagenumber: %1  (%2 results)").arg(m_pageNumber).arg(m_numberOfResults));
 }
 
 void ProductBookWidget::onSearchParamsChanged(QString searchString, SearchBarLayout::SearchType searchType)
@@ -142,13 +136,14 @@ void ProductBookWidget::onSearchParamsChanged(QString searchString, SearchBarLay
     m_pageIndex.insert(0, 0);
     m_pageNumber = 0;
 
-    m_pageLabel->setText("Pagenumber: "+ QString::number(m_pageNumber + 1));
+    m_pageLabel->setText(QString("Pagenumber: %1  (%2 results)").arg(m_pageNumber).arg(m_numberOfResults));
 
     findProduct(searchString, searchType, true);
 }
 
 void ProductBookWidget::loadData()
 {
+    // laad de data in een aparte thread, op deze manier blijft de UI bruikbaar
     m_repository.loadProductsThreaded("../amazon_products.csv", m_productTrie);
 }
 
@@ -161,11 +156,9 @@ void ProductBookWidget::displaySelectedProduct(QListWidgetItem *item)
 void ProductBookWidget::nextPage(){
     m_pageNumber++;
     findProduct(m_searchbarLayout->getSearchString(), m_searchbarLayout->getSearchType(), false);
-    m_pageLabel->setText("Pagenumber: "+ QString::number(m_pageNumber + 1));
 }
 
 void ProductBookWidget::prevPage(){
     m_pageNumber--;
     findProduct(m_searchbarLayout->getSearchString(), m_searchbarLayout->getSearchType(), false);
-    m_pageLabel->setText("Pagenumber: "+ QString::number(m_pageNumber + 1));
 }
