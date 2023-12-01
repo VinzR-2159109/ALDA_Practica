@@ -18,12 +18,12 @@ ProductTrie::ProductTrie()
  *
  * De werking van insertProductInternal en createAllSuffixes wordt verder uitgelegd bij de functie zelf.
  *
- * // Sorteren bij inserten of bij zoeken:
+ * Sorteren bij inserten of bij zoeken:
  *      - Sorteren bij inserten:
  *          + sneller zoeken (~15 µs)
  *          - langere laadtijd bij het inladen
- *          - moet opnieuw gebeuren als de prijs van een product veranderd / als een product toegevoegd/verwijderd wordt
- *      - Sorteren bij het zoeken
+ *          - moet opnieuw gebeuren als de prijs van een product veranderd / als een product toegevoegd / verwijderd wordt
+ *      - Sorteren bij het zoeken:
  *          - minder snel zoeken (~15 ms)
  *          + minder lang laadtijd bij het insterten
  *          + producten kunnen veranderen zonder extra impact te hebben
@@ -33,7 +33,7 @@ ProductTrie::ProductTrie()
  *          -> Inserten is O(log n) voor elk karakter in de insertString -> O(k log(n))
  *          -> Inserten duurde te veel te lang
  *      - De 10 producten met de hoogste korting bewaren in een aparte gesorteerde vector
- *          -> Inserten met insertsort is O(n) met n een vaste waarde (10 in dit geval) -> O(10 * k)
+ *          -> Inserten met insertsort is O(n) met n een vaste waarde (20 in dit geval) -> O(20 * k)
  *      - Alle producten sorteren met std::sort
  *          -> Zoeken duurd iets langer maar onmerkbaar bij het gebruiken
  *          -> Inserten is zo snel mogelijk
@@ -151,22 +151,23 @@ QVector<Product*> ProductTrie::searchSorted(QString searchString, int numberOfSo
  * // Tijdcomplexiteit:
  *      - Inserten van woord in trie: O(k) -> k = #chars in string
  *      - Inserten van product in QSet = O(1)
+ *      - Push_back van product in QVector = O(1)
  *
  * De totale tijdscomplexiteit van deze functie is dus O(k).
  *
- * // We hebben verschillende collecties getest voor het opslaan van de producten in de nodes:
- *      - QSet: ~12 ms
- *      - QSet met contains: ~14 ms
- *      - QVector: ~10 ms
+ * // We hebben verschillende collecties getest voor het opslaan van de producten (n = 1000) in de nodes:
+ *      - QSet: ~12 ms O(1)
+ *      - QSet met contains: ~14 ms O(1)
+ *      - QVector met contains: ~10 ms: O(n)
  *
- * Hieruit blijkt dat de QVector iets sneller is dan de QSet, Het inserten is beide O(1), maar aangezien de QSet nog een hash moet generen kan het zijn
+ * Hieruit blijkt dat de QVector iets sneller is dan de QSet bij lage waarde van n, Het inserten is beide O(1), maar aangezien de QSet nog een hash moet generen kan het zijn
  * dat deze iets meer tijd nodig heeft. Om te zorgen dat alle producten maximaal één maal in een node zitten wordt er gebruik gemaakt van de contains() functie.
  * bij de QVector. Bij de QSet is dit niet nodig aangezien alle keys uniek moeten zijn.
  *
  * Na het plotten van de insert tijd voor de QVector en de QSet kunnen we het volgende besluiten:
- *  QVector is sneller bij minder producten (< 2000). Met meer producten blijft de insert tijd van QVector stijgen, terwijl
- *  de tijd van de Qset veel constanter blijft (met een lichte stijging). De hogere stijging van QVector zal waarschijnlijk komen
- *  doordat we gebruik maken van de contains() functie. Deze moet alle elementen in de vector afgaan.
+ *  QVector is sneller bij minder producten (< 2000). Met meer producten blijft de insert tijd van QVector stijgen O(n), terwijl
+ *  de tijd van de Qset veel constanter blijft (O(1)) (met een lichte stijging). De hogere stijging van QVector zal waarschijnlijk komen
+ *  doordat we gebruik maken van de contains() functie. Deze moet alle elementen in de vector afgaan O(n).
  *
  * // Er is een verschil tussen de gemiddelde waardes bij het inserten van de eerste producten en de producten die later worden geinsert.
  *      - 0 tot 1000: ~12 ms
