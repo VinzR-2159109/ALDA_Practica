@@ -39,6 +39,11 @@ ProductTrie::ProductTrie()
  *          -> Inserten is zo snel mogelijk
  *      - De producten gedeeltelijk sorteren met std::partial_sort
  *          -> zoeken is iets sneller met dezelfde functionaliteit
+ *
+ *  Uiteindelijk hebben we gekozen voor te sorteren bij het zoeken. De meeste nodes (zeker degene die verder in de trie zitten)
+ *  Hebben redelijk weinig producten. Hierdoor blijft de tijd die nodig is om te sorteren beperkt. Dit kan wel problemen geven
+ *  als er gezocht wordt met een kleine string of op een string die vaak voorkomt in een grote dataset.
+ *  Bij een heel grote dataset zal het beter zijn om te sorteren bij het toevoegen, verwijderen en veranderen van een product.
  */
 void ProductTrie::insertProduct(Product *product)
 {
