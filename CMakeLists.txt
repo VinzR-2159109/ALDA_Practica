@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(ProductBook VERSION 0.1 LANGUAGES CXX)
+project(Practicum3 VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -11,66 +11,37 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-find_package(Qt6 COMPONENTS Widgets Network REQUIRED)
+
+include_directories(".")
 
 set(PROJECT_SOURCES
-        main.cpp
+    main.cpp
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(ProductBook
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-        productbookwidget.cpp productbookwidget.h
-        product.cpp product.h
-        producttrie.h producttrie.cpp
-        repository.h repository.cpp
-        searchbarlayout.h searchbarlayout.cpp
-        infoview.h infoview.cpp
-        productview.h productview.cpp
-        productlistitem.h productlistitem.cpp
-    )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET ProductBook APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(ProductBook SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(ProductBook
-            ${PROJECT_SOURCES}
-        )
-    endif()
-endif()
-
-target_link_libraries(ProductBook PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network)
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.ProductBook)
-endif()
-set_target_properties(ProductBook PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+qt_add_executable(Practicum3
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+    View/edgeview.h View/edgeview.cpp
+    View/vertexview.h View/vertexview.cpp
+    View/graphwidget.h View/graphwidget.cpp
+    View/mainWidget.h View/mainWidget.cpp
+    Model/vertex.h Model/vertex.cpp
+    Model/graphcontext.h Model/graphcontext.cpp
+    Model/basegraphstrategy.h Model/basegraphstrategy.cpp
+    Model/repository.h Model/repository.cpp
 )
+
+target_link_libraries(Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+file(COPY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_BINARY_DIR})
 
 include(GNUInstallDirs)
-install(TARGETS ProductBook
+install(TARGETS Practicum3
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(ProductBook)
+    qt_finalize_executable(Practicum3)
 endif()
