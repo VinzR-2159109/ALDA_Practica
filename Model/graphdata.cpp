@@ -30,7 +30,15 @@ int GraphData::getDays() const
 
 void GraphData::addVertex(Vertex *newVertex)
 {
-    m_vertices.push_back(newVertex);
+    Vertex *vertex = nullptr;
+    for (const auto v : m_vertices) {
+        if (v->getName() == newVertex->getName())
+            vertex = v;
+    }
+
+    if (!vertex) {
+        m_vertices.push_back(newVertex);
+    }
 }
 
 void GraphData::addInfectedVertexFromString(QString &string)
@@ -78,4 +86,81 @@ void GraphData::addSolutionFromString(QString &string)
 void GraphData::setDays(int newDays)
 {
     m_days = newDays;
+}
+
+void GraphData::deleteVertex(Vertex *vertex)
+{
+    deleteInfectedVertex(vertex);
+    deleteAllConnectionFromVertex(vertex);
+    m_vertices.removeAt(m_vertices.indexOf(vertex));
+}
+
+void GraphData::deleteInfectedVertex(Vertex *vertex)
+{
+    vertex->setInfected(false);
+    m_infectedVertices.removeAt(m_infectedVertices.indexOf(vertex));
+}
+
+void GraphData::deleteVertexFromString(QString string)
+{
+    Vertex *vertex = nullptr;
+
+    for (int i = 0; i < m_vertices.count(); i++) {
+        if (m_vertices[i]->getName() == string) {
+            vertex = m_vertices[i];
+            break;
+        }
+    }
+
+    if (vertex) deleteVertex(vertex);
+}
+
+void GraphData::deleteInfectedVertexFromString(QString string)
+{
+    Vertex *vertex = nullptr;
+
+    for (int i = 0; i < m_infectedVertices.count(); i++) {
+        if (m_vertices[i]->getName() == string) {
+
+            break;
+        }
+    }
+
+    if (vertex) deleteInfectedVertex(vertex);
+}
+
+void GraphData::deleteConnectionFromString(QString string)
+{
+    QStringList vertexNames = string.replace(' ', "").split("->");
+    for (int i = 0; i < m_connections.count(); i++) {
+        if (m_connections[i].first->getName() == vertexNames[0] && m_connections[i].second->getName() == vertexNames[1]) {
+            m_connections.removeAt(i);
+            break;
+        }
+    }
+}
+
+void GraphData::deleteSolutionFromString(QString string)
+{
+    QStringList vertexNames = string.replace(' ', "").split(",");
+    for (int i = 0; i < m_solutions.count(); i++) {
+        if (m_solutions[i].count() != vertexNames.count())
+            continue;
+
+        for (int j = 0; j < m_solutions[j].count(); j++) {
+            if (m_solutions[i][j]->getName() == vertexNames[j]) {
+                m_solutions.removeAt(i);
+                break;
+            }
+        }
+    }
+}
+
+void GraphData::deleteAllConnectionFromVertex(Vertex *vertex)
+{
+    for (int i = m_connections.size() - 1; i >= 0; i--) {
+        if (m_connections[i].first == vertex || m_connections[i].second == vertex) {
+            m_connections.removeAt(i);
+        }
+    }
 }

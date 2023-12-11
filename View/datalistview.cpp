@@ -44,6 +44,8 @@ DataListView::DataListView(GraphData &data, QWidget *parent)
     connect(m_showSolutions, &QRadioButton::clicked, this, [&]() { setDataType(DataType::Solutions); });
 
     connect(m_addBtn, &QPushButton::clicked, this, &DataListView::onAdd);
+    connect(m_editBtn, &QPushButton::clicked, this, &DataListView::onEdit);
+    connect(m_deleteBtn, &QPushButton::clicked, this, &DataListView::onDelete);
 
     updateUI();
 }
@@ -143,6 +145,31 @@ void DataListView::onAdd()
         break;
     case DataType::Solutions:
         m_graphData.addSolutionFromString(text);
+        break;
+    }
+
+    updateUI();
+}
+
+void DataListView::onEdit()
+{
+
+}
+
+void DataListView::onDelete()
+{
+    switch (m_dataType) {
+    case DataType::Vertices:
+        m_graphData.deleteVertexFromString(m_listView->selectedItems().first()->text());
+        break;
+    case DataType::InfectedVertices:
+        m_graphData.deleteInfectedVertexFromString(m_listView->selectedItems().first()->text());
+        break;
+    case DataType::Connections:
+        m_graphData.deleteConnectionFromString(m_listView->selectedItems().first()->text());
+        break;
+    case DataType::Solutions:
+        m_graphData.deleteSolutionFromString(m_listView->selectedItems().first()->text());
         break;
     }
 

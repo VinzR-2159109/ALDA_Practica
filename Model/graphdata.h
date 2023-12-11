@@ -45,6 +45,16 @@ public:
      */
     void setDays(int newDays);
 
+    void deleteVertex(Vertex* vertex);
+    void deleteInfectedVertex(Vertex* vertex);
+
+    void deleteVertexFromString(QString string);
+    void deleteInfectedVertexFromString(QString string);
+    void deleteConnectionFromString(QString string);
+    void deleteSolutionFromString(QString string);
+
+    void deleteAllConnectionFromVertex(Vertex *vertex);
+
 private:
     QVector<Vertex*> m_vertices;
     QVector<Vertex*> m_infectedVertices;
