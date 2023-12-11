@@ -28,8 +28,7 @@ void mainWidget::initUi()
 
     m_dataListView = new DataListView(m_data);
 
-    m_dayLabel = new QLabel();
-    m_dayLabel->setStyleSheet("background-color:white; border: 1px solid gray;");
+    m_daySpinner = new QSpinBox();
 
     // Create Layouts
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -42,7 +41,7 @@ void mainWidget::initUi()
 
     // Add to main layout
     mainLayout->addWidget(m_dataListView);
-    mainLayout->addWidget(m_dayLabel);
+    mainLayout->addWidget(m_daySpinner);
     mainLayout->addLayout(bottomButtonLayout);
 }
 
@@ -51,6 +50,8 @@ void mainWidget::initConnections()
     connect(m_loadDataBtn, &QPushButton::clicked, this, &mainWidget::onLoadData);
     connect(m_saveDataBtn, &QPushButton::clicked, this, &mainWidget::onSaveData);
     connect(m_refreshDataBtn, &QPushButton::clicked, this, &mainWidget::onRefreshData);
+
+    connect(m_daySpinner, &QSpinBox::valueChanged, this, [&]() { m_data.setDays(m_daySpinner->value()); });
 }
 
 void mainWidget::onLoadData()
@@ -96,7 +97,7 @@ void mainWidget::updateUI()
 {
     // Fill UI
     m_dataListView->setData(m_data);
-    m_dayLabel->setText(QString("Days: %1").arg(QString::number(m_data.getDays())));
+    m_daySpinner->setValue(m_data.getDays());
 }
 
 

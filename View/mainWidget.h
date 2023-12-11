@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QWidget>
 #include <QLabel>
+#include <QSpinBox>
 #include <Model/repository.h>
 
 class mainWidget : public QWidget
@@ -26,7 +27,7 @@ private:
 
     DataListView *m_dataListView;
 
-    QLabel *m_dayLabel;
+    QSpinBox *m_daySpinner;
 
     void initUi();
     void initConnections();
