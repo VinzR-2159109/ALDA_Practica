@@ -9,7 +9,6 @@ DataListView::DataListView(GraphData &data, QWidget *parent)
     , m_graphData{data}
 {
     m_addBtn = new QPushButton("Add");
-    m_editBtn = new QPushButton("Edit");
     m_deleteBtn = new QPushButton("Delete");
 
     m_showVertices = new QRadioButton("Vertices");
@@ -30,7 +29,6 @@ DataListView::DataListView(GraphData &data, QWidget *parent)
     mainLayout->addLayout(editButtonsLayout);
 
     editButtonsLayout->addWidget(m_addBtn);
-    editButtonsLayout->addWidget(m_editBtn);
     editButtonsLayout->addWidget(m_deleteBtn);
 
     radioButtonsLayout->addWidget(m_showVertices);
@@ -44,7 +42,6 @@ DataListView::DataListView(GraphData &data, QWidget *parent)
     connect(m_showSolutions, &QRadioButton::clicked, this, [&]() { setDataType(DataType::Solutions); });
 
     connect(m_addBtn, &QPushButton::clicked, this, &DataListView::onAdd);
-    connect(m_editBtn, &QPushButton::clicked, this, &DataListView::onEdit);
     connect(m_deleteBtn, &QPushButton::clicked, this, &DataListView::onDelete);
 
     updateUI();
@@ -103,7 +100,7 @@ void DataListView::updateUI()
     m_listView->addItems(itemStrings);
 }
 
-void DataListView::onAdd()
+bool DataListView::onAdd()
 {
     QString dialogText = "";
     switch (m_dataType) {
@@ -131,7 +128,7 @@ void DataListView::onAdd()
         &ok
     );
 
-    if (!ok) return;
+    if (!ok) return false;
 
     switch (m_dataType) {
     case DataType::Vertices:
@@ -149,11 +146,8 @@ void DataListView::onAdd()
     }
 
     updateUI();
-}
 
-void DataListView::onEdit()
-{
-
+    return true;
 }
 
 void DataListView::onDelete()

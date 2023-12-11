@@ -105,7 +105,7 @@ void GraphData::deleteVertexFromString(QString string)
 {
     Vertex *vertex = nullptr;
 
-    for (int i = 0; i < m_vertices.count(); i++) {
+    for (int i = 0; i < m_vertices.size(); i++) {
         if (m_vertices[i]->getName() == string) {
             vertex = m_vertices[i];
             break;
@@ -119,7 +119,7 @@ void GraphData::deleteInfectedVertexFromString(QString string)
 {
     Vertex *vertex = nullptr;
 
-    for (int i = 0; i < m_infectedVertices.count(); i++) {
+    for (int i = 0; i < m_infectedVertices.size(); i++) {
         if (m_vertices[i]->getName() == string) {
 
             break;
@@ -132,7 +132,7 @@ void GraphData::deleteInfectedVertexFromString(QString string)
 void GraphData::deleteConnectionFromString(QString string)
 {
     QStringList vertexNames = string.replace(' ', "").split("->");
-    for (int i = 0; i < m_connections.count(); i++) {
+    for (int i = 0; i < m_connections.size(); i++) {
         if (m_connections[i].first->getName() == vertexNames[0] && m_connections[i].second->getName() == vertexNames[1]) {
             m_connections.removeAt(i);
             break;
@@ -143,11 +143,11 @@ void GraphData::deleteConnectionFromString(QString string)
 void GraphData::deleteSolutionFromString(QString string)
 {
     QStringList vertexNames = string.replace(' ', "").split(",");
-    for (int i = 0; i < m_solutions.count(); i++) {
-        if (m_solutions[i].count() != vertexNames.count())
+    for (int i = m_solutions.size() - 1; i >= 0; i--) {
+        if (m_solutions[i].size() != vertexNames.size())
             continue;
 
-        for (int j = 0; j < m_solutions[j].count(); j++) {
+        for (int j = 0; j < vertexNames.size(); j++) {
             if (m_solutions[i][j]->getName() == vertexNames[j]) {
                 m_solutions.removeAt(i);
                 break;

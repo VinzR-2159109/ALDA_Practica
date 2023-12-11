@@ -26,7 +26,6 @@ private:
     DataType m_dataType;
 
     QPushButton *m_addBtn;
-    QPushButton *m_editBtn;
     QPushButton *m_deleteBtn;
 
     QRadioButton *m_showVertices;
@@ -41,8 +40,7 @@ private:
     void updateUI();
 
 private slots:
-    void onAdd();
-    void onEdit();
+    bool onAdd();
     void onDelete();
 };
 
