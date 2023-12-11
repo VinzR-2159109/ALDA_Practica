@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     graphWidgetSize.setHorizontalStretch(2);
     graphWidget->setSizePolicy(graphWidgetSize);
     
-    mainWidget *informationWidget = new mainWidget(graphWidget);
+    MainWidget *informationWidget = new MainWidget(graphWidget);
     QSizePolicy informationWidgetSize(QSizePolicy::Preferred, QSizePolicy::Preferred);
     informationWidgetSize.setHorizontalStretch(1);
     informationWidget->setSizePolicy(informationWidgetSize);

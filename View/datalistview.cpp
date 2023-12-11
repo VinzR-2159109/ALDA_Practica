@@ -92,7 +92,7 @@ void DataListView::updateUI()
             for (const auto &vertex : solution) {
                 vertexNames.append(vertex->getName());
             }
-            itemStrings.append(vertexNames.join(" or "));
+            itemStrings.append(vertexNames.join(" and "));
         }
         break;
     }

@@ -26,15 +26,19 @@ qt_add_executable(Practicum3
     View/graphwidget.h View/graphwidget.cpp
     View/mainWidget.h View/mainWidget.cpp
     Model/vertex.h Model/vertex.cpp
-    Model/graphcontext.h Model/graphcontext.cpp
-    Model/basegraphstrategy.h Model/basegraphstrategy.cpp
+    Model/strategycontext.h Model/strategycontext.cpp
+    Model/basestrategy.h Model/basestrategy.cpp
     Model/repository.h Model/repository.cpp
     View/datalistview.h View/datalistview.cpp
     Model/graphdata.h Model/graphdata.cpp
-
+    Model/Strategies/strategy1.h Model/Strategies/strategy1.cpp
+    Model/strategyfactory.h Model/strategyfactory.cpp
 )
 
 target_link_libraries(Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+find_package(Qt6 REQUIRED COMPONENTS Test)
+target_link_libraries(Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
 file(COPY ${CMAKE_SOURCE_DIR}/Data DESTINATION ${CMAKE_BINARY_DIR})
 

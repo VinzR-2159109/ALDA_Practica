@@ -12,7 +12,6 @@
 #include <QKeyEvent>
 #include <QRandomGenerator>
 
-//! [0]
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent) 
 {

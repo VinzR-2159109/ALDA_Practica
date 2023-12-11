@@ -1,6 +1,7 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
+#include "Model/strategycontext.h"
 #include "View/graphwidget.h"
 #include "View/datalistview.h"
 #include <QListWidget>
@@ -12,15 +13,17 @@
 
 #include <Model/repository.h>
 
-class mainWidget : public QWidget
+class MainWidget : public QWidget
 {
 public:
-    mainWidget(GraphWidget *graphWidget, QWidget *parent = nullptr);
-    ~mainWidget();
+    MainWidget(GraphWidget *graphWidget, QWidget *parent = nullptr);
+    ~MainWidget();
 
 private:
     GraphWidget *m_grapWidget;
     GraphData m_data;
+
+    StrategyContext m_strategyContext;
 
     // -- UI --
     QPushButton *m_loadDataBtn;
@@ -31,15 +34,18 @@ private:
     QSpinBox *m_daySpinner;
 
     QComboBox *m_graphStrategyComboBox;
+    QPushButton *m_runBtn;
 
     void initUi();
     void initConnections();
+
+    void updateUI();
 
     void onLoadData();
     void onSaveData();
     void onRefreshData();
 
-    void updateUI();
+    void onRunStrategy();
 };
 
 #endif // MAINWIDGET_H
