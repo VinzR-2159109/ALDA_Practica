@@ -45,18 +45,18 @@ void GraphWidget::clearScreen()
     m_edges.clear();
 }
 
-void GraphWidget::setData(Repository::Data data)
+void GraphWidget::setData(GraphData data)
 {
     clearScreen();
 
-    for (const auto vertex : data.vertices) {
+    for (const auto vertex : data.getVertices()) {
         VertexView *vertexView = new VertexView(vertex, this);
         m_scene->addItem(vertexView);
 
         m_vertexViews.insert(vertex, vertexView);
     }
 
-    for (const auto connection : data.connections) {
+    for (const auto connection : data.getConnections()) {
 
         VertexView *vertexView1 = m_vertexViews.value(connection.first);
         VertexView *vertexView2 = m_vertexViews.value(connection.second);

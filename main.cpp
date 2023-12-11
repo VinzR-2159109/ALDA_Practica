@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     QWidget window = QWidget();
-    window.resize(700, 500);
+    window.resize(1000, 500);
 
     QHBoxLayout *hLayout = new QHBoxLayout(&window);
 

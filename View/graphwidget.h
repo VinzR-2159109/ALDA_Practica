@@ -20,7 +20,7 @@ public:
     GraphWidget(QWidget *parent = nullptr);
 
     void clearScreen();
-    void setData(Repository::Data data);
+    void setData(GraphData data);
     void itemMoved();
 
 protected:

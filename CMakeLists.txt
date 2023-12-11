@@ -29,7 +29,9 @@ qt_add_executable(Practicum3
     Model/graphcontext.h Model/graphcontext.cpp
     Model/basegraphstrategy.h Model/basegraphstrategy.cpp
     Model/repository.h Model/repository.cpp
-    View/listvieweditview.h View/listvieweditview.cpp
+    View/datalistview.h View/datalistview.cpp
+    Model/graphdata.h Model/graphdata.cpp
+
 )
 
 target_link_libraries(Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

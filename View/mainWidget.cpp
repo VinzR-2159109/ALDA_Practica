@@ -8,11 +8,13 @@ mainWidget::mainWidget(GraphWidget *graphWidget, QWidget *parent) : QWidget(pare
 {
     initUi();
     initConnections();
+
+    m_data = GraphData();
 }
 
 mainWidget::~mainWidget()
 {
-    for (auto vertex : m_data.vertices) {
+    for (auto vertex : m_data.getVertices()) {
         delete vertex;
     }
 }
@@ -23,21 +25,11 @@ void mainWidget::initUi()
     m_loadDataBtn = new QPushButton("Load");
     m_saveDataBtn = new QPushButton("Save");
     m_refreshDataBtn = new QPushButton("Refresh");
-    m_verticesList = new ListViewEditView<Vertex*>();
-    m_connectionsList = new ListViewEditView<std::pair<Vertex*, Vertex*>>();
-    m_infectedVerticesList = new ListViewEditView<Vertex*>();
-    m_solutionsList = new ListViewEditView<QVector<Vertex*>>();
+
+    m_dataListView = new DataListView(m_data);
+
     m_dayLabel = new QLabel();
     m_dayLabel->setStyleSheet("background-color:white; border: 1px solid gray;");
-
-    QLabel *verticesListLabel = new QLabel("Vertices");
-    verticesListLabel->setAlignment(Qt::AlignCenter);
-    QLabel *connectionsListLabel = new QLabel("Connections");
-    connectionsListLabel->setAlignment(Qt::AlignCenter);
-    QLabel *infectedVerticesListLabel = new QLabel("Infected Vertices");
-    infectedVerticesListLabel->setAlignment(Qt::AlignCenter);
-    QLabel *solutionsListLabel = new QLabel("Solutions");
-    solutionsListLabel->setAlignment(Qt::AlignCenter);
 
     // Create Layouts
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -49,14 +41,7 @@ void mainWidget::initUi()
     bottomButtonLayout->addWidget(m_refreshDataBtn);
 
     // Add to main layout
-    mainLayout->addWidget(verticesListLabel);
-    mainLayout->addWidget(m_verticesList);
-    mainLayout->addWidget(connectionsListLabel);
-    mainLayout->addWidget(m_connectionsList);
-    mainLayout->addWidget(infectedVerticesListLabel);
-    mainLayout->addWidget(m_infectedVerticesList);
-    mainLayout->addWidget(solutionsListLabel);
-    mainLayout->addWidget(m_solutionsList);
+    mainLayout->addWidget(m_dataListView);
     mainLayout->addWidget(m_dayLabel);
     mainLayout->addLayout(bottomButtonLayout);
 }
@@ -73,16 +58,21 @@ void mainWidget::onLoadData()
     QString dirPath = QDir::currentPath().append("/Data");
     QString filePath = QFileDialog::getOpenFileName(this, "Load Data", dirPath, "Text files (*.txt)");
 
-    for (const auto &vertex : m_data.vertices) {
+    for (const auto &vertex : m_data.getVertices()) {
         delete vertex;
     }
 
     if (filePath.isEmpty())
         return;
 
-    m_data = Repository().LoadFile(filePath);
-    onRefreshData();
+    auto repoData = Repository().LoadFile(filePath);
 
+    if (repoData.loadSucces == false)
+        return;
+
+    m_data = repoData.graphData;
+
+    onRefreshData();
     updateUI();
 }
 
@@ -104,21 +94,9 @@ void mainWidget::onRefreshData()
 
 void mainWidget::updateUI()
 {
-    // Clear UI
-    m_verticesList->clear();
-    m_connectionsList->clear();
-    m_infectedVerticesList->clear();
-    m_solutionsList->clear();
-
-    if (m_data.loadSucces == false)
-        return;
-
     // Fill UI
-    m_verticesList->updateValues(m_data.vertices);
-    m_connectionsList->updateValues(m_data.connections);
-    m_infectedVerticesList->updateValues(m_data.infectedVertices);
-    m_solutionsList->updateValues(m_data.possibleSolutions);
-    m_dayLabel->setText(QString("Days: %1").arg(QString::number(m_data.days)));
+    m_dataListView->setData(m_data);
+    m_dayLabel->setText(QString("Days: %1").arg(QString::number(m_data.getDays())));
 }
 
 

@@ -1,6 +1,7 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
+#include "graphdata.h"
 #include "vertex.h"
 
 #include <QString>
@@ -13,38 +14,14 @@ public:
 
     struct Data
     {
-        /**
-         * @brief A list of all vertices
-         */
-        QVector<Vertex*> vertices;
-
-        /**
-         * @brief A list of tupples of 2 ints that have a connection from first to second
-         */
-        QVector<std::pair<Vertex*, Vertex*>> connections;
-
-        /**
-         * @brief A list of ints of the ifectedd vertices
-         */
-        QVector<Vertex*> infectedVertices;
-
-        /**
-         * @brief The amount of days
-         */
-        int days;
-
-        /**
-         * @brief A list of all possible solutions
-         */
-        QVector<QVector<Vertex*>> possibleSolutions;
-
+        GraphData graphData;
         bool loadSucces = false;
     };
 
     Repository();
 
     Data LoadFile(const QString &filePath);
-    void saveFile(const QString &filePath, const Data &data);
+    void saveFile(const QString &filePath, const GraphData &data);
 
 private:
 

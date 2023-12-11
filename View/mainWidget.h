@@ -2,7 +2,7 @@
 #define MAINWIDGET_H
 
 #include "View/graphwidget.h"
-#include "View/listvieweditview.h"
+#include "View/datalistview.h"
 #include <QListWidget>
 #include <QPushButton>
 #include <QWidget>
@@ -11,26 +11,20 @@
 
 class mainWidget : public QWidget
 {
-
-    Q_OBJECT
-
 public:
     mainWidget(GraphWidget *graphWidget, QWidget *parent = nullptr);
     ~mainWidget();
 
 private:
     GraphWidget *m_grapWidget;
-    Repository::Data m_data;
+    GraphData m_data;
 
     // -- UI --
     QPushButton *m_loadDataBtn;
     QPushButton *m_refreshDataBtn;
     QPushButton *m_saveDataBtn;
 
-    ListViewEditView<Vertex*> *m_verticesList;
-    ListViewEditView<std::pair<Vertex*, Vertex*>> *m_connectionsList;
-    ListViewEditView<Vertex*> *m_infectedVerticesList;
-    ListViewEditView<QVector<Vertex*>> *m_solutionsList;
+    DataListView *m_dataListView;
 
     QLabel *m_dayLabel;
 

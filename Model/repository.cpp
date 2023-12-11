@@ -22,15 +22,7 @@ Repository::Data Repository::LoadFile(const QString &filePath)
         if (!line.isEmpty()) {
             QStringList vertexNames = line.split(',');
             for (const auto &name : vertexNames) {
-
-                for (const auto vertex : data.vertices) {
-                    if (vertex->getName() == name) {
-                        data.loadSucces = false;
-                        return data;
-                    }
-                }
-
-                data.vertices.push_back(new Vertex(name));
+                data.graphData.addVertex(new Vertex(name));
             }
         }
 
@@ -38,19 +30,9 @@ Repository::Data Repository::LoadFile(const QString &filePath)
         line = file.readLine().replace('\n', "");
         if (!line.isEmpty()) {
             QStringList connectionStrings = line.split(',');
-            for (const auto &connectionString : connectionStrings) {
-                QStringList vertexNames = connectionString.split("->");
-
-                Vertex *vertex1, *vertex2;
-                for (const auto vertex : data.vertices) {
-                    if (vertex->getName() == vertexNames[0])
-                        vertex1 = vertex;
-
-                    if (vertex->getName() == vertexNames[1])
-                        vertex2 = vertex;
-                }
-
-                data.connections.push_back(std::make_pair(vertex1, vertex2));
+            for (auto &connectionString : connectionStrings) {
+                QString vertexNames = connectionString.replace("->", ",");
+                data.graphData.addConnectionFromString(vertexNames);
             }
         }
 
@@ -58,22 +40,15 @@ Repository::Data Repository::LoadFile(const QString &filePath)
         line = file.readLine().replace('\n', "");
         if (!line.isEmpty()) {
             QStringList infectedVertexNames = line.split(',');
-            for (const auto &infectedVertexName : infectedVertexNames) {
-                Vertex *vertex;
-                for (const auto v : data.vertices) {
-                    if (v->getName() == infectedVertexName)
-                        vertex = v;
-                }
-
-                vertex->setInfected(true);
-                data.infectedVertices.push_back(vertex);
+            for (auto &infectedVertexName : infectedVertexNames) {
+                data.graphData.addInfectedVertexFromString(infectedVertexName);
             }
         }
 
         // Load days
         line = file.readLine().replace('\n', "");
         if (!line.isEmpty()) {
-            data.days = line.toInt();
+            data.graphData.setDays(line.toInt());
         }
         else {
             data.loadSucces = false;
@@ -84,21 +59,9 @@ Repository::Data Repository::LoadFile(const QString &filePath)
         line = file.readLine().replace('\n', "");
         if (!line.isEmpty()) {
             QStringList solutionStrings = line.split('|');
-            for (const auto &solutionString : solutionStrings) {
-                QStringList vertexNames = solutionString.split('&');
-
-                QVector<Vertex*> solution = QVector<Vertex*>();
-                for (const auto &vertexName : vertexNames) {
-                    Vertex *vertex;
-                    for (const auto v : data.vertices) {
-                        if (v->getName() == vertexName)
-                            vertex = v;
-                    }
-
-                    solution.push_back(vertex);
-                }
-
-                data.possibleSolutions.push_back(solution);
+            for (auto &solutionString : solutionStrings) {
+                QString vertexNames = solutionString.replace('&', ',');
+                data.graphData.addSolutionFromString(vertexNames);
             }
         }
 
@@ -114,7 +77,7 @@ Repository::Data Repository::LoadFile(const QString &filePath)
     return data;
 }
 
-void Repository::saveFile(const QString &filePath, const Data &data)
+void Repository::saveFile(const QString &filePath, const GraphData &data)
 {
     QFile file(filePath);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -122,31 +85,31 @@ void Repository::saveFile(const QString &filePath, const Data &data)
     if (file.isOpen()) {
         // Save vertices
         QStringList vertexNames;
-        for (const auto &vertex : data.vertices) {
+        for (const auto &vertex : data.getVertices()) {
             vertexNames.append(vertex->getName());
         }
         file.write(vertexNames.join(',').append("\n").toUtf8());
 
         // Save connections
         QStringList connectionStrings;
-        for (const auto &connection : data.connections) {
+        for (const auto &connection : data.getConnections()) {
             connectionStrings.append(connection.first->getName() + "->" + connection.second->getName());
         }
         file.write(connectionStrings.join(',').append("\n").toUtf8());
 
         // Save infected vertices
         QStringList infectedVertexNames;
-        for (const auto &infectedVertex : data.infectedVertices) {
+        for (const auto &infectedVertex : data.getInfectedVertices()) {
             infectedVertexNames.append(infectedVertex->getName());
         }
         file.write(infectedVertexNames.join(',').append("\n").toUtf8());
 
         // Save days
-        file.write(QString::number(data.days).append("\n").toUtf8());
+        file.write(QString::number(data.getDays()).append("\n").toUtf8());
 
         // Save possible solutions
         QStringList solutionStrings;
-        for (const auto &solution : data.possibleSolutions) {
+        for (const auto &solution : data.getSolutions()) {
             QStringList vertexNames;
             for (const auto &vertex : solution) {
                 vertexNames.append(vertex->getName());
