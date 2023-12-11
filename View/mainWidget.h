@@ -8,6 +8,8 @@
 #include <QWidget>
 #include <QLabel>
 #include <QSpinBox>
+#include <QComboBox>
+
 #include <Model/repository.h>
 
 class mainWidget : public QWidget
@@ -26,8 +28,9 @@ private:
     QPushButton *m_saveDataBtn;
 
     DataListView *m_dataListView;
-
     QSpinBox *m_daySpinner;
+
+    QComboBox *m_graphStrategyComboBox;
 
     void initUi();
     void initConnections();

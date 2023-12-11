@@ -26,22 +26,30 @@ void mainWidget::initUi()
     m_saveDataBtn = new QPushButton("Save");
     m_refreshDataBtn = new QPushButton("Refresh");
 
-    m_dataListView = new DataListView(m_data);
-
     m_daySpinner = new QSpinBox();
+    m_dataListView = new DataListView(m_data);
+    QLabel *dayLabel = new QLabel("Days: ");
+    dayLabel->setMaximumWidth(40);
+
+    m_graphStrategyComboBox = new QComboBox();
 
     // Create Layouts
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QHBoxLayout *bottomButtonLayout = new QHBoxLayout(this);
+    QHBoxLayout *bottomButtonLayout = new QHBoxLayout();
+    QHBoxLayout *dayLayout = new QHBoxLayout();
 
-    // add buttons to bottem layout
+    // Add daySpinner and dayLabel to dayLayout
+    dayLayout->addWidget(dayLabel);
+    dayLayout->addWidget(m_daySpinner);
+
+    // Add buttons to bottem layout
     bottomButtonLayout->addWidget(m_loadDataBtn);
     bottomButtonLayout->addWidget(m_saveDataBtn);
     bottomButtonLayout->addWidget(m_refreshDataBtn);
 
     // Add to main layout
+    mainLayout->addLayout(dayLayout);
     mainLayout->addWidget(m_dataListView);
-    mainLayout->addWidget(m_daySpinner);
     mainLayout->addLayout(bottomButtonLayout);
 }
 

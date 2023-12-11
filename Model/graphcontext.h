@@ -10,6 +10,8 @@ public:
 
     BaseGraphStrategy *getStrategy() const;
 
+    void setStrategy(BaseGraphStrategy *newStrategy);
+
 private:
     BaseGraphStrategy *m_strategy;
 };

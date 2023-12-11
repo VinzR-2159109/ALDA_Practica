@@ -101,7 +101,7 @@ void GraphData::deleteInfectedVertex(Vertex *vertex)
 
     int index = m_infectedVertices.indexOf(vertex);
 
-    if (index > 0) {
+    if (index >= 0) {
         m_infectedVertices.removeAt(index);
     }
 }
@@ -125,8 +125,8 @@ void GraphData::deleteInfectedVertexFromString(QString string)
     Vertex *vertex = nullptr;
 
     for (int i = 0; i < m_infectedVertices.size(); i++) {
-        if (m_vertices[i]->getName() == string) {
-
+        if (m_infectedVertices[i]->getName() == string) {
+            vertex = m_infectedVertices[i];
             break;
         }
     }
