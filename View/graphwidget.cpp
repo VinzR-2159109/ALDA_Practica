@@ -85,7 +85,7 @@ void GraphWidget::setData(GraphData data)
 void GraphWidget::itemMoved()
 {
     if (!timerId)
-        timerId = startTimer(1000 / 25);
+        timerId = startTimer(5);
 }
 
 void GraphWidget::timerEvent(QTimerEvent *event)

@@ -93,7 +93,7 @@ QRectF VertexView::boundingRect() const
 QPainterPath VertexView::shape() const
 {
     QPainterPath path;
-    path.addEllipse(-10, -10, 20, 20);
+    path.addEllipse(-VERTEX_SIZE / 2, -VERTEX_SIZE / 2, VERTEX_SIZE, VERTEX_SIZE);
     return path;
 }
 

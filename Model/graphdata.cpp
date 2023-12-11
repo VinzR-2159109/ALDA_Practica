@@ -98,7 +98,12 @@ void GraphData::deleteVertex(Vertex *vertex)
 void GraphData::deleteInfectedVertex(Vertex *vertex)
 {
     vertex->setInfected(false);
-    m_infectedVertices.removeAt(m_infectedVertices.indexOf(vertex));
+
+    int index = m_infectedVertices.indexOf(vertex);
+
+    if (index > 0) {
+        m_infectedVertices.removeAt(index);
+    }
 }
 
 void GraphData::deleteVertexFromString(QString string)
