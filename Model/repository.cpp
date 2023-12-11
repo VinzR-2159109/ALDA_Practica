@@ -7,7 +7,7 @@ Repository::Repository()
 
 }
 
-Repository::Data Repository::LoadFile(QString filePath)
+Repository::Data Repository::LoadFile(const QString &filePath)
 {
     QFile file(filePath);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -112,4 +112,53 @@ Repository::Data Repository::LoadFile(QString filePath)
     }
 
     return data;
+}
+
+void Repository::saveFile(const QString &filePath, const Data &data)
+{
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    if (file.isOpen()) {
+        // Save vertices
+        QStringList vertexNames;
+        for (const auto &vertex : data.vertices) {
+            vertexNames.append(vertex->getName());
+        }
+        file.write(vertexNames.join(',').append("\n").toUtf8());
+
+        // Save connections
+        QStringList connectionStrings;
+        for (const auto &connection : data.connections) {
+            connectionStrings.append(connection.first->getName() + "->" + connection.second->getName());
+        }
+        file.write(connectionStrings.join(',').append("\n").toUtf8());
+
+        // Save infected vertices
+        QStringList infectedVertexNames;
+        for (const auto &infectedVertex : data.infectedVertices) {
+            infectedVertexNames.append(infectedVertex->getName());
+        }
+        file.write(infectedVertexNames.join(',').append("\n").toUtf8());
+
+        // Save days
+        file.write(QString::number(data.days).append("\n").toUtf8());
+
+        // Save possible solutions
+        QStringList solutionStrings;
+        for (const auto &solution : data.possibleSolutions) {
+            QStringList vertexNames;
+            for (const auto &vertex : solution) {
+                vertexNames.append(vertex->getName());
+            }
+            solutionStrings.append(vertexNames.join('&'));
+        }
+        file.write(solutionStrings.join('|').append("\n").toUtf8());
+
+        file.write("------------ // END OF FILE\n");
+        file.close();
+    }
+    else {
+        file.close();
+    }
 }

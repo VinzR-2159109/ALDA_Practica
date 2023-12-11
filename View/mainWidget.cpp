@@ -23,10 +23,10 @@ void mainWidget::initUi()
     m_loadDataBtn = new QPushButton("Load");
     m_saveDataBtn = new QPushButton("Save");
     m_refreshDataBtn = new QPushButton("Refresh");
-    m_verticesList = new QListWidget();
-    m_connectionsList = new QListWidget();
-    m_infectedVerticesList = new QListWidget();
-    m_solutionsList = new QListWidget();
+    m_verticesList = new ListViewEditView<Vertex*>();
+    m_connectionsList = new ListViewEditView<std::pair<Vertex*, Vertex*>>();
+    m_infectedVerticesList = new ListViewEditView<Vertex*>();
+    m_solutionsList = new ListViewEditView<QVector<Vertex*>>();
     m_dayLabel = new QLabel();
     m_dayLabel->setStyleSheet("background-color:white; border: 1px solid gray;");
 
@@ -71,7 +71,7 @@ void mainWidget::initConnections()
 void mainWidget::onLoadData()
 {
     QString dirPath = QDir::currentPath().append("/Data");
-    QString filePath = QFileDialog::getOpenFileName(this, "Open Data", dirPath, "Text files (*.txt)");
+    QString filePath = QFileDialog::getOpenFileName(this, "Load Data", dirPath, "Text files (*.txt)");
 
     for (const auto &vertex : m_data.vertices) {
         delete vertex;
@@ -88,7 +88,13 @@ void mainWidget::onLoadData()
 
 void mainWidget::onSaveData()
 {
+    QString dirPath = QDir::currentPath().append("/Data");
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Data", dirPath, "Text files (*.txt)");
 
+    if (filePath.isEmpty())
+        return;
+
+    Repository().saveFile(filePath, m_data);
 }
 
 void mainWidget::onRefreshData()
@@ -96,7 +102,7 @@ void mainWidget::onRefreshData()
     m_grapWidget->setData(m_data);
 }
 
-void mainWidget::updateUI() const
+void mainWidget::updateUI()
 {
     // Clear UI
     m_verticesList->clear();
@@ -108,27 +114,10 @@ void mainWidget::updateUI() const
         return;
 
     // Fill UI
-    for (const auto &vertex : m_data.vertices) {
-        m_verticesList->addItem(vertex->getName());
-    }
-
-    for (const auto &connection : m_data.connections) {
-        m_connectionsList->addItem(QString("%1 -> %2").arg(connection.first->getName()).arg(connection.second->getName()));
-    }
-
-    for (const auto &vertex : m_data.infectedVertices) {
-        m_infectedVerticesList->addItem(vertex->getName());
-    }
-
-    for (const auto &solution : m_data.possibleSolutions) {
-        QString solutionString = "";
-        for (const auto &solutionVertex : solution) {
-            solutionString.append(QString(",%1").arg(solutionVertex->getName()));
-        }
-        solutionString.removeAt(0);
-        m_solutionsList->addItem(solutionString);
-    }
-
+    m_verticesList->updateValues(m_data.vertices);
+    m_connectionsList->updateValues(m_data.connections);
+    m_infectedVerticesList->updateValues(m_data.infectedVertices);
+    m_solutionsList->updateValues(m_data.possibleSolutions);
     m_dayLabel->setText(QString("Days: %1").arg(QString::number(m_data.days)));
 }
 

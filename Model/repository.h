@@ -43,7 +43,8 @@ public:
 
     Repository();
 
-    Data LoadFile(QString filePath);
+    Data LoadFile(const QString &filePath);
+    void saveFile(const QString &filePath, const Data &data);
 
 private:
 

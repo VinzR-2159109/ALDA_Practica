@@ -2,6 +2,7 @@
 #define MAINWIDGET_H
 
 #include "View/graphwidget.h"
+#include "View/listvieweditview.h"
 #include <QListWidget>
 #include <QPushButton>
 #include <QWidget>
@@ -25,10 +26,12 @@ private:
     QPushButton *m_loadDataBtn;
     QPushButton *m_refreshDataBtn;
     QPushButton *m_saveDataBtn;
-    QListWidget *m_verticesList;
-    QListWidget *m_connectionsList;
-    QListWidget *m_infectedVerticesList;
-    QListWidget *m_solutionsList;
+
+    ListViewEditView<Vertex*> *m_verticesList;
+    ListViewEditView<std::pair<Vertex*, Vertex*>> *m_connectionsList;
+    ListViewEditView<Vertex*> *m_infectedVerticesList;
+    ListViewEditView<QVector<Vertex*>> *m_solutionsList;
+
     QLabel *m_dayLabel;
 
     void initUi();
@@ -38,7 +41,7 @@ private:
     void onSaveData();
     void onRefreshData();
 
-    void updateUI() const;
+    void updateUI();
 };
 
 #endif // MAINWIDGET_H
