@@ -21,6 +21,8 @@ void mainWidget::initUi()
 {
     // create UI elements
     m_loadDataBtn = new QPushButton("Load");
+    m_saveDataBtn = new QPushButton("Save");
+    m_refreshDataBtn = new QPushButton("Refresh");
     m_verticesList = new QListWidget();
     m_connectionsList = new QListWidget();
     m_infectedVerticesList = new QListWidget();
@@ -37,29 +39,36 @@ void mainWidget::initUi()
     QLabel *solutionsListLabel = new QLabel("Solutions");
     solutionsListLabel->setAlignment(Qt::AlignCenter);
 
-    // Create Layout
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setAlignment(Qt::AlignTop);
+    // Create Layouts
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QHBoxLayout *bottomButtonLayout = new QHBoxLayout(this);
 
-    // Add to layout
-    layout->addWidget(verticesListLabel);
-    layout->addWidget(m_verticesList);
-    layout->addWidget(connectionsListLabel);
-    layout->addWidget(m_connectionsList);
-    layout->addWidget(infectedVerticesListLabel);
-    layout->addWidget(m_infectedVerticesList);
-    layout->addWidget(solutionsListLabel);
-    layout->addWidget(m_solutionsList);
-    layout->addWidget(m_dayLabel);
-    layout->addWidget(m_loadDataBtn);
+    // add buttons to bottem layout
+    bottomButtonLayout->addWidget(m_loadDataBtn);
+    bottomButtonLayout->addWidget(m_saveDataBtn);
+    bottomButtonLayout->addWidget(m_refreshDataBtn);
+
+    // Add to main layout
+    mainLayout->addWidget(verticesListLabel);
+    mainLayout->addWidget(m_verticesList);
+    mainLayout->addWidget(connectionsListLabel);
+    mainLayout->addWidget(m_connectionsList);
+    mainLayout->addWidget(infectedVerticesListLabel);
+    mainLayout->addWidget(m_infectedVerticesList);
+    mainLayout->addWidget(solutionsListLabel);
+    mainLayout->addWidget(m_solutionsList);
+    mainLayout->addWidget(m_dayLabel);
+    mainLayout->addLayout(bottomButtonLayout);
 }
 
 void mainWidget::initConnections()
 {
-    connect(m_loadDataBtn, &QPushButton::clicked, this, &mainWidget::loadData);
+    connect(m_loadDataBtn, &QPushButton::clicked, this, &mainWidget::onLoadData);
+    connect(m_saveDataBtn, &QPushButton::clicked, this, &mainWidget::onSaveData);
+    connect(m_refreshDataBtn, &QPushButton::clicked, this, &mainWidget::onRefreshData);
 }
 
-void mainWidget::loadData()
+void mainWidget::onLoadData()
 {
     QString dirPath = QDir::currentPath().append("/Data");
     QString filePath = QFileDialog::getOpenFileName(this, "Open Data", dirPath, "Text files (*.txt)");
@@ -72,9 +81,19 @@ void mainWidget::loadData()
         return;
 
     m_data = Repository().LoadFile(filePath);
-    m_grapWidget->setData(m_data);
+    onRefreshData();
 
     updateUI();
+}
+
+void mainWidget::onSaveData()
+{
+
+}
+
+void mainWidget::onRefreshData()
+{
+    m_grapWidget->setData(m_data);
 }
 
 void mainWidget::updateUI() const

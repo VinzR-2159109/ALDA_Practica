@@ -23,6 +23,8 @@ private:
 
     // -- UI --
     QPushButton *m_loadDataBtn;
+    QPushButton *m_refreshDataBtn;
+    QPushButton *m_saveDataBtn;
     QListWidget *m_verticesList;
     QListWidget *m_connectionsList;
     QListWidget *m_infectedVerticesList;
@@ -32,7 +34,10 @@ private:
     void initUi();
     void initConnections();
 
-    void loadData();
+    void onLoadData();
+    void onSaveData();
+    void onRefreshData();
+
     void updateUI() const;
 };
 
