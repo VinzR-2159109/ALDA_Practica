@@ -14,14 +14,14 @@ public:
 
     struct Data
     {
-        GraphData graphData;
+        GraphData *graphData;
         bool loadSucces = false;
     };
 
     Repository();
 
     Data LoadFile(const QString &filePath);
-    void saveFile(const QString &filePath, const GraphData &data);
+    void saveFile(const QString &filePath, const GraphData *data);
 
 private:
 

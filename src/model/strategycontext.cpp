@@ -1,4 +1,5 @@
 #include "strategycontext.h"
+#include <iostream>
 
 StrategyContext::StrategyContext() : m_strategy{nullptr}
 { }

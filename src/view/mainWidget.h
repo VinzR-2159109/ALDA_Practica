@@ -1,9 +1,10 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "Model/strategycontext.h"
-#include "View/graphwidget.h"
-#include "View/datalistview.h"
+#include "strategycontext.h"
+#include "graphwidget.h"
+#include "datalistview.h"
+
 #include <QListWidget>
 #include <QPushButton>
 #include <QWidget>
@@ -11,17 +12,14 @@
 #include <QSpinBox>
 #include <QComboBox>
 
-#include <Model/repository.h>
-
 class MainWidget : public QWidget
 {
 public:
     MainWidget(GraphWidget *graphWidget, QWidget *parent = nullptr);
-    ~MainWidget();
 
 private:
     GraphWidget *m_grapWidget;
-    GraphData m_data;
+    GraphData *m_data;
 
     StrategyContext m_strategyContext;
 

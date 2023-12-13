@@ -3,10 +3,10 @@
 #include <QInputDialog>
 #include <QVBoxLayout>
 
-DataListView::DataListView(GraphData &data, QWidget *parent)
+DataListView::DataListView(GraphData *data, QWidget *parent)
     : QWidget(parent)
     , m_dataType{DataType::Vertices}
-    , m_graphData{data}
+    , m_graphData{nullptr}
 {
     m_addBtn = new QPushButton("Add");
     m_deleteBtn = new QPushButton("Delete");
@@ -44,7 +44,9 @@ DataListView::DataListView(GraphData &data, QWidget *parent)
     connect(m_addBtn, &QPushButton::clicked, this, &DataListView::onAdd);
     connect(m_deleteBtn, &QPushButton::clicked, this, &DataListView::onDelete);
 
-    updateUI();
+    if (m_graphData) {
+        updateUI();
+    }
 }
 
 void DataListView::clear()
@@ -52,16 +54,25 @@ void DataListView::clear()
     m_listView->clear();
 }
 
-void DataListView::setData(GraphData &data)
+void DataListView::setData(GraphData *data)
 {
     m_graphData = data;
-    updateUI();
+
+    if (m_graphData) {
+        updateUI();
+    }
+    else {
+        clear();
+    }
 }
 
 void DataListView::setDataType(DataType dataType)
 {
     m_dataType = dataType;
-    updateUI();
+
+    if (m_graphData) {
+        updateUI();
+    }
 }
 
 void DataListView::updateUI()
@@ -72,22 +83,24 @@ void DataListView::updateUI()
 
     switch (m_dataType) {
     case DataType::Vertices:
-        for (const auto &vertex : m_graphData.getVertices()) {
+        for (const auto &vertex : m_graphData->getVertices()) {
             itemStrings.append(vertex->getName());
         }
         break;
     case DataType::InfectedVertices:
-        for (const auto &infectedVertex : m_graphData.getInfectedVertices()) {
+        for (const auto &infectedVertex : m_graphData->getInfectedVertices()) {
             itemStrings.append(infectedVertex->getName());
         }
         break;
     case DataType::Connections:
-        for (const auto &connection : m_graphData.getConnections()) {
-            itemStrings.append(connection.first->getName() + "->" + connection.second->getName());
+        for (const auto &connectionKey : m_graphData->getConnections().keys()) {
+            for (const auto &connectionValue : m_graphData->getConnections().values(connectionKey)) {
+                itemStrings.append(connectionKey->getName() + "->" + connectionValue->getName());
+            }
         }
         break;
     case DataType::Solutions:
-        for (const auto &solution : m_graphData.getSolutions()) {
+        for (const auto &solution : m_graphData->getSolutions()) {
             QStringList vertexNames;
             for (const auto &vertex : solution) {
                 vertexNames.append(vertex->getName());
@@ -132,16 +145,16 @@ bool DataListView::onAdd()
 
     switch (m_dataType) {
     case DataType::Vertices:
-        m_graphData.addVertex(new Vertex(text));
+        m_graphData->addVertex(new Vertex(text));
         break;
     case DataType::InfectedVertices:
-        m_graphData.addInfectedVertexFromString(text);
+        m_graphData->addInfectedVertexFromString(text);
         break;
     case DataType::Connections:
-        m_graphData.addConnectionFromString(text);
+        m_graphData->addConnectionFromString(text);
         break;
     case DataType::Solutions:
-        m_graphData.addSolutionFromString(text);
+        m_graphData->addSolutionFromString(text);
         break;
     }
 
@@ -154,16 +167,16 @@ void DataListView::onDelete()
 {
     switch (m_dataType) {
     case DataType::Vertices:
-        m_graphData.deleteVertexFromString(m_listView->selectedItems().first()->text());
+        m_graphData->deleteVertexFromString(m_listView->selectedItems().first()->text());
         break;
     case DataType::InfectedVertices:
-        m_graphData.deleteInfectedVertexFromString(m_listView->selectedItems().first()->text());
+        m_graphData->deleteInfectedVertexFromString(m_listView->selectedItems().first()->text());
         break;
     case DataType::Connections:
-        m_graphData.deleteConnectionFromString(m_listView->selectedItems().first()->text());
+        m_graphData->deleteConnectionFromString(m_listView->selectedItems().first()->text());
         break;
     case DataType::Solutions:
-        m_graphData.deleteSolutionFromString(m_listView->selectedItems().first()->text());
+        m_graphData->deleteSolutionFromString(m_listView->selectedItems().first()->text());
         break;
     }
 

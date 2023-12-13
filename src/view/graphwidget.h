@@ -6,8 +6,9 @@
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
-#include "Model/repository.h"
 #include "edgeview.h"
+#include "graphdata.h"
+
 #include <QGraphicsView>
 
 class VertexView;
@@ -20,7 +21,7 @@ public:
     GraphWidget(QWidget *parent = nullptr);
 
     void clearScreen();
-    void setData(GraphData data);
+    void setData(GraphData *data);
     void itemMoved();
 
 protected:

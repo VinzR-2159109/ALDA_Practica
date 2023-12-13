@@ -1,3 +1,6 @@
+test/googletest-build/
+test/googletest-src/
+
 # Default ignored files
 /shelf/
 /workspace.xml

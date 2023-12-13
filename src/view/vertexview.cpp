@@ -70,7 +70,7 @@ void VertexView::calculateForces()
         xvel = yvel = 0;
 
     QRectF sceneRect = scene()->sceneRect();
-    m_newPos = pos() + QPointF(xvel, yvel);
+    m_newPos = pos() + QPointF(xvel, yvel) * 2;
     m_newPos.setX(qMin(qMax(m_newPos.x(), sceneRect.left()), sceneRect.right()));
     m_newPos.setY(qMin(qMax(m_newPos.y(), sceneRect.top()), sceneRect.bottom()));
 }

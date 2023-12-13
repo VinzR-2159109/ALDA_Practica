@@ -44,35 +44,39 @@ void GraphWidget::clearScreen()
     m_edges.clear();
 }
 
-void GraphWidget::setData(GraphData data)
+void GraphWidget::setData(GraphData *data)
 {
     clearScreen();
 
-    for (const auto vertex : data.getVertices()) {
+    if (!data)
+        return;
+
+    for (const auto vertex : data->getVertices()) {
         VertexView *vertexView = new VertexView(vertex, this);
         m_scene->addItem(vertexView);
 
         m_vertexViews.insert(vertex, vertexView);
     }
 
-    for (const auto connection : data.getConnections()) {
+    for (const auto &connectionKey : data->getConnections().keys()) {
+        for (const auto &connectionValue : data->getConnections().values(connectionKey)) {
+            VertexView *vertexView1 = m_vertexViews.value(connectionKey);
+            VertexView *vertexView2 = m_vertexViews.value(connectionValue);
 
-        VertexView *vertexView1 = m_vertexViews.value(connection.first);
-        VertexView *vertexView2 = m_vertexViews.value(connection.second);
-
-        bool hasEdge = false;
-        for (const auto edge : vertexView2->getEdges()) {
-            if (edge->destNode() == vertexView1) {
-                edge->setArrowType(EdgeView::ArrowType::TWOSIDED);
-                hasEdge = true;
-                break;
+            bool hasEdge = false;
+            for (const auto edge : vertexView2->getEdges()) {
+                if (edge->destNode() == vertexView1) {
+                    edge->setArrowType(EdgeView::ArrowType::TWOSIDED);
+                    hasEdge = true;
+                    break;
+                }
             }
-        }
 
-        if (!hasEdge) {
-            EdgeView *edge = new EdgeView(vertexView1, vertexView2);
-            m_edges.push_back(edge);
-            m_scene->addItem(edge);
+            if (!hasEdge) {
+                EdgeView *edge = new EdgeView(vertexView1, vertexView2);
+                m_edges.push_back(edge);
+                m_scene->addItem(edge);
+            }
         }
     }
 

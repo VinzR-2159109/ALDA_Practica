@@ -6,24 +6,16 @@
 #include <QMessageBox>
 #include <QMetaEnum>
 
-#include <Model/strategycontext.h>
-#include <Model/strategyfactory.h>
+#include "strategycontext.h"
+#include "strategyfactory.h"
 
 MainWidget::MainWidget(GraphWidget *graphWidget, QWidget *parent)
     : QWidget(parent)
     , m_grapWidget{graphWidget}
+    , m_data{new GraphData()}
 {
     initUi();
     initConnections();
-
-    m_data = GraphData();
-}
-
-MainWidget::~MainWidget()
-{
-    for (auto vertex : m_data.getVertices()) {
-        delete vertex;
-    }
 }
 
 void MainWidget::initUi()
@@ -81,24 +73,20 @@ void MainWidget::initConnections()
 
     connect(m_runBtn, &QPushButton::clicked, this, &MainWidget::onRunStrategy);
 
-    connect(m_daySpinner, &QSpinBox::valueChanged, this, [&]() { m_data.setDays(m_daySpinner->value()); });    
+    connect(m_daySpinner, &QSpinBox::valueChanged, this, [&]() { m_data->setDays(m_daySpinner->value()); });
 }
 
 void MainWidget::updateUI()
 {
     // Fill UI
     m_dataListView->setData(m_data);
-    m_daySpinner->setValue(m_data.getDays());
+    m_daySpinner->setValue(m_data->getDays());
 }
 
 void MainWidget::onLoadData()
 {
-    QString dirPath = QDir::currentPath().append("/Data");
+    QString dirPath = QDir::currentPath().append("/src/data");
     QString filePath = QFileDialog::getOpenFileName(this, "Load Data", dirPath, "Text files (*.txt)");
-
-    for (const auto &vertex : m_data.getVertices()) {
-        delete vertex;
-    }
 
     if (filePath.isEmpty())
         return;
@@ -108,6 +96,7 @@ void MainWidget::onLoadData()
     if (repoData.loadSucces == false)
         return;
 
+    delete m_data;
     m_data = repoData.graphData;
 
     onRefreshData();
@@ -116,7 +105,7 @@ void MainWidget::onLoadData()
 
 void MainWidget::onSaveData()
 {
-    QString dirPath = QDir::currentPath().append("/Data");
+    QString dirPath = QDir::currentPath().append("/src/data");
     QString filePath = QFileDialog::getSaveFileName(this, "Save Data", dirPath, "Text files (*.txt)");
 
     if (filePath.isEmpty())

@@ -24,22 +24,11 @@
  */
 QVector<Vertex*> Strategy1::execute()
 {
-    createGraph();
-    return findSources();
-}
+    if (!m_data)
+        return {};
 
-/**
- * Deze functie mpaakt de graph aan door over alle connecties te lopen en deze in een QMultiHash te steken.
- *
- * Tijdscomplexiteit: O(E) met E = aantal edges
- * Ruimtecomplexiteit:
- * Auxiliary space:
- */
-void Strategy1::createGraph()
-{
-    for (const auto &connection : m_data.getConnections()) {
-        m_graph.insert(connection.first, connection.second);
-    }
+    m_graph = m_data->getConnections();
+    return findSources();
 }
 
 /**
@@ -54,7 +43,7 @@ QVector<Vertex*> Strategy1::findSources()
 {
     QVector<Vertex*> sources;
 
-    for (const auto &vertex : m_data.getVertices()) {
+    for (const auto &vertex : m_data->getVertices()) {
         if (checkIfSource(vertex)) {
             sources.push_back(vertex);
         }
@@ -84,7 +73,7 @@ bool Strategy1::checkIfSource(Vertex* startVertex)
         Vertex* currentVertex = queue.dequeue();
 
         // Logic
-        if (distanceFromStart.value(currentVertex) <= m_data.getDays()) {
+        if (distanceFromStart.value(currentVertex) <= m_data->getDays()) {
             if (!currentVertex->getIsInfected())
                 return false;
         }
