@@ -3,17 +3,24 @@
 GraphData::GraphData()
 {}
 
+GraphData::~GraphData()
+{
+    for (const auto &vertex : getVertices()) {
+        deleteVertex(vertex);
+    }
+}
+
 QVector<Vertex *> GraphData::getVertices() const
 {
-    return m_vertices;
+    return QVector<Vertex*>(m_vertices.begin(), m_vertices.end());;
 }
 
 QVector<Vertex *> GraphData::getInfectedVertices() const
 {
-    return m_infectedVertices;
+    return QVector<Vertex*>(m_infectedVertices.begin(), m_infectedVertices.end());;
 }
 
-QVector<std::pair<Vertex *, Vertex *> > GraphData::getConnections() const
+QMultiHash<Vertex *, Vertex *> GraphData::getConnections() const
 {
     return m_connections;
 }
@@ -30,52 +37,49 @@ int GraphData::getDays() const
 
 void GraphData::addVertex(Vertex *newVertex)
 {
-    Vertex *vertex = nullptr;
-    for (const auto v : m_vertices) {
-        if (v->getName() == newVertex->getName())
-            vertex = v;
-    }
-
-    if (!vertex) {
-        m_vertices.push_back(newVertex);
+    if (!m_vertices.contains(newVertex->getName())) {
+        m_vertices.insert(newVertex->getName(), newVertex);
     }
 }
 
 void GraphData::addInfectedVertexFromString(QString &string)
 {
-    Vertex *vertex;
-    for (const auto v : m_vertices) {
-        if (v->getName() == string)
-            vertex = v;
-    }
+    Vertex *vertex = m_vertices.value(string);
+
+    if (!vertex || vertex->getIsInfected()) return;
+
     vertex->setInfected(true);
-    m_infectedVertices.push_back(vertex);
+    m_infectedVertices.insert(vertex->getName(), vertex);
 }
 
 void GraphData::addConnectionFromString(QString &string)
 {
     QStringList vertexNames = string.replace(' ', "").split(",");
-    Vertex *vertex1, *vertex2;
-    for (const auto vertex : m_vertices) {
-        if (vertex->getName() == vertexNames[0])
-            vertex1 = vertex;
+    if (vertexNames.size() != 2)
+        return;
 
-        if (vertex->getName() == vertexNames[1])
-            vertex2 = vertex;
-    }
-    m_connections.push_back(std::make_pair(vertex1, vertex2));
+    Vertex *vertex1 = m_vertices.value(vertexNames[0]);
+    Vertex *vertex2 = m_vertices.value(vertexNames[1]);
+
+    if (!vertex1 || !vertex2)
+        return;
+
+    if (m_connections.values(vertex1).contains(vertex2))
+        return;
+
+    m_connections.insert(vertex1, vertex2);
 }
 
 void GraphData::addSolutionFromString(QString &string)
 {
     QStringList vertexNames = string.replace(' ', "").split(",");
     QVector<Vertex*> solution = QVector<Vertex*>();
+
     for (const auto &vertexName : vertexNames) {
-        Vertex *vertex;
-        for (const auto v : m_vertices) {
-            if (v->getName() == vertexName)
-                vertex = v;
-        }
+        Vertex *vertex = m_vertices.value(vertexName);
+
+        if (!vertex)
+            return;
 
         solution.push_back(vertex);
     }
@@ -90,59 +94,52 @@ void GraphData::setDays(int newDays)
 
 void GraphData::deleteVertex(Vertex *vertex)
 {
+    if (!vertex)
+        return;
+
     deleteInfectedVertex(vertex);
     deleteAllConnectionFromVertex(vertex);
-    m_vertices.removeAt(m_vertices.indexOf(vertex));
+    m_vertices.remove(vertex->getName());
+
+    delete vertex;
 }
 
 void GraphData::deleteInfectedVertex(Vertex *vertex)
-{
+{    
     vertex->setInfected(false);
+    m_infectedVertices.remove(vertex->getName());
+}
 
-    int index = m_infectedVertices.indexOf(vertex);
+void GraphData::deleteConnection(Vertex *vertex1, Vertex *vertex2)
+{
+    m_connections.remove(vertex1, vertex2);
+}
 
-    if (index >= 0) {
-        m_infectedVertices.removeAt(index);
-    }
+void GraphData::deleteAllConnectionFromVertex(Vertex *vertex)
+{
+    m_connections.remove(vertex);
 }
 
 void GraphData::deleteVertexFromString(QString string)
 {
-    Vertex *vertex = nullptr;
-
-    for (int i = 0; i < m_vertices.size(); i++) {
-        if (m_vertices[i]->getName() == string) {
-            vertex = m_vertices[i];
-            break;
-        }
-    }
-
-    if (vertex) deleteVertex(vertex);
+    deleteVertex(m_vertices.value(string));
 }
 
 void GraphData::deleteInfectedVertexFromString(QString string)
 {
-    Vertex *vertex = nullptr;
-
-    for (int i = 0; i < m_infectedVertices.size(); i++) {
-        if (m_infectedVertices[i]->getName() == string) {
-            vertex = m_infectedVertices[i];
-            break;
-        }
-    }
-
-    if (vertex) deleteInfectedVertex(vertex);
+    deleteInfectedVertex(m_infectedVertices.value(string));
 }
 
 void GraphData::deleteConnectionFromString(QString string)
 {
     QStringList vertexNames = string.replace(' ', "").split("->");
-    for (int i = 0; i < m_connections.size(); i++) {
-        if (m_connections[i].first->getName() == vertexNames[0] && m_connections[i].second->getName() == vertexNames[1]) {
-            m_connections.removeAt(i);
-            break;
-        }
-    }
+    if (vertexNames.size() != 2)
+        return;
+
+    Vertex *vertex1 = m_vertices.value(vertexNames[0]);
+    Vertex *vertex2 = m_vertices.value(vertexNames[1]);
+
+    deleteConnection(vertex1, vertex2);
 }
 
 void GraphData::deleteSolutionFromString(QString string)
@@ -157,15 +154,6 @@ void GraphData::deleteSolutionFromString(QString string)
                 m_solutions.removeAt(i);
                 break;
             }
-        }
-    }
-}
-
-void GraphData::deleteAllConnectionFromVertex(Vertex *vertex)
-{
-    for (int i = m_connections.size() - 1; i >= 0; i--) {
-        if (m_connections[i].first == vertex || m_connections[i].second == vertex) {
-            m_connections.removeAt(i);
         }
     }
 }

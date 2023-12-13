@@ -8,7 +8,7 @@ class BaseStrategy
 public:
     virtual ~BaseStrategy();
 
-    void setData(const GraphData &data);
+    void setData(GraphData *data);
 
     /**
      * @brief executes the strategy
@@ -17,7 +17,7 @@ public:
     virtual QVector<Vertex*> execute() = 0;
 
 protected:
-    GraphData m_data;
+    GraphData *m_data;
 };
 
 #endif // BASESTRATEGY_H

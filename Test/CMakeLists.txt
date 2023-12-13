@@ -18,6 +18,9 @@ add_executable(test_Practicum3
     tst_strategy1.cpp
 )
 
+file(REMOVE ${CMAKE_BINARY_DIR}/test/data)
+file(COPY ${CMAKE_SOURCE_DIR}/test/data DESTINATION ${CMAKE_BINARY_DIR}/test)
+
 target_link_libraries(test_Practicum3 PRIVATE
     gtest
     gmock

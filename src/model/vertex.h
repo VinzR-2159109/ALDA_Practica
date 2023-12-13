@@ -8,7 +8,7 @@ class Vertex
 public:
     Vertex(const QString &name);
     Vertex(const QString &name, bool infected);
-    
+        
     QString getName() const;
     bool getIsInfected() const;
     void setInfected(bool newInfected);

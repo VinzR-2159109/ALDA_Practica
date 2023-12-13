@@ -16,11 +16,10 @@ class MainWidget : public QWidget
 {
 public:
     MainWidget(GraphWidget *graphWidget, QWidget *parent = nullptr);
-    ~MainWidget();
 
 private:
     GraphWidget *m_grapWidget;
-    GraphData m_data;
+    GraphData *m_data;
 
     StrategyContext m_strategyContext;
 

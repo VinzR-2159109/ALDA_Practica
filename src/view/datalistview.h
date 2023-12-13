@@ -16,10 +16,10 @@ public:
         Vertices, Connections, InfectedVertices, Solutions
     };
 
-    DataListView(GraphData &data, QWidget *parent = nullptr);
+    DataListView(GraphData *data, QWidget *parent = nullptr);
 
     void clear();
-    void setData(GraphData &data);
+    void setData(GraphData *data);
     void setDataType(DataType dataType);
 
 private:
@@ -35,7 +35,7 @@ private:
 
     QListWidget *m_listView;
 
-    GraphData &m_graphData;
+    GraphData *m_graphData;
 
     void updateUI();
 

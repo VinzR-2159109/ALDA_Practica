@@ -3,17 +3,19 @@
 
 #include "vertex.h"
 
+#include <QHash>
 #include <QVector>
 
 class GraphData
 {
 public:
     GraphData();
+    ~GraphData();
 
-    QVector<Vertex *> getVertices() const;
-    QVector<Vertex *> getInfectedVertices() const;
-    QVector<std::pair<Vertex *, Vertex *> > getConnections() const;
-    QVector<QVector<Vertex *> > getSolutions() const;
+    QVector<Vertex*> getVertices() const;
+    QVector<Vertex*> getInfectedVertices() const;
+    QMultiHash<Vertex*, Vertex*> getConnections() const;
+    QVector<QVector<Vertex*>> getSolutions() const;
     int getDays() const;
 
     /**
@@ -48,6 +50,7 @@ public:
 
     void deleteVertex(Vertex* vertex);
     void deleteInfectedVertex(Vertex* vertex);
+    void deleteConnection(Vertex* vertex1, Vertex* vertex2);
 
     void deleteVertexFromString(QString string);
     void deleteInfectedVertexFromString(QString string);
@@ -57,9 +60,9 @@ public:
     void deleteAllConnectionFromVertex(Vertex *vertex);
 
 private:
-    QVector<Vertex*> m_vertices;
-    QVector<Vertex*> m_infectedVertices;
-    QVector<std::pair<Vertex*, Vertex*>> m_connections;
+    QHash<QString, Vertex*> m_vertices;
+    QHash<QString, Vertex*> m_infectedVertices;
+    QMultiHash<Vertex*, Vertex*> m_connections;
     QVector<QVector<Vertex*>> m_solutions;
     int m_days = 0;
 };
