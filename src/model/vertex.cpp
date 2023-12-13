@@ -1,6 +1,5 @@
 #include "vertex.h"
 
-
 Vertex::Vertex(const QString &name)
     : Vertex(name, false)
 {}

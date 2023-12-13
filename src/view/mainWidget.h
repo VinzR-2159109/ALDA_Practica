@@ -1,17 +1,16 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "Model/strategycontext.h"
-#include "View/graphwidget.h"
-#include "View/datalistview.h"
+#include "strategycontext.h"
+#include "graphwidget.h"
+#include "datalistview.h"
+
 #include <QListWidget>
 #include <QPushButton>
 #include <QWidget>
 #include <QLabel>
 #include <QSpinBox>
 #include <QComboBox>
-
-#include <Model/repository.h>
 
 class MainWidget : public QWidget
 {

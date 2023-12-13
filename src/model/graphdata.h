@@ -2,6 +2,7 @@
 #define GRAPHDATA_H
 
 #include "vertex.h"
+
 #include <QVector>
 
 class GraphData

@@ -6,8 +6,9 @@
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
-#include "Model/repository.h"
 #include "edgeview.h"
+#include "graphdata.h"
+
 #include <QGraphicsView>
 
 class VertexView;

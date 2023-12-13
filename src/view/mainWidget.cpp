@@ -6,8 +6,8 @@
 #include <QMessageBox>
 #include <QMetaEnum>
 
-#include <Model/strategycontext.h>
-#include <Model/strategyfactory.h>
+#include "strategycontext.h"
+#include "strategyfactory.h"
 
 MainWidget::MainWidget(GraphWidget *graphWidget, QWidget *parent)
     : QWidget(parent)
@@ -93,7 +93,7 @@ void MainWidget::updateUI()
 
 void MainWidget::onLoadData()
 {
-    QString dirPath = QDir::currentPath().append("/Data");
+    QString dirPath = QDir::currentPath().append("/data");
     QString filePath = QFileDialog::getOpenFileName(this, "Load Data", dirPath, "Text files (*.txt)");
 
     for (const auto &vertex : m_data.getVertices()) {
@@ -116,7 +116,7 @@ void MainWidget::onLoadData()
 
 void MainWidget::onSaveData()
 {
-    QString dirPath = QDir::currentPath().append("/Data");
+    QString dirPath = QDir::currentPath().append("/data");
     QString filePath = QFileDialog::getSaveFileName(this, "Save Data", dirPath, "Text files (*.txt)");
 
     if (filePath.isEmpty())

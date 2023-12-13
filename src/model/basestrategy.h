@@ -1,7 +1,8 @@
 #ifndef BASESTRATEGY_H
 #define BASESTRATEGY_H
 
-#include "Model/graphdata.h"
+#include "graphdata.h"
+
 class BaseStrategy
 {
 public:

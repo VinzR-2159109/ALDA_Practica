@@ -6,8 +6,8 @@
 #include <QListWidget>
 #include <QRadioButton>
 
-#include <Model/repository.h>
-#include <Model/vertex.h>
+#include "repository.h"
+#include "vertex.h"
 
 class DataListView : public QWidget
 {

@@ -1,7 +1,7 @@
 #ifndef STRATEGY1_H
 #define STRATEGY1_H
 
-#include <Model/basestrategy.h>
+#include "basestrategy.h"
 
 #include <QMultiHash>
 
