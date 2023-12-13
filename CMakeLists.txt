@@ -16,12 +16,23 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 include_directories(src/model src/view)
 add_subdirectory(src)
 
-qt_add_executable(Practicum3 src/main.cpp)
+qt_add_executable(Practicum3 MANUAL_FINALIZATION)
 
 target_link_libraries(Practicum3 PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     src_Practicum3
 )
+
+include(GNUInstallDirs)
+install(TARGETS Practicum3
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(Practicum3)
+endif()
 ################### Aplication ##################
 
 

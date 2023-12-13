@@ -8,6 +8,7 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 add_library(src_Practicum3
+    main.cpp
     view/edgeview.h view/edgeview.cpp
     view/vertexview.h view/vertexview.cpp
     view/graphwidget.h view/graphwidget.cpp
