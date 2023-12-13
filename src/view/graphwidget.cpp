@@ -58,25 +58,23 @@ void GraphWidget::setData(GraphData *data)
         m_vertexViews.insert(vertex, vertexView);
     }
 
-    for (const auto &connectionKey : data->getConnections().keys()) {
-        for (const auto &connectionValue : data->getConnections().values(connectionKey)) {
-            VertexView *vertexView1 = m_vertexViews.value(connectionKey);
-            VertexView *vertexView2 = m_vertexViews.value(connectionValue);
+    for (auto it = data->getConnections().cbegin(); it != data->getConnections().cend(); it++) {
+        VertexView *vertexView1 = m_vertexViews.value(it.key());
+        VertexView *vertexView2 = m_vertexViews.value(it.value());
 
-            bool hasEdge = false;
-            for (const auto edge : vertexView2->getEdges()) {
-                if (edge->destNode() == vertexView1) {
-                    edge->setArrowType(EdgeView::ArrowType::TWOSIDED);
-                    hasEdge = true;
-                    break;
-                }
+        bool hasEdge = false;
+        for (const auto edge : vertexView2->getEdges()) {
+            if (edge->destNode() == vertexView1) {
+                edge->setArrowType(EdgeView::ArrowType::TWOSIDED);
+                hasEdge = true;
+                break;
             }
+        }
 
-            if (!hasEdge) {
-                EdgeView *edge = new EdgeView(vertexView1, vertexView2);
-                m_edges.push_back(edge);
-                m_scene->addItem(edge);
-            }
+        if (!hasEdge) {
+            EdgeView *edge = new EdgeView(vertexView1, vertexView2);
+            m_edges.push_back(edge);
+            m_scene->addItem(edge);
         }
     }
 

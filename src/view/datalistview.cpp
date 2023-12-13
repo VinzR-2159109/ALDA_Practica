@@ -93,12 +93,12 @@ void DataListView::updateUI()
         }
         break;
     case DataType::Connections:
-        for (const auto &connectionKey : m_graphData->getConnections().keys()) {
-            for (const auto &connectionValue : m_graphData->getConnections().values(connectionKey)) {
-                itemStrings.append(connectionKey->getName() + "->" + connectionValue->getName());
+        {
+            for (auto it = m_graphData->getConnections().cbegin(); it != m_graphData->getConnections().cend(); it++) {
+                itemStrings.append(it.key()->getName() + "->" + it.value()->getName());
             }
+            break;
         }
-        break;
     case DataType::Solutions:
         for (const auto &solution : m_graphData->getSolutions()) {
             QStringList vertexNames;
