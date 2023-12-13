@@ -26,18 +26,5 @@ target_link_libraries(Practicum3 PRIVATE
 
 
 ##################### GTest #####################
-include_directories(test)
 add_subdirectory(test)
-
-add_executable(Practicum3_Test test/main)
-
-#target_link_options(Practicum3_Test PUBLIC "LINKER:--no-as-needed.")
-set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
-target_link_libraries(Practicum3_Test PUBLIC
-    gtest
-    test_Practicum3
-)
-
-include(GoogleTest)
-gtest_discover_tests(Practicum3_Test)
 ##################### GTest #####################
