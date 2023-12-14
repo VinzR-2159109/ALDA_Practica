@@ -33,6 +33,8 @@ qt_add_executable(Practicum3
     Model/graphdata.h Model/graphdata.cpp
     Model/Strategies/strategy1.h Model/Strategies/strategy1.cpp
     Model/strategyfactory.h Model/strategyfactory.cpp
+    Model/Strategies/topologicalorder.h Model/Strategies/topologicalorder.cpp
+
 )
 
 target_link_libraries(Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
