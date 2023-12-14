@@ -4,6 +4,7 @@
 #include "basestrategy.h"
 
 #include <QMultiHash>
+#include <QSet>
 
 class Strategy1 : public BaseStrategy
 {
@@ -15,7 +16,7 @@ private:
     QMultiHash<Vertex*, Vertex*> m_graph;
 
     QVector<Vertex*> findSources();
-    bool checkIfSource(Vertex* startvertex);
+    void addIfSource(Vertex* startvertex, QVector<Vertex*> &sources, QSet<Vertex*> &infectedVertex);
 };
 
 #endif // STRATEGY1_H

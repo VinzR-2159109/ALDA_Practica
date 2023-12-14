@@ -16,12 +16,13 @@ add_library(src_Practicum3
     view/datalistview.h view/datalistview.cpp
 
     model/graphdata.h model/graphdata.cpp
-    model/Strategies/strategy1.h model/Strategies/strategy1.cpp
     model/strategyfactory.h model/strategyfactory.cpp
     model/vertex.h model/vertex.cpp
     model/strategycontext.h model/strategycontext.cpp
     model/basestrategy.h model/basestrategy.cpp
     model/repository.h model/repository.cpp
+    model/Strategies/strategy1.h model/Strategies/strategy1.cpp
+    model/strategies/matrixexponentiation.h model/strategies/matrixexponentiation.cpp
 )
 
 file(REMOVE ${CMAKE_BINARY_DIR}/src/data)

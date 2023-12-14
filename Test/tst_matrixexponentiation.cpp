@@ -9,10 +9,10 @@
 #include <StrategyFactory.h>
 #include <basestrategy.h>
 
-TEST(Test_Strategy1, Normal) {
+TEST(Test_MatrixExponentiation, Normal) {
 
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
     StrategyContext context;
 
     // Give data to strategy
@@ -41,9 +41,9 @@ TEST(Test_Strategy1, Normal) {
     delete data;
 }
 
-TEST(Test_Strategy1, Disconnected_Graph) {
+TEST(Test_MatrixExponentiation, Disconnected_Graph) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
     StrategyContext context;
 
     // Give data to strategy
@@ -71,9 +71,9 @@ TEST(Test_Strategy1, Disconnected_Graph) {
     delete data;
 }
 
-TEST(Test_Strategy1, Lowest_Number_Of_Solutions) {
+TEST(Test_MatrixExponentiation, Lowest_Number_Of_Solutions) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
     StrategyContext context;
 
     // Give data to strategy
@@ -99,10 +99,9 @@ TEST(Test_Strategy1, Lowest_Number_Of_Solutions) {
     }
 }
 
-
-TEST(Test_Strategy1, No_Solutions) {
+TEST(Test_MatrixExponentiation, No_Solutions) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
     StrategyContext context;
 
     // Give data to strategy

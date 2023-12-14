@@ -121,7 +121,7 @@ void MainWidget::onRefreshData()
 
 void MainWidget::onRunStrategy()
 {
-    BaseStrategy *strategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *strategy = StrategyFactory().getStrategy(static_cast<StrategyFactory::AllStrategies>(m_graphStrategyComboBox->currentIndex()));
 
     strategy->setData(m_data);
 

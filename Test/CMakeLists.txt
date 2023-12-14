@@ -17,6 +17,7 @@ enable_testing()
 add_executable(test_Practicum3
     main.cpp
     tst_strategy1.cpp
+    tst_matrixexponentiation.cpp
 )
 
 file(REMOVE ${CMAKE_BINARY_DIR}/test/data)
