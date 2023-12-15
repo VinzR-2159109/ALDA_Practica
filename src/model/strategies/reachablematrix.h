@@ -1,9 +1,9 @@
-#ifndef MATRIXEXPONENTIATION_H
-#define MATRIXEXPONENTIATION_H
+#ifndef REACHABLEMATRIX_H
+#define REACHABLEMATRIX_H
 
 #include <basestrategy.h>
 
-class MatrixExponentiation : public BaseStrategy
+class ReachableMatrix : public BaseStrategy
 {
 public:
     QVector<Vertex *> execute() override;
@@ -14,4 +14,4 @@ private:
     void createMatrix();
 };
 
-#endif // MATRIXEXPONENTIATION_H
+#endif // REACHABLEMATRIX_H

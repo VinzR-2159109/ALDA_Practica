@@ -9,10 +9,10 @@
 #include <StrategyFactory.h>
 #include <basestrategy.h>
 
-TEST(Test_Strategy1, Normal) {
+TEST(Test_Bfs, Normal) {
 
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Bfs);
     StrategyContext context;
 
     // Give data to strategy
@@ -41,9 +41,9 @@ TEST(Test_Strategy1, Normal) {
     delete data;
 }
 
-TEST(Test_Strategy1, Disconnected_Graph) {
+TEST(Test_Bfs, Disconnected_Graph) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Bfs);
     StrategyContext context;
 
     // Give data to strategy
@@ -71,9 +71,9 @@ TEST(Test_Strategy1, Disconnected_Graph) {
     delete data;
 }
 
-TEST(Test_Strategy1, Lowest_Number_Of_Solutions) {
+TEST(Test_Bfs, Lowest_Number_Of_Solutions) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Bfs);
     StrategyContext context;
 
     // Give data to strategy
@@ -99,10 +99,37 @@ TEST(Test_Strategy1, Lowest_Number_Of_Solutions) {
     }
 }
 
-
-TEST(Test_Strategy1, No_Solutions) {
+TEST(Test_Bfs, Infected_Vertex_Out_Of_Range) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Strategy1);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Bfs);
+    StrategyContext context;
+
+    // Give data to strategy
+    context.setStrategy(currentStrategy);
+
+    // Load data
+    QString filePath = QDir::currentPath().append("/data/Test_Infected_Verex_Out_Of_Range.txt");
+    GraphData *data = Repository().LoadFile(filePath).graphData;
+    context.getStrategy()->setData(data);
+
+    // Run strategy
+    auto result = context.runStrategy();
+
+    // Check if result is correct
+    if (result.size() != 1)
+        FAIL() << "Result does not have the correct amount of Vertices";
+
+    for (const auto &resultVertex : result) {
+        if (!QString("A").contains(resultVertex->getName())) {
+            FAIL() << "Result is not the correct solution";
+            break;
+        }
+    }
+}
+
+TEST(Test_Bfs, No_Solutions) {
+    // Create strategy
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::Bfs);
     StrategyContext context;
 
     // Give data to strategy

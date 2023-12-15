@@ -1,7 +1,7 @@
-#include "matrixexponentiation.h"
+#include "reachablematrix.h"
 #include <iostream>
 
-QVector<Vertex *> MatrixExponentiation::execute()
+QVector<Vertex *> ReachableMatrix::execute()
 {
     createMatrix();
     return {};
@@ -11,7 +11,7 @@ QVector<Vertex *> MatrixExponentiation::execute()
 // https://www.geeksforgeeks.org/matrix-exponentiation/
 // https://cp-algorithms.com/algebra/binary-exp.html
 // https://cs.stackexchange.com/questions/1147/complexity-of-computing-matrix-powers
-void MatrixExponentiation::createMatrix()
+void ReachableMatrix::createMatrix()
 {
     int matrixSize = m_data->getVertices().size();
 

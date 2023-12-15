@@ -1,12 +1,12 @@
-#ifndef STRATEGY1_H
-#define STRATEGY1_H
+#ifndef BFS_H
+#define BFS_H
 
 #include "basestrategy.h"
 
 #include <QMultiHash>
 #include <QSet>
 
-class Strategy1 : public BaseStrategy
+class BFS : public BaseStrategy
 {
 
 public:
@@ -19,4 +19,4 @@ private:
     void addIfSource(Vertex* startvertex, QVector<Vertex*> &sources, QSet<Vertex*> &infectedVertex);
 };
 
-#endif // STRATEGY1_H
+#endif // BFS_H

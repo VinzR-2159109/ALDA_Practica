@@ -1,4 +1,4 @@
-#include "strategy1.h"
+#include "bfs.h"
 
 #include <QHash>
 #include <QQueue>
@@ -17,12 +17,12 @@
  *          Regel 3: Alle vertices die geïnfecteerd zijn door een andere kunnen niet de source zijn
  *
  *  Nadelen van deze methode:
- *      1. Slechte tijdscomplexiteit: O(V * (V + E)) -> O(V² + V * E) -> groteorde O(V²)
+ *      1. Werkt niet voor edge case 'NAAM VAN EDGE CASE'
  *
  *  Voordelen van deze methode:
  *      1. /
  */
-QVector<Vertex*> Strategy1::execute()
+QVector<Vertex*> BFS::execute()
 {
     if (!m_data)
         return {};
@@ -41,7 +41,7 @@ QVector<Vertex*> Strategy1::execute()
  * Ruimtecomplexiteit:
  * Auxiliary space:
  */
-QVector<Vertex*> Strategy1::findSources()
+QVector<Vertex*> BFS::findSources()
 {
     QVector<Vertex*> sources;
     QSet<Vertex*> infectedByVertex;
@@ -67,7 +67,7 @@ QVector<Vertex*> Strategy1::findSources()
  * Ruimtecomplexiteit:
  * Auxiliary space:
  */
-void Strategy1::addIfSource(Vertex* startVertex, QVector<Vertex*> &sources, QSet<Vertex*> &infectedByVertex)
+void BFS::addIfSource(Vertex* startVertex, QVector<Vertex*> &sources, QSet<Vertex*> &infectedByVertex)
 {
     // Controleer of de vertex al is geïnfecteerd door een andere vertex (Regel 3) -> O(1)
     if (infectedByVertex.contains(startVertex))
