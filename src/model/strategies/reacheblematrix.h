@@ -1,9 +1,9 @@
-#ifndef MATRIXEXPONENTIATION_H
-#define MATRIXEXPONENTIATION_H
+#ifndef REACHEBLEMATRIX_H
+#define REACHEBLEMATRIX_H
 
 #include <basestrategy.h>
 
-class MatrixExponentiation : public BaseStrategy
+class ReachableMatrix : public BaseStrategy
 {
 public:
     QVector<Vertex *> execute() override;
@@ -15,8 +15,9 @@ private:
     void createAdjacencyMatrix(QVector<QVector<bool>> &adjacencyMatrix);
     void createReachableMatrix(QVector<QVector<bool>> &adjacencyMatrix, QVector<QVector<bool>> &reachableMatrix, int days);
     QVector<Vertex*> findSources(QVector<QVector<bool>> &reachableMatrix);
+    QVector<int> findMinRows();
 
     void printMatrix(QVector<QVector<bool>> &matrix);
 };
 
-#endif // MATRIXEXPONENTIATION_H
+#endif // REACHEBLEMATRIX_H

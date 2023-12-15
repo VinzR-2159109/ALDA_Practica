@@ -12,7 +12,7 @@
 TEST(Test_MatrixExponentiation, Normal) {
 
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::ReachableMatrix);
     StrategyContext context;
 
     // Give data to strategy
@@ -43,7 +43,7 @@ TEST(Test_MatrixExponentiation, Normal) {
 
 TEST(Test_MatrixExponentiation, Disconnected_Graph) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::ReachableMatrix);
     StrategyContext context;
 
     // Give data to strategy
@@ -73,7 +73,7 @@ TEST(Test_MatrixExponentiation, Disconnected_Graph) {
 
 TEST(Test_MatrixExponentiation, Lowest_Number_Of_Solutions) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::ReachableMatrix);
     StrategyContext context;
 
     // Give data to strategy
@@ -101,7 +101,7 @@ TEST(Test_MatrixExponentiation, Lowest_Number_Of_Solutions) {
 
 TEST(Test_MatrixExponentiation, No_Solutions) {
     // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::MatrixExponentiation);
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::ReachableMatrix);
     StrategyContext context;
 
     // Give data to strategy

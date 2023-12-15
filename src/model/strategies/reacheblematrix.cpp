@@ -1,4 +1,4 @@
-#include "matrixexponentiation.h"
+#include "reacheblematrix.h"
 #include <iostream>
 
 /**
@@ -24,7 +24,7 @@
  *  Voordelen van deze methode:
  *      1. Onafhankelijk van het aantal edges
  */
-QVector<Vertex *> MatrixExponentiation::execute()
+QVector<Vertex *> ReachableMatrix::execute()
 {
     int matrixSize = m_data->getVertices().size();
 
@@ -46,7 +46,7 @@ QVector<Vertex *> MatrixExponentiation::execute()
     int targetValue = 0;
     for (const auto &vertex : m_data->getVertices()) {
         int index = m_vertexIndexHash.value(vertex);
-        targetValue += std::pow(2, index) * vertex->getIsInfected();
+        targetValue += std::pow(2, reachableMatrix.size() - 1 - index) * vertex->getIsInfected();
         std::cout << vertex->getIsInfected() << " ";
     }
     std::cout << ":: " << targetValue << "\n";
@@ -55,7 +55,7 @@ QVector<Vertex *> MatrixExponentiation::execute()
     return findSources(reachableMatrix);
 }
 
-void MatrixExponentiation::createAdjacencyMatrix(QVector<QVector<bool>> &adjacencyMatrix)
+void ReachableMatrix::createAdjacencyMatrix(QVector<QVector<bool>> &adjacencyMatrix)
 {
     int previousIndex = 0;
     for (const auto &vertex : m_data->getVertices()) {
@@ -75,7 +75,7 @@ void MatrixExponentiation::createAdjacencyMatrix(QVector<QVector<bool>> &adjacen
     }
 }
 
-void MatrixExponentiation::createReachableMatrix(QVector<QVector<bool>> &adjacencyMatrix, QVector<QVector<bool>> &reachableMatrix, int days)
+void ReachableMatrix::createReachableMatrix(QVector<QVector<bool>> &adjacencyMatrix, QVector<QVector<bool>> &reachableMatrix, int days)
 {
     reachableMatrix = adjacencyMatrix;
 
@@ -116,7 +116,7 @@ void MatrixExponentiation::createReachableMatrix(QVector<QVector<bool>> &adjacen
     }
 }
 
-QVector<Vertex*> MatrixExponentiation::findSources(QVector<QVector<bool>> &reachableMatrix)
+QVector<Vertex*> ReachableMatrix::findSources(QVector<QVector<bool>> &reachableMatrix)
 {
     // Calculate decimal target value
     int targetValue = 0;
@@ -147,7 +147,7 @@ QVector<Vertex*> MatrixExponentiation::findSources(QVector<QVector<bool>> &reach
 }
 
 // FOR TESTING
-void MatrixExponentiation::printMatrix(QVector<QVector<bool>> &matrix)
+void ReachableMatrix::printMatrix(QVector<QVector<bool>> &matrix)
 {
     int matrixSize = matrix.size();
 
@@ -165,7 +165,7 @@ void MatrixExponentiation::printMatrix(QVector<QVector<bool>> &matrix)
         // calculate decimal value
         int value = 0;
         for (int j = 0; j < matrixSize; ++j) {
-            value += std::pow(2, j) * matrix[i][j];
+            value += std::pow(2, matrixSize - 1 - j) * matrix[i][j];
         }
 
         std::cout << ":: " << value << "\n";

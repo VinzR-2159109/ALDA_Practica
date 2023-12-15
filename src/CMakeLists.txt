@@ -22,7 +22,7 @@ add_library(src_Practicum3
     model/basestrategy.h model/basestrategy.cpp
     model/repository.h model/repository.cpp
     model/Strategies/strategy1.h model/Strategies/strategy1.cpp
-    model/strategies/matrixexponentiation.h model/strategies/matrixexponentiation.cpp
+    model/strategies/reacheblematrix.h model/strategies/reacheblematrix.cpp
 )
 
 file(REMOVE ${CMAKE_BINARY_DIR}/src/data)

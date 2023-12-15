@@ -1,15 +1,15 @@
 #include "strategyfactory.h"
 
-#include <strategy1.h>
-#include <MatrixExponentiation.h>
+#include "strategy1.h"
+#include "reacheblematrix.h"
 
 BaseStrategy *StrategyFactory::getStrategy(AllStrategies strategy)
 {
     switch (strategy) {
         case AllStrategies::Strategy1:
             return new Strategy1();
-        case AllStrategies::MatrixExponentiation:
-            return new MatrixExponentiation();
+        case AllStrategies::ReachableMatrix:
+            return new ReachableMatrix();
     }
     throw std::exception("Strategy not implemented");
 }
