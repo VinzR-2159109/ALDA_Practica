@@ -1,6 +1,0 @@
-A,B,C,D,E,F,G,H,I,J
-A->B,A->C,B->A,B->D,C->A,C->D,C->E,D->B,D->C,D->E,D->F,E->C,E->D,E->G,F->D,F->G,F->H,G->E,G->F,G->H,H->F,H->G,H->I,I->H,I->J,J->I
-A,B,C,D,E,F,G
-2
-C
------------- // END OF FILE

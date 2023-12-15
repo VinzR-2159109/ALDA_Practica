@@ -16,6 +16,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 include_directories(src/model src/view)
 add_subdirectory(src)
 
+file(REMOVE ${CMAKE_BINARY_DIR}/src/data)
+file(COPY ${CMAKE_SOURCE_DIR}/data/ DESTINATION ${CMAKE_BINARY_DIR}/src/data/)
+
 qt_add_executable(Practicum3 MANUAL_FINALIZATION)
 
 target_link_libraries(Practicum3 PRIVATE

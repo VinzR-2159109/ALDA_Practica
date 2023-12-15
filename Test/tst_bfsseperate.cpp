@@ -9,7 +9,7 @@
 #include <StrategyFactory.h>
 #include <basestrategy.h>
 
-TEST(Test_BfsSeperate, Normal) {
+TEST(Test_Bfs_Seperate, Normal) {
 
     // Create strategy
     BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
@@ -19,7 +19,7 @@ TEST(Test_BfsSeperate, Normal) {
     context.setStrategy(currentStrategy);
 
     // Load data
-    QString filePath = QDir::currentPath().append("/data/Test_Normal.txt");
+    QString filePath = QDir::currentPath().append("/data/1_source_in_graph.txt");
     GraphData *data = Repository().LoadFile(filePath).graphData;
     context.getStrategy()->setData(data);
 
@@ -41,7 +41,7 @@ TEST(Test_BfsSeperate, Normal) {
     delete data;
 }
 
-TEST(Test_BfsSeperate, Disconnected_Graph) {
+TEST(Test_Bfs_Seperate, Disconnected_Graph) {
     // Create strategy
     BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
     StrategyContext context;
@@ -50,7 +50,93 @@ TEST(Test_BfsSeperate, Disconnected_Graph) {
     context.setStrategy(currentStrategy);
 
     // Load data
-    QString filePath = QDir::currentPath().append("/data/Test_DisconnectedGraph.txt");
+    QString filePath = QDir::currentPath().append("/data/disconnected_graph.txt");
+    GraphData *data = Repository().LoadFile(filePath).graphData;
+    context.getStrategy()->setData(data);
+
+    // Run strategy
+    auto result = context.runStrategy();
+
+    // Check if result is correct
+    if (result.size() != 2)
+        FAIL() << "Result does not have the correct amount of Vertices";
+
+    for (const auto &resultVertex : result) {
+        if (!QString("AD").contains(resultVertex->getName())) {
+            FAIL() << "Result is not the correct solution";
+            break;
+        }
+    }
+
+    delete data;
+}
+
+TEST(Test_Bfs_Seperate, Lowest_Number_Of_Solutions) {
+    // Create strategy
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
+    StrategyContext context;
+
+    // Give data to strategy
+    context.setStrategy(currentStrategy);
+
+    // Load data
+    QString filePath = QDir::currentPath().append("/data/directional_graph.txt");
+    GraphData *data = Repository().LoadFile(filePath).graphData;
+    context.getStrategy()->setData(data);
+
+    // Run strategy
+    auto result = context.runStrategy();
+
+    // Check if result is correct
+    if (result.size() != 1)
+        FAIL() << "Result does not have the correct amount of Vertices";
+
+    for (const auto &resultVertex : result) {
+        if (!QString("A").contains(resultVertex->getName())) {
+            FAIL() << "Result is not the correct solution";
+            break;
+        }
+    }
+}
+
+TEST(Test_Bfs_Seperate, Infected_Vertex_Out_Of_Range) {
+    // Create strategy
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
+    StrategyContext context;
+
+    // Give data to strategy
+    context.setStrategy(currentStrategy);
+
+    // Load data
+    QString filePath = QDir::currentPath().append("/data/infected_vertex_out_of_range.txt");
+    GraphData *data = Repository().LoadFile(filePath).graphData;
+    context.getStrategy()->setData(data);
+
+    // Run strategy
+    auto result = context.runStrategy();
+
+    // Check if result is correct
+    if (result.size() != 2)
+        FAIL() << "Result does not have the correct amount of Vertices";
+
+    for (const auto &resultVertex : result) {
+        if (!QString("BE").contains(resultVertex->getName())) {
+            FAIL() << "Result is not the correct solution";
+            break;
+        }
+    }
+}
+
+TEST(Test_Bfs_Seperate, No_Connections) {
+    // Create strategy
+    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
+    StrategyContext context;
+
+    // Give data to strategy
+    context.setStrategy(currentStrategy);
+
+    // Load data
+    QString filePath = QDir::currentPath().append("/data/no_connections.txt");
     GraphData *data = Repository().LoadFile(filePath).graphData;
     context.getStrategy()->setData(data);
 
@@ -62,16 +148,14 @@ TEST(Test_BfsSeperate, Disconnected_Graph) {
         FAIL() << "Result does not have the correct amount of Vertices";
 
     for (const auto &resultVertex : result) {
-        if (!QString("A, B, C").contains(resultVertex->getName())) {
+        if (!QString("ABC").contains(resultVertex->getName())) {
             FAIL() << "Result is not the correct solution";
             break;
         }
     }
-
-    delete data;
 }
 
-TEST(Test_BfsSeperate, Lowest_Number_Of_Solutions) {
+TEST(Test_Bfs_Seperate, No_Solutions) {
     // Create strategy
     BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
     StrategyContext context;
@@ -80,63 +164,7 @@ TEST(Test_BfsSeperate, Lowest_Number_Of_Solutions) {
     context.setStrategy(currentStrategy);
 
     // Load data
-    QString filePath = QDir::currentPath().append("/data/Test_LowestNumberOfSolutions.txt");
-    GraphData *data = Repository().LoadFile(filePath).graphData;
-    context.getStrategy()->setData(data);
-
-    // Run strategy
-    auto result = context.runStrategy();
-
-    // Check if result is correct
-    if (result.size() != 1)
-        FAIL() << "Result does not have the correct amount of Vertices";
-
-    for (const auto &resultVertex : result) {
-        if (!QString("A").contains(resultVertex->getName())) {
-            FAIL() << "Result is not the correct solution";
-            break;
-        }
-    }
-}
-
-TEST(Test_BfsSeperate, Infected_Vertex_Out_Of_Range) {
-    // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
-    StrategyContext context;
-
-    // Give data to strategy
-    context.setStrategy(currentStrategy);
-
-    // Load data
-    QString filePath = QDir::currentPath().append("/data/Test_Infected_Verex_Out_Of_Range.txt");
-    GraphData *data = Repository().LoadFile(filePath).graphData;
-    context.getStrategy()->setData(data);
-
-    // Run strategy
-    auto result = context.runStrategy();
-
-    // Check if result is correct
-    if (result.size() != 1)
-        FAIL() << "Result does not have the correct amount of Vertices";
-
-    for (const auto &resultVertex : result) {
-        if (!QString("A").contains(resultVertex->getName())) {
-            FAIL() << "Result is not the correct solution";
-            break;
-        }
-    }
-}
-
-TEST(Test_BfsSeperate, No_Solutions) {
-    // Create strategy
-    BaseStrategy *currentStrategy = StrategyFactory().getStrategy(StrategyFactory::AllStrategies::BfsSeperate);
-    StrategyContext context;
-
-    // Give data to strategy
-    context.setStrategy(currentStrategy);
-
-    // Load data
-    QString filePath = QDir::currentPath().append("/data/Test_NoSolutions.txt");
+    QString filePath = QDir::currentPath().append("/data/no_solution.txt");
     GraphData *data = Repository().LoadFile(filePath).graphData;
     context.getStrategy()->setData(data);
 

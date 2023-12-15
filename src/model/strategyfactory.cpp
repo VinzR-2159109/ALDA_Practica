@@ -1,7 +1,7 @@
 #include "strategyfactory.h"
 
 #include <bfs.h>
-#include <MatrixExponentiation.h>
+#include <reachablematrix.h>
 #include <BFSSeperate.h>
 
 BaseStrategy *StrategyFactory::getStrategy(AllStrategies strategy)

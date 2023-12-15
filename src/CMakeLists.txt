@@ -26,7 +26,4 @@ add_library(src_Practicum3
     model/strategies/bfsseperate.h model/strategies/bfsseperate.cpp
 )
 
-file(REMOVE ${CMAKE_BINARY_DIR}/src/data)
-file(COPY ${CMAKE_SOURCE_DIR}/src/data DESTINATION ${CMAKE_BINARY_DIR}/src)
-
 target_link_libraries(src_Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
