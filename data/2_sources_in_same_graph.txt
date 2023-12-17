@@ -1,0 +1,6 @@
+D,B,E,F,A,C,G
+F->G,C->G,E->G,B->G,A->C,A->B,A->C,A->B,D->F,D->E,D->F,D->E,G->E,G->F,G->C,G->B,G->E,G->F,G->C,G->B,G->E,G->F,G->C,G->B,G->E,G->F,G->C,G->B
+D,B,E,F,A,C
+1
+A&D
+------------ // END OF FILE

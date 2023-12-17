@@ -21,11 +21,8 @@ add_library(src_Practicum3
     model/strategycontext.h model/strategycontext.cpp
     model/basestrategy.h model/basestrategy.cpp
     model/repository.h model/repository.cpp
-    model/Strategies/strategy1.h model/Strategies/strategy1.cpp
-    model/strategies/matrixexponentiation.h model/strategies/matrixexponentiation.cpp
+    model/Strategies/bfs.h model/Strategies/bfs.cpp
+    model/strategies/reachablematrix.h model/strategies/reachablematrix.cpp
 )
-
-file(REMOVE ${CMAKE_BINARY_DIR}/src/data)
-file(COPY ${CMAKE_SOURCE_DIR}/src/data DESTINATION ${CMAKE_BINARY_DIR}/src)
 
 target_link_libraries(src_Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

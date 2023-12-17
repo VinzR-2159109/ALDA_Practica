@@ -1,0 +1,6 @@
+A,E,C,D,B
+A->C,D->E,C->D,B->C
+A,C,B
+1
+A&B
+------------ // END OF FILE
