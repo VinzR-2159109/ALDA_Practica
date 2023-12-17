@@ -23,7 +23,6 @@ add_library(src_Practicum3
     model/repository.h model/repository.cpp
     model/Strategies/bfs.h model/Strategies/bfs.cpp
     model/strategies/reachablematrix.h model/strategies/reachablematrix.cpp
-    model/strategies/bfsseperate.h model/strategies/bfsseperate.cpp
 )
 
 target_link_libraries(src_Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

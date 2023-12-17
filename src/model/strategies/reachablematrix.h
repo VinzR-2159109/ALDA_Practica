@@ -1,5 +1,5 @@
-#ifndef REACHABLEMATRIX_H
-#define REACHABLEMATRIX_H
+#ifndef REACHEBLEMATRIX_H
+#define REACHEBLEMATRIX_H
 
 #include <basestrategy.h>
 
@@ -9,9 +9,15 @@ public:
     QVector<Vertex *> execute() override;
 
 private:
-    QVector<QVector<int>> m_matrix;
+    QHash<Vertex*, int> m_vertexIndexHash;
+    QHash<int, Vertex*> m_indexVertexHash;
 
-    void createMatrix();
+    void createAdjacencyMatrix(QVector<QVector<bool>> &adjacencyMatrix);
+    void createReachableMatrix(QVector<QVector<bool>> &adjacencyMatrix, QVector<QVector<bool>> &reachableMatrix, int days);
+    QVector<Vertex*> findSources(QVector<QVector<bool>> &reachableMatrix);
+    QVector<int> findMinRows();
+
+    void printMatrix(QVector<QVector<bool>> &matrix);
 };
 
-#endif // REACHABLEMATRIX_H
+#endif // REACHEBLEMATRIX_H

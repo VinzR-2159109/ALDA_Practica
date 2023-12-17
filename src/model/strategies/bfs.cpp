@@ -13,11 +13,11 @@
  *      - Loop door alle vertices
  *      - Voor elke vertex, doe een breath first search algoritme om te controleren of de volgende voorwaarden voldaan worden:
  *          Regel 1: Alle vertices die op <= verlopen dagen bereikt worden moeten besmet zijn
- *          Regel 2: Alle vertices die op >  verlopen dagen bereikt worden moeten niet besmet zijn
- *          Regel 3: Alle vertices die geïnfecteerd zijn door een andere kunnen niet de source zijn
+ *          Regel 2: Alle vertices die op het aantal verlopen dagen + 1 dagen bereikt worden moeten niet besmet zijn
+ *          Regel 3: Alle vertices die geïnfecteerd zijn door een andere vertex kunnen niet de source zijn
  *
  *  Nadelen van deze methode:
- *      1. Werkt niet voor edge case 'NAAM VAN EDGE CASE'
+ *      1. Kan niet overweg met de edge case 'infected_vertex_out_of_range'
  *
  *  Voordelen van deze methode:
  *      1. /
@@ -43,14 +43,14 @@ QVector<Vertex*> BFS::execute()
  */
 QVector<Vertex*> BFS::findSources()
 {
-    QVector<Vertex*> sources;
+    QSet<Vertex*> sources;
     QSet<Vertex*> infectedByVertex;
 
     for (const auto &vertex : m_data->getInfectedVertices()) {
         addIfSource(vertex, sources, infectedByVertex);
     }
 
-    return sources;
+    return QVector<Vertex*>(sources.begin(), sources.end());
 }
 
 /**
@@ -67,7 +67,7 @@ QVector<Vertex*> BFS::findSources()
  * Ruimtecomplexiteit:
  * Auxiliary space:
  */
-void BFS::addIfSource(Vertex* startVertex, QVector<Vertex*> &sources, QSet<Vertex*> &infectedByVertex)
+void BFS::addIfSource(Vertex* startVertex, QSet<Vertex*> &sources, QSet<Vertex*> &infectedByVertex)
 {
     // Controleer of de vertex al is geïnfecteerd door een andere vertex (Regel 3) -> O(1)
     if (infectedByVertex.contains(startVertex))
@@ -88,9 +88,12 @@ void BFS::addIfSource(Vertex* startVertex, QVector<Vertex*> &sources, QSet<Verte
             if (!currentVertex->getIsInfected())
                 return;
         }
-        else {
-            if (currentVertex->getIsInfected())
+        else if (distanceFromStart.value(currentVertex) == m_data->getDays() + 1){
+            if (currentVertex->getIsInfected() && !infectedByVertex.contains(currentVertex))
                 return;
+        }
+        else {
+            continue;
         }
 
         QVector<Vertex*> neighbors = m_graph.values(currentVertex);
@@ -105,11 +108,11 @@ void BFS::addIfSource(Vertex* startVertex, QVector<Vertex*> &sources, QSet<Verte
     // Zorg dat regel 3 voldaan wordt -> O(I) met I = aantal bekeken vertices (worst case alle geïnfecteerde vertices)
     for (auto it = distanceFromStart.cbegin(); it != distanceFromStart.cend(); it++) {
         if (sources.contains(it.key())) {
-            sources.remove(sources.indexOf(it.key()));
+            sources.remove(it.key());
         }
 
         infectedByVertex.insert(it.key());
     }
 
-    sources.push_back(startVertex);
+    sources.insert(startVertex);
 }
