@@ -11,7 +11,7 @@ class StrategyFactory : public QObject
 
 public:
     enum class AllStrategies {
-        Topologicalorder
+        Topologicalorder,
         Bfs,
         ReachableMatrix
     };
