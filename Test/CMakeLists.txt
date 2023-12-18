@@ -16,12 +16,13 @@ enable_testing()
 
 add_executable(test_Practicum3
     main.cpp
-    tst_strategy1.cpp
-    tst_matrixexponentiation.cpp
+    tst_bfs.cpp
+    tst_reachablematrix.cpp
+
 )
 
 file(REMOVE ${CMAKE_BINARY_DIR}/test/data)
-file(COPY ${CMAKE_SOURCE_DIR}/test/data DESTINATION ${CMAKE_BINARY_DIR}/test)
+file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${CMAKE_BINARY_DIR}/test)
 
 target_link_libraries(test_Practicum3 PRIVATE
     gtest

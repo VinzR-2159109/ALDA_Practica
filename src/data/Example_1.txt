@@ -1,6 +1,0 @@
-A,B,C,D
-
-A,B,C
-3
-A&B&C
------------- // END OF FILE
