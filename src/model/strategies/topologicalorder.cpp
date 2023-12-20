@@ -14,7 +14,7 @@
  * Deze specifieke voorwaarden zijn niet bij alle mogelijke cases van toepassen, toch is het intressant om de tijdcomplexiteit van deze strategy te bekijken.
  *     - Toplogogisch sorteren van een DAG = O(V + E) met V #vertices en E #edges
  *     - Door de toplogogisch gesorteerde lijst gaan is O(V) met V #vertices
- *     - Totale tijdcomplexiteit is dus O( (V+E) * V), dit is dezelfde als strategy 1. Waardoor strategy 1 de voorkeur krijgt.
+ *     - Totale tijdcomplexiteit is dus O( (V+E) * V), dit is dezelfde als strategy 1 (bfs). Waardoor deze de voorkeur krijgt.
  */
 
 

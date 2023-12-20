@@ -150,7 +150,8 @@ void ReachableMatrix::createReachableMatrix(QVector<QVector<bool>> &adjacencyMat
  *
  * Door tijdsgebrek brute forcen we de oplossing door elke mogelijke combinatie te bekijken. Door gebruik te maken van een backtrack algoritme kan dit wel
  * verbeterd worden. Als dit algoritme een oplossing vind van bijvoorbeeld 3 rijen, hoeven de combinaties van 3 of meer rijen niet meer bekeken te worden.
- * Deze gaan namelijk nooit beter zijn dan de huidige oplossing.
+ * Deze gaan namelijk nooit beter zijn dan de huidige oplossing. Daarnaast kan er al vroeger gestopt worden zodra de waarde van de gecombineerde rijen groter is dan
+ * de uitkomst, geen enkele verdere combinatie gaat de uitkomst geven omdat de waarde enkel groter kan worden.
  *
  * Tijdscomplexiteit: O(V + V² + 2^V) -> O(2^V) met V = aantal vertices.
  *

@@ -18,7 +18,7 @@ add_executable(test_Practicum3
     main.cpp
     tst_bfs.cpp
     tst_reachablematrix.cpp
-
+    tst_topologicaorder.cpp
 )
 
 file(REMOVE ${CMAKE_BINARY_DIR}/test/data)
