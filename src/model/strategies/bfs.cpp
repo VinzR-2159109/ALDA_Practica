@@ -11,7 +11,7 @@
  *  1. Maak een graph aan door alle connecties in een QMultiHash te steken.
  *  2. Vind alle mogelijke sources
  *      - Loop door alle vertices
- *      - Voor elke vertex, doe een breath first search algoritme om te controleren of de volgende voorwaarden voldaan worden:
+ *      - Voor elke vertex, voer een breath first search algoritme uit om te controleren of de volgende voorwaarden voldaan worden:
  *          Regel 1: Alle vertices die op <= verlopen dagen bereikt worden moeten besmet zijn
  *          Regel 2: Alle vertices die op het aantal verlopen dagen + 1 dagen bereikt worden moeten niet besmet zijn
  *          Regel 3: Alle vertices die geïnfecteerd zijn door een andere vertex kunnen niet de source zijn
@@ -20,7 +20,8 @@
  *      1. Kan niet overweg met de edge case 'infected_vertex_out_of_range'
  *
  *  Voordelen van deze methode:
- *      1. /
+ *      1. Redelijk lage tijdscomplexiteit in vergelijking met onze andere methodes (O(V² + VE))
+ *         Dit is goed als er niet veel meer edges zijn dan vertices. Zodra er zeer veel edges zijn kan het zijn dat de matrix oplossing beter is.
  */
 QVector<Vertex*> BFS::execute()
 {
@@ -33,10 +34,10 @@ QVector<Vertex*> BFS::execute()
 
 /**
  * Voert de checkIfSource() functie uit voor elke geïnfecteerde vertex.
- * checkIfSource() is een breadth first search algoritme, deze heeft een tijdscomplexiteit van O(V + E) met V het aantal vertices en E het aantal edges.
+ * checkIfSource() heeft een tijdscomplexiteit van O(V + E) met V het aantal vertices en E het aantal edges.
  *
  * Tijdscomplexiteit: O(I * (V + E)) met I = aantal geïnfecteerde vertices, V = aantal vertices, E = aantal edges
- * Worst case I = V -> O(V * (V + E))
+ * Worst case I = V -> O(V * (V + E)) -> O(V² + VE)
  *
  * Ruimtecomplexiteit:
  * Auxiliary space:
@@ -57,8 +58,10 @@ QVector<Vertex*> BFS::findSources()
  * Deze functie controleerd of de gegeven vertex een source kan zijn en voegt deze toe aan een lijst indien dit zo is.
  * Dit is een breadth first search algoritme, deze heeft een tijdscomplexiteit van O(V + E) met V het aantal vertices en E het aantal edges.
  * Als de vertex geen source kan zijn returnt de functie, hierdoor wordt er vaak niet naar elke vertex in de graph gekeken (early return).
+ * Daarnaast worden enkel de vertices bekeken die bereikbaar zijn in het aantal dagen dat is meegegeven in de data + 1. In het slechte geval is dit
+ * gelijk aan alle vertices.
  *
- * Als de vertex wel een source kan zijn worden alle vertices die de startVertex heeft geïnfecteer verwijderd van de mogelijk oplossing.
+ * Als de vertex een source kan zijn worden alle vertices die de startVertex heeft geïnfecteer verwijderd van de mogelijk oplossing.
  * Zo wordt de kleinst mogelijke oplossing bekomen.
  *
  * Tijdscomplexiteit: O(V + E + I) met V = aantal vertices, E = aantal edges en I = aantal geïnfecteerde vertices
