@@ -21,6 +21,7 @@ add_library(src_Practicum3
     model/strategycontext.h model/strategycontext.cpp
     model/basestrategy.h model/basestrategy.cpp
     model/repository.h model/repository.cpp
+    model/Strategies/topologicalorder.h model/Strategies/topologicalorder.cpp
     model/Strategies/bfs.h model/Strategies/bfs.cpp
     model/strategies/reachablematrix.h model/strategies/reachablematrix.cpp
 )
