@@ -141,6 +141,7 @@ QVector<Vertex*> ReachableMatrix::findSources(QVector<QVector<bool>> &reachableM
     //      - Alle combinaties maken en de kleinste eruit halen -> O(I!) = niet doenbaar
     //      - Backtracking?
 
+    // Voor nu brute force:
     QVector<Vertex*> solution;
     int maxCombinations = 1 << m_data->getInfectedVertices().size(); // = 2^n combinations
     for (int i = 1; i < maxCombinations; ++i) {

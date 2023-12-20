@@ -16,7 +16,7 @@ private:
     QMultiHash<Vertex*, Vertex*> m_graph;
 
     QVector<Vertex*> findSources();
-    void addIfSource(Vertex* startvertex, QSet<Vertex*> &sources, QSet<Vertex*> &infectedVertex);
+    void addIfSource(Vertex* startvertex, QSet<Vertex*> &sources, QSet<Vertex*> &needsToBeInfected);
 };
 
 #endif // BFS_H

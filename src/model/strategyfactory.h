@@ -12,7 +12,8 @@ class StrategyFactory : public QObject
 public:
     enum class AllStrategies {
         Bfs,
-        ReachableMatrix
+        ReachableMatrix,
+        Strategy2
     };
     Q_ENUM(AllStrategies)
 
