@@ -43,19 +43,6 @@ QVector<Vertex *> ReachableMatrix::execute()
     createAdjacencyMatrix(adjacencyMatrix);
     createReachableMatrix(adjacencyMatrix, reachableMatrix, m_data->getDays());
 
-    // FOR TESTING --------------------
-    printMatrix(reachableMatrix);
-
-    std::cout << "Target value: \n";
-    int targetValue = 0;
-    for (const auto &vertex : m_data->getVertices()) {
-        int index = m_vertexIndexHash.value(vertex);
-        targetValue += std::pow(2, reachableMatrix.size() - 1 - index) * vertex->getIsInfected();
-        std::cout << vertex->getIsInfected() << " ";
-    }
-    std::cout << ":: " << targetValue << "\n";
-    // --------------------------------
-
     return findSources(reachableMatrix);
 }
 
@@ -81,38 +68,29 @@ void ReachableMatrix::createAdjacencyMatrix(QVector<QVector<bool>> &adjacencyMat
 
 /**
  * Deze functie maakt de 'reachable' matrix aan vanuit de adjacency matrix. Door de adjacency matrix tot een macht 'x' te doen krijg je een matrix
- * waarin staat hoeveel routes er zijn van A naar B in exact x stappen. als je deze samenvoegd voor elke dag krijg je een matrix die aangeeft of een vertex
- * bereikbaar is in x stappen of minder.
+ * waarin staat hoeveel routes er zijn van A naar B in exact x stappen. Als je zegt dat en vertex ook naar zijn eigen kan geen krijg je een matrix waarin staat
+ * of een vertex een andere vertex kan bereiken in 'x' of minder dagen.
  *
- * De macht wordt berekend door de adjacency matrix maal zichzelf te doen en de uitkomst hiervan weer te vermenigvuldigen met de adjacency matrix,
- * en dit voor elke dag. Omdat het niet uitmaakt hoeveel verschillende routes er zijn van vertex A naar B wordt er verder gegaan naar de volgende connectie
+ * De macht wordt berekend met behulp van 'binary exponentiation'. Hierdoor moeten er veel minder matrix berekeningen uitgevoerd worden.
+ * Omdat het niet uitmaakt hoeveel verschillende routes er zijn van vertex A naar B wordt er verder gegaan naar de volgende connectie
  * zodra er één route gevonden is.
- *
- * Er zijn algoritmes die een matrix tot een macht verheffen eficiënter maken zoals machtsverheffing door kwadrateren.
- * Aangezien we de matrix voor elke dag moeten berekenen kunnen we deze techniek echter niet gebruiken.
  *
  * Er zijn ook nog andere algoritmes om 2 matrixen met elkaar te vermenigvuldigen in O(n^2.37) tijd, maar deze zijn redelijk complex. Daarom hebben
  * we er voor gekozen om een gemakkelijke oplossing in O(n³) tijd te gebruiken.
  *
  * Tijdscomplexiteit: O(log(D) * (V³ + V²)) -> O(log(D) * V³) met D = aantal dagen en V = aantal vertices.
- *
- * Ruimtecomplexiteit:
- * Auxiliary space:
  */
 void ReachableMatrix::createReachableMatrix(QVector<QVector<bool>> &adjacencyMatrix, QVector<QVector<bool>> &reachableMatrix, int days)
 {
     int matrixSize = adjacencyMatrix.size();
 
     // Create a vector that can hold log(days) matrices of size VxV
-    QVector<QVector<QVector<bool>>> results(std::ceil(std::log2(days)) + 1, QVector<QVector<bool>>(matrixSize, QVector<bool>(matrixSize, false)));
+    QVector<QVector<QVector<bool>>> results(std::floor(std::log2(days)) + 1, QVector<QVector<bool>>(matrixSize, QVector<bool>(matrixSize, false)));
     results[0] = adjacencyMatrix;
-    printMatrix(adjacencyMatrix);
-
 
     // Bereken welke vertices elkaar kunnen bereiken binnen het aantal dagen -> O(log(D)) met D = aantal dagen)
     for (int count = 1; count < results.size(); count++) {
-        findIfPath(results[count - 1], results[count - 1], results[count]);
-        printMatrix(results[count]);
+        multiplicateMatrix(results[count - 1], results[count - 1], results[count]);
     }
 
     // Calculate final array
@@ -122,20 +100,18 @@ void ReachableMatrix::createReachableMatrix(QVector<QVector<bool>> &adjacencyMat
         days /= 2;
     }
 
-    reachableMatrix = QVector<QVector<bool>>(matrixSize, QVector<bool>(matrixSize, false));
+    int flag = false;
     for (int count = 0; count < results.size(); count++) {
         if (dayBinary[count] == 0) {
             continue;
         }
 
-        QVector<QVector<bool>> temp(matrixSize, QVector<bool>(matrixSize, false));
-        findIfPath(reachableMatrix, results[count], temp);
-
-        // Update reachableMatrix using logical OR operation
-        for (int i = 0; i < matrixSize; i++) {
-            for (int j = 0; j < matrixSize; j++) {
-                reachableMatrix[i][j] = reachableMatrix[i][j] || temp[i][j];
-            }
+        if (flag == false){
+            reachableMatrix = results[count];
+            flag = true;
+        }
+        else {
+            multiplicateMatrix(reachableMatrix, results[count], reachableMatrix);
         }
     }
 }
@@ -155,9 +131,6 @@ void ReachableMatrix::createReachableMatrix(QVector<QVector<bool>> &adjacencyMat
  * de uitkomst, geen enkele verdere combinatie gaat de uitkomst geven omdat de waarde enkel groter kan worden.
  *
  * Tijdscomplexiteit: O(V + V² + 2^V) -> O(2^V) met V = aantal vertices.
- *
- * Ruimtecomplexiteit:
- * Auxiliary space:
  */
 QVector<Vertex*> ReachableMatrix::findSources(QVector<QVector<bool>> &reachableMatrix)
 {
@@ -208,48 +181,29 @@ QVector<Vertex*> ReachableMatrix::findSources(QVector<QVector<bool>> &reachableM
 }
 
 /**
+ * Deze functie vermenigvuldigd 2 matrices met elkaar. Dit heeft een tijdscomplexiteit van O(V³).
+ * Er zijn ook nog andere algoritmes om 2 matrixen met elkaar te vermenigvuldigen in O(n^2.37) tijd, maar deze zijn redelijk complex. Daarom hebben
+ * we er voor gekozen om een gemakkelijke oplossing in O(n³) tijd te gebruiken.
  *
+ * Tijdscomplexiteit: O(V³) met V = aantal vertices.
  */
-void ReachableMatrix::findIfPath(QVector<QVector<bool> > &matrix1, QVector<QVector<bool> > &matrix2, QVector<QVector<bool> > &result)
+void ReachableMatrix::multiplicateMatrix(QVector<QVector<bool> > &matrix1, QVector<QVector<bool> > &matrix2, QVector<QVector<bool> > &result)
 {
     int matrixSize = matrix1.size();
 
+    QVector<QVector<bool>> tempResult = QVector<QVector<bool>>(matrixSize, QVector<bool>(matrixSize, false));
+
+    // Matrix multiplicatie -> (O(V³) met V = aantal vertices)
     for (int i = 0; i < matrixSize; i++) {
         for (int j = 0; j < matrixSize; j++) {
             for (int k = 0; k < matrixSize; k++) {
                 if (matrix1[i][k] && matrix2[k][j]) {
-                    result[i][j] = 1;
-                    break; // when a path is found, we break, we don't care about how many paths there are
+                    tempResult[i][j] = 1;
+                    break;
                 }
             }
         }
     }
+
+    result = tempResult;
 }
-
-// FOR TESTING --------------------------
-void ReachableMatrix::printMatrix(QVector<QVector<bool>> &matrix)
-{
-    int matrixSize = matrix.size();
-
-    std::cout << "   ";
-    for (int j = 0; j < matrixSize; ++j) {
-        std::cout << m_indexVertexHash.value(j)->getName().toStdString() << " ";
-    }
-    std::cout << "\n";
-    for (int i = 0; i < matrixSize; ++i) {
-        std::cout << m_indexVertexHash.value(i)->getName().toStdString() << ": ";
-        for (int j = 0; j < matrixSize; ++j) {
-            std::cout << matrix[i][j] << " ";
-        }
-
-        // calculate decimal value
-        int value = 0;
-        for (int j = 0; j < matrixSize; ++j) {
-            value += std::pow(2, matrixSize - 1 - j) * matrix[i][j];
-        }
-
-        std::cout << ":: " << value << "\n";
-    }
-    std::cout << "\n";
-}
-// --------------------------------------

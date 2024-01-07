@@ -17,9 +17,7 @@ private:
     QVector<Vertex*> findSources(QVector<QVector<bool>> &reachableMatrix);
     QVector<int> findMinRows();
 
-    void findIfPath(QVector<QVector<bool>> &matrix1, QVector<QVector<bool>> &matrix2, QVector<QVector<bool>> &result);
-
-    void printMatrix(QVector<QVector<bool>> &matrix);
+    void multiplicateMatrix(QVector<QVector<bool>> &matrix1, QVector<QVector<bool>> &matrix2, QVector<QVector<bool>> &result);
 };
 
 #endif // REACHEBLEMATRIX_H

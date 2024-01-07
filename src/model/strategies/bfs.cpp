@@ -38,9 +38,6 @@ QVector<Vertex*> BFS::execute()
  *
  * Tijdscomplexiteit: O(I * (V + E)) met I = aantal geïnfecteerde vertices, V = aantal vertices, E = aantal edges
  * Worst case I = V -> O(V * (V + E)) -> O(V² + VE)
- *
- * Ruimtecomplexiteit:
- * Auxiliary space:
  */
 QVector<Vertex*> BFS::findSources()
 {
@@ -66,9 +63,6 @@ QVector<Vertex*> BFS::findSources()
  *
  * Tijdscomplexiteit: O(V + E + I) met V = aantal vertices, E = aantal edges en I = aantal geïnfecteerde vertices
  * worst case I = V -> O(2V + E) -> O(V + E)
- *
- * Ruimtecomplexiteit:
- * Auxiliary space:
  */
 void BFS::addIfSource(Vertex* startVertex, QSet<Vertex*> &sources, QSet<Vertex*> &infectedByVertex)
 {

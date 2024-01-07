@@ -24,6 +24,7 @@ add_library(src_Practicum3
     model/Strategies/topologicalorder.h model/Strategies/topologicalorder.cpp
     model/Strategies/bfs.h model/Strategies/bfs.cpp
     model/strategies/reachablematrix.h model/strategies/reachablematrix.cpp
+
 )
 
 target_link_libraries(src_Practicum3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
