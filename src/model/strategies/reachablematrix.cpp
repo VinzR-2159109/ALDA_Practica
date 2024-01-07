@@ -1,4 +1,5 @@
 #include "reachablematrix.h"
+#include <bitset>
 #include <iostream>
 
 /**
@@ -93,47 +94,47 @@ void ReachableMatrix::createAdjacencyMatrix(QVector<QVector<bool>> &adjacencyMat
  * Er zijn ook nog andere algoritmes om 2 matrixen met elkaar te vermenigvuldigen in O(n^2.37) tijd, maar deze zijn redelijk complex. Daarom hebben
  * we er voor gekozen om een gemakkelijke oplossing in O(n³) tijd te gebruiken.
  *
- * Tijdscomplexiteit: O(D * (V³ + V²)) -> O(D * V³) met D = aantal dagen en V = aantal vertices.
+ * Tijdscomplexiteit: O(log(D) * (V³ + V²)) -> O(log(D) * V³) met D = aantal dagen en V = aantal vertices.
  *
  * Ruimtecomplexiteit:
  * Auxiliary space:
  */
 void ReachableMatrix::createReachableMatrix(QVector<QVector<bool>> &adjacencyMatrix, QVector<QVector<bool>> &reachableMatrix, int days)
 {
-    reachableMatrix = adjacencyMatrix;
-
-    QVector<QVector<bool>> m1 = adjacencyMatrix;
-    QVector<QVector<bool>> m2 = adjacencyMatrix;
-
-    QVector<QVector<bool>> *previousResult = &m1;
-    QVector<QVector<bool>> *temp = &m2;
-
     int matrixSize = adjacencyMatrix.size();
 
-    // Bereken welke vertices elkaar kunnen bereiken binnen het aantal dagen -> (O(D) met D = aantal dagen)
-    for (int day = 0; day < days - 1; day++) {
+    // Create a vector that can hold log(days) matrices of size VxV
+    QVector<QVector<QVector<bool>>> results(std::ceil(std::log2(days)) + 1, QVector<QVector<bool>>(matrixSize, QVector<bool>(matrixSize, false)));
+    results[0] = adjacencyMatrix;
+    printMatrix(adjacencyMatrix);
 
-        // Matrix multiplicatie -> (O(V³) met V = aantal vertices)
-        for (int i = 0; i < matrixSize; i++) {
-            for (int j = 0; j < matrixSize; j++) {
-                (*temp)[i][j] = 0;
-                for (int k = 0; k < matrixSize; k++) {
-                    if ((*previousResult)[i][k] * adjacencyMatrix[k][j] == 1) {
-                        (*temp)[i][j] = 1;
-                    }
-                }
-            }
+
+    // Bereken welke vertices elkaar kunnen bereiken binnen het aantal dagen -> O(log(D)) met D = aantal dagen)
+    for (int count = 1; count < results.size(); count++) {
+        findIfPath(results[count - 1], results[count - 1], results[count]);
+        printMatrix(results[count]);
+    }
+
+    // Calculate final array
+    std::vector<bool> dayBinary;
+    while (days > 0) {
+        dayBinary.push_back(days % 2);
+        days /= 2;
+    }
+
+    reachableMatrix = QVector<QVector<bool>>(matrixSize, QVector<bool>(matrixSize, false));
+    for (int count = 0; count < results.size(); count++) {
+        if (dayBinary[count] == 0) {
+            continue;
         }
 
-        // Set temp in previousResult (switch pointers)
-        QVector<QVector<bool>> *pointer = previousResult;
-        previousResult = temp;
-        temp = pointer;
+        QVector<QVector<bool>> temp(matrixSize, QVector<bool>(matrixSize, false));
+        findIfPath(reachableMatrix, results[count], temp);
 
-        // Update reachableMatrix -> (O(V²))
+        // Update reachableMatrix using logical OR operation
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < matrixSize; j++) {
-                reachableMatrix[i][j] += (*previousResult)[i][j];
+                reachableMatrix[i][j] = reachableMatrix[i][j] || temp[i][j];
             }
         }
     }
@@ -204,6 +205,25 @@ QVector<Vertex*> ReachableMatrix::findSources(QVector<QVector<bool>> &reachableM
     }
 
     return solution;
+}
+
+/**
+ *
+ */
+void ReachableMatrix::findIfPath(QVector<QVector<bool> > &matrix1, QVector<QVector<bool> > &matrix2, QVector<QVector<bool> > &result)
+{
+    int matrixSize = matrix1.size();
+
+    for (int i = 0; i < matrixSize; i++) {
+        for (int j = 0; j < matrixSize; j++) {
+            for (int k = 0; k < matrixSize; k++) {
+                if (matrix1[i][k] && matrix2[k][j]) {
+                    result[i][j] = 1;
+                    break; // when a path is found, we break, we don't care about how many paths there are
+                }
+            }
+        }
+    }
 }
 
 // FOR TESTING --------------------------
